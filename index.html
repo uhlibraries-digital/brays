@@ -17,15 +17,11 @@
       $(document).ready(function(){
         initSettings();
       });
-
     </script>
     <script type="text/javascript" src="lib/js/settings.js"></script>
     <script type="text/javascript" src="lib/js/reader.js"></script>
     <script type="text/javascript" src="lib/js/writer.js"></script>
     <script type="text/javascript" src="lib/js/logger.js"></script>
-    <script>
-      
-    </script>
     
   </head>
   <body>
@@ -42,6 +38,7 @@
         <ul class="logger-display-list">
         </ul>
       </div>
+      <div id="logger-save-button" onclick="logger.save()"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save Log</div>
 
       <div id="settings" class="modal">
         <div class="modal-content">

@@ -22,3 +22,28 @@
   font-family: monospace;
   font-size: 12px;
 }
+
+#logger-display .warn {
+  color: #cccc00;
+}
+
+#logger-display .error {
+  color: #FF0000;
+}
+
+#logger-display .good {
+  color: #00cc00;
+}
+
+#logger-save-button {
+  position: absolute;
+  color: #fff;
+  bottom: 0;
+  right: 0;
+  float:right;
+  z-index: 2;
+  font-size: 12px;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 10px;
+}
