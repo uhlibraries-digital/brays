@@ -29,3 +29,7 @@ To distribute, please read the [Application Distribution](http://electron.atom.i
 ### Dependences
 
 Brays needs [Greens](https://github.com/uhlibraries-digital/greens) installed to mint ARK identifiers.
+
+## License
+
+[MIT License](LICENSE.txt)
