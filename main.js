@@ -16,7 +16,7 @@ app.on('ready', function(){
   mainWindow = new BrowserWindow({
     width: 620, 
     height: 580, 
-    //resizable: false, 
+    title: 'Brays',
     icon: 'lib/img/app-icon.png'
   });
 

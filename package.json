@@ -1,12 +1,16 @@
 {
   "name": "Brays",
   "version": "0.0.1",
-  "description": "Archivematica & Hydra in a Box Ingest Utility",
+  "description": "Archivematica & Hydra-in-a-Box Ingest Utility",
   "main": "main.js",
   "author": "Sean Watkins <slwatkins@uh.edu>",
   "license": "MIT",
   "scripts": {
     "start": "electron main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uhlibraries-digital/brays"
   },
   "dependencies": {
     "xlsx": "^0.8.0",
