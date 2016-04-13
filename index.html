@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Brays</title>
+    <link rel="stylesheet" type="text/css" href="lib/css/main.css">
+    <link rel="stylesheet" type="text/css" href="lib/css/logger.css">
+    <link rel="stylesheet" type="text/css" href="lib/css/settings.css">
+    <link rel="stylesheet" type="text/css" href="lib/css/font-awesome.min.css">
+
+    <script>
+      window.$ = window.jQuery = require('jquery');
+      var remote = require('remote'); 
+      var dialog = remote.require('dialog'); 
+      var fs = require('fs');
+
+      $(document).ready(function(){
+        initSettings();
+      });
+
+    </script>
+    <script type="text/javascript" src="lib/js/settings.js"></script>
+    <script type="text/javascript" src="lib/js/reader.js"></script>
+    <script type="text/javascript" src="lib/js/writer.js"></script>
+    <script type="text/javascript" src="lib/js/logger.js"></script>
+    <script>
+      
+    </script>
+    
+  </head>
+  <body>
+    <div id="container">
+      <div id="settings-button" onclick="displaySettings()">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+      </div>
+
+      <div id="dnd">
+        <div class="dnd-prompt">Drop metadata file here or <a href="#" onclick="openFile()">open file</a></div>
+      </div>
+      
+      <div id="logger-display">
+        <ul class="logger-display-list">
+        </ul>
+      </div>
+
+      <div id="settings" class="modal">
+        <div class="modal-content">
+          <form id="settings-form">
+            <div class="input-group">
+              <label for="mint_url">Mint URL</label>
+              <input type="text" id="mint_url" name="mint_url" />
+            </div>
+            <div class="input-group">
+              <label for="mint_api_key">Mint API Key</label>
+              <input type="text" id="mint_api_key" name="mint_api_key" />
+            </div>
+          </form>
+          <div class="input-buttons">
+            <button type="button" class="btn btn-default" onclick="closeSettings();">Cancel</button>
+            <button type="button" class="btn btn-action" onclick="saveSettings()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

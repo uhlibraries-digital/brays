@@ -1,0 +1,19 @@
+{
+  "name": "Brays",
+  "version": "0.0.1",
+  "description": "Archivematica & Hydra in a Box Ingest Utility",
+  "main": "main.js",
+  "author": "Sean Watkins <slwatkins@uh.edu>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.8.0",
+    "jquery": "^1.7.2",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.0"
+  }
+}
