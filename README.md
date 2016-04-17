@@ -24,7 +24,18 @@ mycollection/
 └── mycollection_metadata.xlsx
 ```
 
-To distribute, please read the [Application Distribution](http://electron.atom.io/docs/v0.37.5/tutorial/application-distribution/) documentation from Electron.
+### Building
+
+You can build Brays by running the following commands based on your target system:
+
+* `npm run build:osx` will build for MacOS X x64
+* `npm run build:win` will build for Windows x64
+* `npm run build:linux` will build for Linux x64
+* `npm run build` will build all the above
+
+All builds are stored in the `build` directory that gets created during the build process.
+
+To learn more about distributing, please read the [Application Distribution](http://electron.atom.io/docs/v0.37.5/tutorial/application-distribution/) documentation from Electron.
 
 ### Dependences
 

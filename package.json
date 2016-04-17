@@ -1,12 +1,19 @@
 {
-  "name": "Brays",
+  "name": "brays",
+  "productName": "Brays",
   "version": "0.0.1",
+  "appBundleId": "brays.app",
+  "helperBundleId": "brays.app.helper",
   "description": "Archivematica & Hydra-in-a-Box Ingest Utility",
   "main": "main.js",
   "author": "Sean Watkins <slwatkins@uh.edu>",
   "license": "MIT",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron main.js",
+    "build": "babel-node scripts/build.js --platform=all",
+    "build:osx": "babel-node scripts/build.js --platform=darwin",
+    "build:win": "babel-node scripts/build.js --platform=win32",
+    "build:linux": "babel-node scripts/build.js --platform=linux"
   },
   "repository": {
     "type": "git",
@@ -19,6 +26,12 @@
     "rimraf": "^2.5.2"
   },
   "devDependencies": {
-    "electron-prebuilt": "^0.36.0"
+    "babel": "^5.8.29",
+    "denodeify": "^1.2.1",
+    "electron-prebuilt": "^0.36.0",
+    "electron-builder": "^2.8.3",
+    "electron-packager": "^5.2.1",
+    "lodash": "^3.10.1",
+    "minimist": "^1.2.0"
   }
 }

@@ -3,6 +3,7 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const pkg = require('./package.json');
 
 var mainWindow = null;
 
@@ -16,8 +17,8 @@ app.on('ready', function(){
   mainWindow = new BrowserWindow({
     width: 620, 
     height: 580, 
-    title: 'Brays',
-    icon: 'lib/img/app-icon.png'
+    title: pkg.productName,
+    icon: 'resources/app-icon.png'
   });
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
