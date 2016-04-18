@@ -16,6 +16,9 @@
 
       $(document).ready(function(){
         initSettings();
+        if ( process.platform !== 'darwin' ) {
+          $('#logger-save-button').css('padding-right', '35px');
+        }
       });
     </script>
     <script type="text/javascript" src="assets/js/settings.js"></script>
