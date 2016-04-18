@@ -595,7 +595,7 @@ function rollback(){
   if ( subdir !== '' && subdir !== '/' && subdir !== "\\") {
     var ignestpath = locationpath + subdir;
     logger.log('Removing ingest directory "' + ignestpath + '"');
-    //rimraf(ignestpath, function(err) { });
+    rimraf(ignestpath, function(err) { });
   }
 
   logger.warn('Done');
