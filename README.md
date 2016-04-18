@@ -7,7 +7,7 @@ Is a Archivematica & Hydra-in-a-Box ingest utility built on [Electron](http://el
 Clone and run this repository. You will need [Node.js](https://nodejs.org/en/download/) installed. From the command line:
 
 ```bash
-git clone ...
+git clone https://github.com/uhlibraries-digital/brays
 # Go to the repository
 cd brays
 # Install dependencies and run the app
@@ -18,10 +18,11 @@ Brays takes in a XLSX file containing the metadata and location of files. You wi
 
 ```
 mycollection/
-├── files/
-│   └── object_001.tiff
-│   └── object_002.tiff
-└── mycollection_metadata.xlsx
+├── mycollection_metadata.xlsx
+├── object_001.jpg
+├── object_001_pm.tiff
+├── object_002.jpg
+└── object_002_pm.tiff
 ```
 
 ### Building

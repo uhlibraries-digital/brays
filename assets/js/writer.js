@@ -5,32 +5,6 @@
  */
 var writer = {
   /**
-   * Turn a array into a CSV string.
-   *
-   * @param Array a
-   * @return String
-   */
-  array_to_csv: function(a) {
-    var FS = ",";
-    var RS = "\n";
-    var out = "";
-
-    for ( var R = 0; R < a.length; ++R ) {
-      var row = a[R];
-      var row_txt = "";
-      for ( var C = 0; C < row.length; ++C ) {
-        txt = row[C];
-        if ( txt.indexOf('"') > -1 || txt.indexOf(',') > -1 || txt.indexOf("\n") > -1 ) {
-          txt = "\"" + txt.replace(/"/g, '""') + "\"";
-        }
-        row_txt += txt + (C === row.length ? "" : FS);
-      }
-      out += row_txt + RS;
-    }
-
-    return out;
-  },
-  /**
    * Opens a save dialog to save the CSV data
    *
    * @param String data The CSV data to save

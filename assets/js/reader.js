@@ -6,10 +6,15 @@
 var xlsx = require('xlsx');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var stringify = require('csv-stringify');
+
 var metadata_array = [];
+var am_objects_store = {};
 var locationpath = '';
-var subdir = '';
+var subdir = 'ingest';
+var objectpath = 'objects';
 var process_counter = 0;
+var process_total = 0;
 var rolling_back = false;
 
 String.prototype.padLeft = function(l, c) {
@@ -95,25 +100,72 @@ function build_metadata_array(worksheet) {
     }
 
     if ( R > 0 ) {
-      if ( item["OBJECT"] === 'x' ) {
-        delete item['FILE'];
-        delete item['OBJECT'];
-        delete item['Filename'];
+      
+      if ( item["COLL"] === 'x' ) {
+        metadata.push(clean_item(item));
+        coll_ptr = metadata.length - 1;
+      }
+      else if ( item["BOX"] === 'x' ) {
+        if ( metadata[coll_ptr]['_BOX'] === undefined ) {
+          metadata[coll_ptr]['_BOX'] = [];
+        }
 
-        metadata.push(item);
-        obj_ptr = metadata.length - 1;
+        metadata[coll_ptr]['_BOX'].push(clean_item(item));
+        box_ptr = metadata[coll_ptr]['_BOX'].length - 1;
+      }
+      else if ( item["FOLDER"] === 'x' ) {
+        if ( metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'] === undefined ) { 
+          metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'] = [];
+        }
+        
+        metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'].push(clean_item(item));
+        folder_ptr = metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'].length - 1;
+      }
+      else if ( item["OBJECT"] === 'x' ) {
+        if ( metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'] === undefined ) {
+          metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'] = [];
+        }
+
+        process_total++;
+        metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'].push(clean_item(item));
+        obj_ptr = metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'].length - 1;
       }
       else if ( item["FILE"] === 'x' ) {
-        if ( metadata[obj_ptr]['_FILES'] === undefined ) metadata[obj_ptr]['_FILES'] = [];
+        if ( metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'][obj_ptr]['_FILES'] === undefined ) {
+          metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'][obj_ptr]['_FILES'] = [];
+        }
 
-        delete item['FILE'];
-        delete item['OBJECT'];
-
-        metadata[obj_ptr]['_FILES'].push(item);
+        metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'][obj_ptr]['_FILES'].push(clean_item(item, true));
       }
+      
     }
+
   }
+
   return metadata;
+}
+
+/**
+ * Cleans up the item hash
+ *
+ * @param Object item The item to clean up
+ * @param Boolean isFile true if the item is a file object
+ * @return Object
+ */
+function clean_item(item, isFile) {
+  delete item["COLL"];
+  delete item["BOX"];
+  delete item["FOLDER"];
+  delete item["OBJECT"];
+  delete item["FILE"];
+  if ( !isFile ) {
+    delete item["filename"];
+    delete item["PM"];
+    delete item["MM"];
+    delete item["AC"];
+  }
+
+  return item;
 }
 
 /**
@@ -169,8 +221,8 @@ function process_metadata(workbook, path) {
   var worksheet = workbook.Sheets[workbook.SheetNames[0]];
   metadata_array = build_metadata_array(worksheet);
 
+
   locationpath = path.match(/.*[/\\]/);
-  subdir = 'ingest';
 
   rolling_back = false;
   process_counter = 0;
@@ -187,11 +239,24 @@ function process_metadata(workbook, path) {
  */
 function process_metadata_objects() {
   logger.log('Sending objects for minting...');
-  for ( var k in metadata_array ) {
-    var item = metadata_array[k];
-    item['ma_index'] = k;    
-    
-    mint_object(item);    
+  for ( var coll_idx in metadata_array ) {
+    metadata_array[coll_idx]['parts'] = objectpath;
+    var collection = metadata_array[coll_idx];
+    for ( var box_idx in collection['_BOX'] ) {
+      var box = collection['_BOX'][box_idx];
+      for (var folder_idx in box['_FOLDER'] ) {
+        var folder = box['_FOLDER'][folder_idx];
+        for ( var obj_idx in folder['_OBJECT'] ) {
+          var item = folder['_OBJECT'][obj_idx];
+          item['ma_index'] = coll_idx;
+          item['box_index'] = box_idx;
+          item['folder_index'] = folder_idx;
+          item['object_index'] = obj_idx;
+
+          mint_object(item);
+        }
+      }
+    }
   }
 }
 
@@ -204,67 +269,121 @@ function process_object_files(item) {
     if ( rolling_back ) return;
     process_counter++;
 
-    var objectpath = 'objects';
-
     var id = item['dcterms.identifier'];
     var id_parts = id.split('/');
 
-    var seq = (parseInt(item['ma_index']) + 1);
-    var dirname = seq.toString().padLeft(4, "0") + '_' + id_parts[2];
+    var collection = metadata_array[item['ma_index']];
+    var box = collection['_BOX'][item['box_index']];
+    var folder = box['_FOLDER'][item['folder_index']];
+
     
-    var dirdest = locationpath + subdir + '/' + objectpath + '/' + dirname;
-    mkdirp.sync(dirdest, function(err) {
-      if (err) {
-        logger.error('Failed to create object directory. "' + dirdest + '"');
-      }
-    });
+    var seq = (parseInt(item['object_index']) + 1);
+    var objectdir = seq.toString().padLeft(4, "0") + '_' + id_parts[2];
+    var basedir = locationpath + subdir;
+    var postdir = box['dc.title'] + '/' + folder['dc.title'] + '/' + objectdir;
 
     item['dcterms.identifier'] = id;
-    item['parts'] = objectpath + '/' + dirname;    
 
     for (var i = 0; i < item["_FILES"].length; ++i) {
       var file = item["_FILES"][i];
+      var parts = '';
+      var filename = '';
 
-      var srcfilepath = locationpath + 'files/' + file['Filename'];
-      var destfilepath = dirdest + '/' + file['Filename'];
+      if ( file['PM'] !== '' ) {
+        parts = objectpath + '/pm/' + postdir;
+        filename = file['filename'] + '_pm' + file['PM'];
+        
+        move_file(filename, basedir + '/' + parts);
 
-      try {
-        fs.renameSync(srcfilepath, destfilepath);
-        logger.log('Moved file "' + file["Filename"] + '" to "' + subdir + '/' + objectpath + '/' + dirname + '"');
+        add_parts_to_am_store(parts, item);
+        add_parts_to_am_store(parts + '/' + filename, file);
       }
-      catch (err) {
-        logger.error('Failed to move file "' + file["Filename"] + '", ' + err.message);
+      if ( file['MM'] !== '' ) {
+        parts = objectpath + '/mm/' + postdir;
+        filename = file['filename'] + '_mm' + file['MM']; 
+
+        move_file(filename , basedir + '/' + parts);
+
+        add_parts_to_am_store(parts, item);
+        add_parts_to_am_store(parts + '/' + filename, file);
+      }
+      if ( file['AC'] !== '' ) {
+        parts = objectpath + '/ac/' + postdir;
+        filename = file['filename'] + file['AC'];
+
+        move_file(filename, basedir + '/' + parts);
+
+        add_parts_to_am_store(parts, item);
+        add_parts_to_am_store(parts + '/' + filename, file);
       }
 
-      file['parts'] = objectpath + '/' + dirname + '/' + file["Filename"];
-
-      /* Put everything back into the item array for rollback */
-      item["_FILES"][i] = file;
+      if ( parts === '' ) {
+        logger.warn('File "' + file['filename'] + '" does not have PM/MM/AC set.');
+      }
     }
 
-    /* Put everyting back into the metadata_array for rollback */
-    metadata_array[item['ma_index']] = item;
-
-    if ( process_counter === metadata_array.length ) {
-      output_csv_file();
+    if ( process_counter === process_total ) {
+      output_am_csv_file();
     }
 }
 
 /**
- * Output the CSV file from metadata_array
+ * Adds the parts path to the Archivematica store to be used during CSV build
+ *
+ * @param String parts The parts column in AM csv
+ * @param Object object The object to assign to the parts
  */
-function output_csv_file() {
-  logger.log('Building CSV...');
-  
-  out = build_csv_array();
+function add_parts_to_am_store(parts, object) {
+  if ( !(parts in am_objects_store) ) {
+    am_objects_store[parts] = Object.assign({}, object, { parts: parts });
+  }
+}
 
-  var csv = writer.array_to_csv(out);
-  var targetfilename = locationpath + subdir + '/metadata.csv';
+/**
+ * Movies file to destination
+ *
+ * @param String filename The file name to be moved
+ * @param String dest The destination path
+ * @return Boolean True if move was successful
+ */
+function move_file(filename, dest) {
+  mkdirp.sync(dest, function(err) {
+    if (err) {
+      logger.error('Failed to create object directory. "' + dirdest + '"');
+      return false;
+    }
+  });
+
+  var srcfilepath = locationpath + '/' + filename;
+
+  try {
+    fs.renameSync(srcfilepath, dest + '/' + filename);
+    logger.log('Moved file "' + filename + '" to "' + dest + '"');
+  }
+  catch (err) {
+    logger.error('Failed to move file "' + filename + '", ' + err.message);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Output the Archivematica CSV file from metadata_array
+ */
+function output_am_csv_file() {
+  logger.log('Building Archivematica CSV...');
+  var out = build_am_csv_array();
+  var metadatadir = locationpath + subdir + '/metadata';
+  mkdirp.sync(metadatadir);
+
+  mkdirp.sync(locationpath + subdir + '/log');
   
-  writer.write(csv, targetfilename);
-  logger.log('Saved CSV file to "' + targetfilename + '"');
-  
-  logger.log('Done');
+  stringify(out, function(err, output) {
+      writer.write(output, metadatadir + '/metadata.csv');
+      logger.log('Saved CSV file');
+      logger.log('Done');
+  });
 }
 
 /**
@@ -272,7 +391,7 @@ function output_csv_file() {
  *
  * @return Array
  */
-function build_csv_array() {
+function build_am_csv_array() {
   // Build the headers for the AM output
   output_am_metadata = Array([
     'parts',
@@ -283,19 +402,96 @@ function build_csv_array() {
     'dcterms.publisher',
     'dcterms.isPartOf',
     'dc.rights',
+    'dcterms.accessRights',
     'dcterms.identifier'
   ]);
 
-  for ( var k in metadata_array ) {
-    var item = metadata_array[k];
-    output_am_metadata.push(build_am_row_array(item));
-    for ( var i in item["_FILES"] ) {
-      var file = item["_FILES"][i];
-      output_am_metadata.push(build_am_row_array(file));
+  output_am_metadata.push(build_am_row_array(metadata_array[0]));
+
+  /* Archivematica csv is in the order of the file system */
+  files = walk(locationpath + subdir + '/' + objectpath);
+  var prevobjectparts = '';
+  for ( var i = 0; i < files.length; i++ ) {
+    var file = files[i];
+
+    /* Output the object parts */
+    var parts = file.toString().match(/.*[/]/)[0].slice(0, -1).replace(locationpath + subdir + '/', '');
+    if ( parts !== prevobjectparts ) {
+      if ( parts in am_objects_store ) {
+        output_am_metadata.push(build_am_row_array(am_objects_store[parts]));
+      }
+      else {
+        logger.warn('Could not find objects metadata for AM csv');
+      }
+      prevobjectparts = parts;
+    }
+
+    /* Output the file parts */
+    parts = file.toString().replace(locationpath + subdir + '/', '');
+    if ( parts in am_objects_store ) {
+      output_am_metadata.push(build_am_row_array(am_objects_store[parts]));
+    }
+    else {
+      logger.warn('Could not find objects metadata for AM csv');
     }
   }
 
   return output_am_metadata;
+}
+
+/**
+ * Builds a single row that will be used in the AM ingest CSV
+ *
+ * @param Object item The item containing the metadata
+ * @return Array The array formated for AM
+ */
+function build_am_row_array(item) {
+  /*
+   * Header columns
+   *  parts
+   *  dc.title
+   *  dcterms.creator
+   *  dcterms.date
+   *  dc.description
+   *  dcterms.publisher
+   *  dcterms.isPartOf
+   *  dc.rights
+   *  dcterms.accessRights
+   *  dcterms.identifier
+   */
+  return [
+    item['parts'] || '',
+    item['dc.title'] || '',
+    item['dcterms.creator'] || '',
+    item['dcterms.date'] || '',
+    item['dcterms.description'] || '',
+    item['dcterms.publisher'] || '',
+    item['dcterms.isPartOf'] || '',
+    item['dc.rights'] || '',
+    item['dcterms.accessRights'] || '',
+    item['dcterms.identifier'] || ''
+  ];
+}
+
+/**
+ * Walks the directory and subdirectory and returns an array of files.
+ *
+ * @param String dir The directory to walk
+ * @param Array filelist The list of files found in walk
+ * @return Array
+ */
+function walk(dir, filelist) {
+  var files = fs.readdirSync(dir);
+  filelist = filelist || [];
+  files.forEach(function(file) {
+    if (fs.statSync(dir + '/' + file).isDirectory()) {
+      filelist = walk(dir + '/' + file, filelist);
+    }
+    else {
+      filelist.push(dir + '/' + file);
+    }
+  });
+  return filelist;
 }
 
 /**
@@ -311,9 +507,9 @@ function mint_object(item, counter) {
   }
 
   var post_data = {
-    who: (item['dcterms.creator'] === '' ? 'unknown' : item['dcterms.creator']),
+    who: item['dcterms.creator'] || 'unknown',
     what: item['dc.title'],
-    when: (item['dcterms.date'] === '' ? 'unknown' : item['dcterms.date'])
+    when: item['dcterms.date'] || 'unknown'
   };
 
   if ( settings.mint_url === '' || settings.api_key === '' ) {
@@ -350,42 +546,10 @@ function mint_object(item, counter) {
 }
 
 $(document).ajaxStop(function(){
-  if ( process_counter !== metadata_array.length ) {
+  if ( process_counter !== process_total ) {
     logger.warn("Finished minting but processing didn't seem to finish. This doesn't seem right");
   }
 });
-
-/**
- * Builds a single row that will be used in the AM ingest CSV
- *
- * @param Object item The item containing the metadata
- * @return Array The array formated for AM
- */
-function build_am_row_array(item) {
-  /*
-   * Header columns
-   *  parts
-   *  dc.title
-   *  dcterms.creator
-   *  dcterms.date
-   *  dc.description
-   *  dcterms.publisher
-   *  dcterms.isPartOf
-   *  dc.rights
-   *  dcterms.identifier
-   */
-  return [
-    item['parts'],
-    item['dc.title'],
-    item['dcterms.creator'],
-    item['dcterms.date'],
-    item['dcterms.description'],
-    item['dcterms.publisher'],
-    item['dcterms.isPartOf'],
-    item['dc.rights'],
-    item['dcterms.identifier']
-  ];
-}
 
 /**
  * Rollback what has been done. This deletes all minted identifiers during the process and moves files back.
@@ -394,38 +558,44 @@ function rollback(){
   rolling_back = true;
   logger.warn('ROLLING BACK TO ORIGINAL STATE...');
 
-  for ( var k in metadata_array ) {
-    var item = metadata_array[k];
-
-    if ( item['dcterms.identifier'] !== undefined && 
-         item['dcterms.identifier'] !== '' && 
-         item['dcterms.identifier'].indexOf('ark:/') === 0 
-    ){
-    
-      logger.log('Destroying identifier "' + item['dcterms.identifier'] + '"');
-      delete_identifier(item['dcterms.identifier']);
-    
-    }
-
-    for ( var i in item["_FILES"] ) {
-      var file = item["_FILES"][i];
-      if ( file['parts'] !== undefined && file['parts'] !== '' ) {
-        var src = locationpath + subdir + '/' + file['parts'];
-        var dest = locationpath + 'files/' + file['Filename'];
-        logger.log('Moving file "' + file['Filename'] + '" back to files/');
-        fs.renameSync(src, dest, function(err) { 
-          if (err) {
-            logger.error(err.message);
+  for ( var coll_idx in metadata_array ) {
+    var collection = metadata_array[coll_idx];
+    for ( var box_idx in collection['_BOX'] ) {
+      var box = collection['_BOX'][box_idx];
+      for (var folder_idx in box['_FOLDER'] ) {
+        var folder = box['_FOLDER'][folder_idx];
+        for ( var obj_idx in folder['_OBJECT'] ) {
+          var item = folder['_OBJECT'][obj_idx];
+          if ( item['dcterms.identifier'] !== undefined && 
+               item['dcterms.identifier'] !== '' && 
+               item['dcterms.identifier'].indexOf('ark:/') === 0 
+          ){
+            logger.log('Destroying identifier "' + item['dcterms.identifier'] + '"');
+            delete_identifier(item['dcterms.identifier']);
           }
-        });
+        }
       }
+    }
+  }
+
+  logger.warn('Moving files back to "' + locationpath + '"');
+  var files = walk(locationpath + subdir + '/' + objectpath);
+
+  for ( var i in files ) {
+    var file = files[i];
+    var filename = file.match(/[^\/\\]+$/)[0];
+    try {
+      fs.renameSync(file, locationpath + filename);
+      logger.log('Moved file "' + filename + '" back to "' + locationpath + '"');
+    } catch (err) {
+      logger.error(err.message);
     }
   }
 
   if ( subdir !== '' && subdir !== '/' && subdir !== "\\") {
     var ignestpath = locationpath + subdir;
     logger.log('Removing ingest directory "' + ignestpath + '"');
-    rimraf(ignestpath, function(err) { });
+    //rimraf(ignestpath, function(err) { });
   }
 
   logger.warn('Done');

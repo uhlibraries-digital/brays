@@ -1,7 +1,7 @@
 {
   "name": "brays",
   "productName": "Brays",
-  "version": "0.0.1",
+  "version": "0.1.4",
   "appBundleId": "brays.app",
   "helperBundleId": "brays.app.helper",
   "description": "Archivematica & Hydra-in-a-Box Ingest Utility",
@@ -20,10 +20,11 @@
     "url": "https://github.com/uhlibraries-digital/brays"
   },
   "dependencies": {
-    "xlsx": "^0.8.0",
+    "csv-stringify": "^1.0.2",
     "jquery": "^1.7.2",
     "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "xlsx": "^0.8.0"
   },
   "devDependencies": {
     "babel": "^5.8.29",
