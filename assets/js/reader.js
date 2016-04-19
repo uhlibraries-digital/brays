@@ -106,6 +106,11 @@ function build_metadata_array(worksheet) {
         coll_ptr = metadata.length - 1;
       }
       else if ( item["BOX"] === 'x' ) {
+        if ( coll_ptr === undefined ) {
+          logger.warn("There doesn't seem to be a collection level. I'll keep going assuming there isn't one");
+          metadata.push({});
+          coll_ptr = metadata.length - 1;
+        }
         if ( metadata[coll_ptr]['_BOX'] === undefined ) {
           metadata[coll_ptr]['_BOX'] = [];
         }
@@ -114,6 +119,10 @@ function build_metadata_array(worksheet) {
         box_ptr = metadata[coll_ptr]['_BOX'].length - 1;
       }
       else if ( item["FOLDER"] === 'x' ) {
+        if ( box_ptr === undefined ) {
+          logger.error("Sorry, there doesn't seem to be a box level. I can't move on without one.");
+          return false;
+        }
         if ( metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'] === undefined ) { 
           metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'] = [];
         }
@@ -122,6 +131,10 @@ function build_metadata_array(worksheet) {
         folder_ptr = metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'].length - 1;
       }
       else if ( item["OBJECT"] === 'x' ) {
+        if ( folder_ptr === undefined ) {
+          logger.error("Sorry, there doesn't seem to be a folder level. I can't move on without one.");
+          return false;
+        }
         if ( metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'] === undefined ) {
           metadata[coll_ptr]['_BOX'][box_ptr]['_FOLDER'][folder_ptr]['_OBJECT'] = [];
         }
@@ -220,7 +233,7 @@ function process_open_file(filename) {
 function process_metadata(workbook, path) {
   var worksheet = workbook.Sheets[workbook.SheetNames[0]];
   metadata_array = build_metadata_array(worksheet);
-
+  if ( metadata_array === false ) return;
 
   locationpath = path.match(/.*[/\\]/);
 
