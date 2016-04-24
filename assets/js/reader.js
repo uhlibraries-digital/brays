@@ -539,7 +539,7 @@ function mint_object(item, counter) {
     method: 'POST',
     data: post_data,
     success: function (data) {
-      var id = 'ark:/' + data['identifier'];
+      var id = data['id'];
       logger.log('Identifier "' + id + '" => "' + item['dc.title'] + '"', 'good');
       item['dcterms.identifier'] = id;
       process_object_files(item);
