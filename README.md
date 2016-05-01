@@ -40,7 +40,7 @@ To learn more about distributing, please read the [Application Distribution](htt
 
 ### Dependences
 
-Brays needs [Greens](https://github.com/uhlibraries-digital/greens) installed to mint ARK identifiers.
+When 'Mint Arks' is enabled in settings Brays needs [Greens](https://github.com/uhlibraries-digital/greens) installed.
 
 ## License
 

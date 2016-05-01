@@ -7,6 +7,7 @@ var xlsx = require('xlsx');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var stringify = require('csv-stringify');
+var BCollection = require('./assets/js/brays_model.js');
 
 var metadata_array = [];
 var locationpath = '';
@@ -176,14 +177,15 @@ function process_open_file(filename) {
  * @param Object workbook The xlsx workbook object
  */
 function process_metadata(workbook, path) {
+  process_total = 0;
+  rolling_back = false;
+  process_counter = 0;
+
   var worksheet = workbook.Sheets[workbook.SheetNames[0]];
   metadata_array = build_metadata_array(worksheet);
   if ( metadata_array === false ) return;
   
   locationpath = path.match(/.*[/\\]/);
-
-  rolling_back = false;
-  process_counter = 0;
 
   process_metadata_objects();
 }
@@ -196,11 +198,22 @@ function process_metadata(workbook, path) {
  * @return Array
  */
 function process_metadata_objects() {
-  logger.log('Sending objects for minting...');
+  if (settings.mint_arks) {
+    logger.log('Sending objects for minting...');
+  }
+
   metadata_array.forEach(function(collection){
     var objects = collection.getObjects();
     objects.forEach(function(object){
-      mint_object(object);
+      if (settings.mint_arks) {
+        mint_object(object);
+      }
+      else {
+        if ( !('dcterms.identifier' in object.metadata) ) {
+          object.metadata['dcterms.identifier'] = '';
+        }
+        process_object_files(object);
+      }
     });
   });
 }
@@ -217,7 +230,7 @@ function process_object_files(object) {
     var id = object.metadata['dcterms.identifier'];
     var id_parts = id.split('/');
     var seq = (parseInt(object.index) + 1);
-    object.parts += seq.toString().padLeft(4, "0") + '_' + id_parts[2];
+    object.parts += seq.toString().padLeft(4, "0") + ((id_parts[2] !== undefined) ? '_' + id_parts[2] : '');
     
     var part_types = ['ac', 'mm', 'pm'];
     object.files.forEach(function(file){
@@ -451,18 +464,20 @@ function rollback(){
   rolling_back = true;
   logger.warn('ROLLING BACK TO ORIGINAL STATE...');
 
-  metadata_array.forEach(function(collection){
-    var objects = collection.getObjects();
-    objects.forEach(function(object){
-      var ark = object.metadata['dcterms.identifier'];
-      if (ark !== undefined && ark !== '' && ~ark.indexOf('ark:/')) {
-        delete_identifier(ark);
-      }
+  if (settings.mint_arks) {
+    metadata_array.forEach(function(collection){
+      var objects = collection.getObjects();
+      objects.forEach(function(object){
+        var ark = object.metadata['dcterms.identifier'];
+        if (ark !== undefined && ark !== '' && ~ark.indexOf('ark:/')) {
+          delete_identifier(ark);
+        }
+      });
     });
-  });
+  }
 
   logger.warn('Moving files back to "' + locationpath + '"');
-  var files = walk(locationpath + subdir + '/' + objectpath);
+  var files = walk(locationpath + subdir + '/objects');
 
   files.forEach(function(file){
     var filename = file.match(/[^\/\\]+$/)[0];

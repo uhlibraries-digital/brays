@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Brays</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/toggle-switch.css">
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
     <link rel="stylesheet" type="text/css" href="assets/css/logger.css">
     <link rel="stylesheet" type="text/css" href="assets/css/settings.css">
@@ -22,7 +23,6 @@
       });
     </script>
     <script type="text/javascript" src="assets/js/settings.js"></script>
-    <script type="text/javascript" src="assets/js/brays_model.js"></script>
     <script type="text/javascript" src="assets/js/reader.js"></script>
     <script type="text/javascript" src="assets/js/writer.js"></script>
     <script type="text/javascript" src="assets/js/logger.js"></script>
@@ -47,6 +47,13 @@
       <div id="settings" class="modal">
         <div class="modal-content">
           <form id="settings-form">
+            <div class="input-group">
+              <label for="mint_arks" class="switch-light switch-plex" onclick="toggleSwitch(this);">
+                <input type="checkbox" id="mint_arks">
+                <strong class="switch-label">Mint Arks</strong>
+                <span class="switch-options"><span>Off</span><span>On</span><a></a></span>
+              </label>
+            </div>
             <div class="input-group">
               <label for="mint_url">Mint URL</label>
               <input type="text" id="mint_url" name="mint_url" />

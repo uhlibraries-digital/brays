@@ -19,7 +19,7 @@ String.prototype.padLeft = function(l, c) {
 /**
  * Collection
  */
-var BCollection = function(title) {
+module.exports = BCollection = function(title) {
   this.title = title || '';
   this.boxes = [];
 }

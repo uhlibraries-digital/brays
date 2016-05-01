@@ -21,6 +21,10 @@ function saveSettings() {
     settings[$(this).attr("id")] = $(this).val();
   });
 
+  $('#settings form input[type=checkbox]').each(function(){
+    settings[$(this).attr("id")] = $(this).prop('checked');
+  });
+
   localStorage.setItem("settings", JSON.stringify(settings));
 
   closeSettings();
@@ -37,11 +41,21 @@ function closeSettings() {
 
 function displaySettings() {
   $.each(settings, function( key, value) {
-    $('#settings input[id=' + key + ']').val(value);
+    if (typeof value === "boolean") {
+      $('#settings input[id=' + key + ']').prop('checked', value);
+    }
+    else {
+      $('#settings input[id=' + key + ']').val(value);
+    }
   });
   $('#settings').animate({
     opacity: 1,
     top: "0px"
   });
   $('#settings').show();
+}
+
+function toggleSwitch(s) {
+  var checkbox = $(s).find('input [type=checkbox]');
+  checkbox.prop('checked', !checkbox.prop('checkbox'));
 }
