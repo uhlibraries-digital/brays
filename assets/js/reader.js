@@ -306,9 +306,9 @@ function build_am_csv_array() {
   // Build the headers for the AM output
   output_am_metadata = [[
     'parts',
-    'dc.title',
+    'dcterms.title',
     'dcterms.creator',
-    'dcterms.date',
+    'dc.date',
     'dcterms.description',
     'dcterms.publisher',
     'dcterms.isPartOf',
@@ -355,10 +355,10 @@ function build_am_row_array(item) {
   /*
    * Header columns
    *  parts
-   *  dc.title
+   *  dcterms.title
    *  dcterms.creator
-   *  dcterms.date
-   *  dc.description
+   *  dc.date
+   *  dcterms.description
    *  dcterms.publisher
    *  dcterms.isPartOf
    *  dc.rights
@@ -367,9 +367,9 @@ function build_am_row_array(item) {
    */
   return [
     item['parts'] || '',
-    item['dc.title'] || '',
+    item['dcterms.title'] || '',
     item['dcterms.creator'] || '',
-    item['dcterms.date'] || '',
+    item['dc.date'] || '',
     item['dcterms.description'] || '',
     item['dcterms.publisher'] || '',
     item['dcterms.isPartOf'] || '',
