@@ -5,3 +5,16 @@ languages:
   Python: false
 exclude_paths:
   - "assets/css/toggle-switch.css"
+engines:
+  csslint:
+    enabled: true
+    checks:
+      box-sizing:
+        enabled: false
+      gradients:
+        enabled: false
+  eslint:
+    enabled: true
+    checks:
+      complexity:
+        enabled: false
