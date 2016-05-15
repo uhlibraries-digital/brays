@@ -16,6 +16,19 @@ var process_counter = 0;
 var process_total = 0;
 var rolling_back = false;
 
+/**
+ * Pad to the left side of the string
+ *
+ * @param Int l The new string length
+ * @param String c The string to pad
+ * @return String
+ */
+with(String) { 
+  prototype.padLeft = function(l, c) {
+    return Array(l-this.length+1).join(c||" ")+this;
+  };
+}
+
 $(document).ready(function(){
 
   /** Prevent window from doing default drag and drop actions **/
@@ -48,7 +61,7 @@ $(document).ready(function(){
 
     logger.clear();
 
-    for (var i = 0, f = files[i]; i != files.length; ++i){
+    for (var i = 0, f = files[i]; i !== files.length; ++i){
       process_dnd_file(f);
     }
   });
@@ -65,7 +78,9 @@ function openFile() {
   function (filenames){
     if (filenames === undefined) return;
     for (var k in filenames) {
-      process_open_file(filenames[k]);
+      if ({}.hasOwnProperty.call(filenames, k)) {
+        process_open_file(filenames[k]);
+      }
     }
   });
 }
@@ -79,6 +94,7 @@ function openFile() {
 function build_metadata_array(worksheet) {
   var range = xlsx.utils.decode_range(worksheet['!ref']);
 
+  var collection;
   var collections = [];
   var headers = [];
   for ( var R = range.s.r; R <= range.e.r; ++R ) {
@@ -99,12 +115,12 @@ function build_metadata_array(worksheet) {
         if (collection !== undefined) {
           collections.push(collection);
         }
-        var collection = new BCollection(item["dc.title"]);
+        collection = new BCollection(item["dc.title"]);
       }
       else if ( item["BOX"] === 'x' ) {
         if ( collection === undefined ) {
           logger.warn("There doesn't seem to be a collection level. I'll keep going assuming there isn't one");
-          var collection = new BCollection();
+          collection = new BCollection();
         }
         collection.addBox(item["dc.title"]);
       }
@@ -160,7 +176,7 @@ function process_dnd_file(f) {
  */
 function process_open_file(filename) {
   try {
-    logger.log('Reading file: ' + f.path);
+    logger.log('Reading file: ' + filename);
     var workbook = xlsx.readFile(filename);
   }
   catch (err) {
@@ -229,7 +245,7 @@ function process_object_files(object) {
 
     var id = object.metadata['dcterms.identifier'];
     var id_parts = id.split('/');
-    var seq = (parseInt(object.index) + 1);
+    var seq = (parseInt(object.index, 10) + 1);
     object.parts += seq.toString().padLeft(4, "0") + ((id_parts[2] !== undefined) ? '_' + id_parts[2] : '');
     
     var part_types = ['ac', 'mm', 'pm'];
@@ -291,6 +307,9 @@ function output_am_csv_file() {
   mkdirp.sync(locationpath + subdir + '/log');
   
   stringify(out, function(err, output) {
+      if (err) {
+        console.log('Error in csv-strigify: ' + err.message)
+      }
       writer.write(output, metadatadir + '/metadata.csv');
       logger.log('Saved CSV file');
       logger.log('Done');
@@ -492,7 +511,11 @@ function rollback(){
   if ( subdir !== '' && subdir !== '/' && subdir !== "\\") {
     var ignestpath = locationpath + subdir;
     logger.log('Removing ingest directory "' + ignestpath + '"');
-    rimraf(ignestpath, function(err) { });
+    rimraf(ignestpath, function(err) {
+      if (err) {
+        console.log('Error in removing directory in rollback(): ' + err.message)
+      }
+    });
   }
 
   logger.warn('Done');

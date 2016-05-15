@@ -6,17 +6,6 @@
  */
 
 /**
- * Pad to the left side of the string
- *
- * @param Int l The new string length
- * @param String c The string to pad
- * @return String
- */
-String.prototype.padLeft = function(l, c) {
-  return Array(l-this.length+1).join(c||" ")+this;
-}
-
-/**
  * Collection
  */
 module.exports = BCollection = function(title) {

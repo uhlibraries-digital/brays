@@ -1,5 +1,7 @@
 # Brays
 
+[![Code Climate](https://codeclimate.com/github/uhlibraries-digital/brays/badges/gpa.svg)](https://codeclimate.com/github/uhlibraries-digital/brays)
+
 Is a Archivematica & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
 
 ## To Use

@@ -17,8 +17,8 @@
   padding-right: 8px;
   background-color: #323232;
   border-radius: 3px;
-  border-top-right: 0;
-  border-bottom-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 #settings .input-group {
