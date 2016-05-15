@@ -13,3 +13,8 @@ engines:
         enabled: false
       gradients:
         enabled: false
+  eslint:
+    enabled: true
+    checks:
+      complexity:
+        enabled: false
