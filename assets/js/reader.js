@@ -19,14 +19,13 @@ var rolling_back = false;
 /**
  * Pad to the left side of the string
  *
+ * @param String str The string being padded
  * @param Int l The new string length
- * @param String c The string to pad
+ * @param String c The character to pad
  * @return String
  */
-with(String) { 
-  prototype.padLeft = function(l, c) {
-    return Array(l-this.length+1).join(c||" ")+this;
-  };
+function padLeft(str, l, c) {
+  return Array(l-str.length+1).join(c||" ")+str;
 }
 
 $(document).ready(function(){
@@ -246,7 +245,7 @@ function process_object_files(object) {
     var id = object.metadata['dcterms.identifier'];
     var id_parts = id.split('/');
     var seq = (parseInt(object.index, 10) + 1);
-    object.parts += seq.toString().padLeft(4, "0") + ((id_parts[2] !== undefined) ? '_' + id_parts[2] : '');
+    object.parts += padLeft(seq.toString(), 4, "0") + ((id_parts[2] !== undefined) ? '_' + id_parts[2] : '');
     
     var part_types = ['ac', 'mm', 'pm'];
     object.files.forEach(function(file){
