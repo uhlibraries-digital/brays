@@ -1,9 +1,18 @@
 engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+  fixme:
+    enabled: true
   eslint:
     enabled: true
-    checks:
-      complexity:
-        enabled: false
+    exclude_fingerprints:
+    - 9cd7a1d1253c1ea0092c867f06e2f1df
+    - 0a6f0385cb22c05d55807dae089e1bfb
+    - 9e8e60a0ed2b553b93edaa732577f902
+    - cd0cf3dd5e8447180e6bc72923b12df9
   csslint:
     enabled: true
     checks:
