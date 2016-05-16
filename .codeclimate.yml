@@ -7,7 +7,7 @@ engines:
   fixme:
     enabled: true
   eslint:
-    enabled: true
+    enabled: false
     exclude_fingerprints:
     - 9cd7a1d1253c1ea0092c867f06e2f1df
     - 0a6f0385cb22c05d55807dae089e1bfb
