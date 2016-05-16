@@ -1,8 +1,8 @@
-exclude_paths:
-  - "assets/css/toggle-switch.css"
 engines:
   csslint:
     enabled: true
+    exclude_paths:
+      - "assets/css/toggle-switch.css"
     checks:
       box-sizing:
         enabled: false
