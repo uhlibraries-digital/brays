@@ -1,0 +1,13 @@
+engines:
+  eslint:
+    enabled: true
+    checks:
+      complexity:
+        enabled: false
+  csslint:
+    enabled: true
+    checks:
+      box-sizing:
+        enabled: false
+exclude_paths:
+- assets/css/toggle-switch.css
