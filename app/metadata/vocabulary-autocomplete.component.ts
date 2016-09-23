@@ -40,7 +40,7 @@ export class VocabularyAutocompleteComponent {
   }
 
   adjustDropdown(): void {
-    
+    // FINISH THIS!!!!
   }
 
 }

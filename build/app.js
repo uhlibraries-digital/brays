@@ -42024,6 +42024,10 @@ webpackJsonp([1,2],[
 	                let focusWindow = electron_1.remote.getCurrentWindow();
 	                focusWindow.destroy();
 	            });
+	        }, (err) => {
+	            dialog.showErrorBox('Unable to load MAP', err.message);
+	            let focusWindow = electron_1.remote.getCurrentWindow();
+	            focusWindow.destroy();
 	        });
 	        this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
 	    }
@@ -47214,13 +47218,16 @@ webpackJsonp([1,2],[
 	    }
 	    getFieldValue(name) {
 	        let field = this.getField(name);
-	        return (!field) ? null : field.value;
+	        if (!field) {
+	            return null;
+	        }
+	        field.joinValues();
+	        return field.value;
 	    }
 	    isGood() {
 	        let requiredMetadata = this.metadata.filter((metadata) => {
 	            return (metadata.map &&
-	                (metadata.map.obligation === 'required' ||
-	                    metadata.map.obligation === 'requiredWhenAvailable') &&
+	                metadata.map.obligation === 'required' &&
 	                metadata.value === '' &&
 	                !metadata.map.hidden);
 	        });
@@ -47238,8 +47245,21 @@ webpackJsonp([1,2],[
 	class Field {
 	    constructor(name, value, map) {
 	        this.name = name;
-	        this.value = value;
+	        this.value = value || '';
 	        this.map = map;
+	        this.values = this.splitValues();
+	    }
+	    splitValues() {
+	        if (!this.map || !this.map.repeatable) {
+	            return null;
+	        }
+	        return this.value.split(';').map((val) => { return { 'value': val }; });
+	    }
+	    joinValues() {
+	        if (!this.map || !this.map.repeatable) {
+	            return;
+	        }
+	        this.value = this.values.map((val) => { return val.value; }).join(';');
 	    }
 	}
 	exports.Field = Field;
@@ -47579,6 +47599,13 @@ webpackJsonp([1,2],[
 	        this.object.productionNotes = ' ';
 	        this.el.nativeElement.scrollTop = 0;
 	    }
+	    addRepeatable(values, index = 0) {
+	        values.splice(index + 1, 0, { 'value': '' });
+	    }
+	    removeRepeatable(values, index) {
+	        values.splice(index, 1);
+	        this.save();
+	    }
 	};
 	__decorate([
 	    core_1.Input(), 
@@ -47635,19 +47662,19 @@ webpackJsonp([1,2],[
 	        let color;
 	        switch (this.field.map.obligation) {
 	            case 'required':
-	            case 'requiredWhenAvailable':
 	                color = '#d92626';
 	                break;
 	            case 'recommended':
 	                color = '#e2c08d';
 	                break;
+	            case 'requiredWhenAvailable':
 	            case 'stronglyRecommended':
 	                color = '#f98728';
 	                break;
 	            default:
 	                color = null;
 	        }
-	        if (this.field.value !== '') {
+	        if (this.field.value.replace(';', '') !== '') {
 	            color = null;
 	        }
 	        this.renderer.setElementStyle(this.el.nativeElement, 'borderColor', color);
@@ -47740,11 +47767,6 @@ webpackJsonp([1,2],[
 	            let factory = this.resolver.resolveComponentFactory(vocabulary_autocomplete_component_1.VocabularyAutocompleteComponent);
 	            this.componentRef = this.viewContainerRef.createComponent(factory);
 	            this.dropdownVisible = true;
-	            let mdView = document.querySelector('metadata');
-	            mdView.addEventListener('scroll', () => {
-	                this.positionDropdown();
-	            });
-	            this.positionDropdown();
 	            this.selectedIndex = 0;
 	        }
 	    }
@@ -47752,10 +47774,6 @@ webpackJsonp([1,2],[
 	        if (this.componentRef) {
 	            this.componentRef.destroy();
 	        }
-	        let mdView = document.querySelector('metadata');
-	        mdView.removeEventListener('scroll', () => {
-	            this.positionDropdown();
-	        });
 	        this.vocabularyService.setList(null);
 	        this.dropdownVisible = false;
 	    }
@@ -47771,11 +47789,6 @@ webpackJsonp([1,2],[
 	        this.el.nativeElement.dispatchEvent(event);
 	        this.hideAutocomplete();
 	    }
-	    positionDropdown() {
-	        let element = this.componentRef.location.nativeElement;
-	        element.style.top = this.el.nativeElement.getBoundingClientRect().bottom;
-	        element.style.left = this.el.nativeElement.offsetLeft;
-	    }
 	    highlightText(value) {
 	        if (!value) {
 	            return;
@@ -47789,13 +47802,13 @@ webpackJsonp([1,2],[
 	            return;
 	        }
 	        this.filteredList = this.vocabList.filter((value) => {
-	            return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) === 0;
+	            return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) > -1;
 	        });
 	        if (this.ngModel === '') {
 	            this.filteredList = null;
 	            this.hideAutocomplete();
 	        }
-	        if (this.setFilteredList && !this.dropdownVisible) {
+	        if (this.filteredList && !this.dropdownVisible) {
 	            this.showAutocomplete();
 	        }
 	        this.vocabularyService.setList(this.filteredList);
@@ -47920,7 +47933,7 @@ webpackJsonp([1,2],[
 /* 683 */
 /***/ function(module, exports) {
 
-	module.exports = "metadata {\n  box-sizing: border-box;\n  width: 100%;\n  overflow: auto; }\n  metadata .metadata-content {\n    padding: 4.5em;\n    padding-top: 1em;\n    box-sizing: border-box; }\n    metadata .metadata-content .field {\n      margin-top: 1.5em; }\n      metadata .metadata-content .field label {\n        display: inline-block;\n        color: #9da5b4;\n        width: 100%;\n        margin-bottom: 5px; }\n        metadata .metadata-content .field label .label {\n          font-size: 1.2em;\n          cursor: pointer; }\n        metadata .metadata-content .field label .label:hover {\n          text-decoration: underline; }\n        metadata .metadata-content .field label .definition {\n          color: rgba(157, 165, 180, 0.6); }\n      metadata .metadata-content .field input[type=text], metadata .metadata-content .field textarea {\n        opacity: 1;\n        width: 100%;\n        font-size: 1.15em;\n        line-height: 2em;\n        max-height: none;\n        padding-left: 0.5em;\n        border-radius: 3px;\n        color: #d7dae0;\n        border: 1px solid #181a1f;\n        background-color: #1b1d23; }\n      metadata .metadata-content .field input::-webkit-input-placeholder {\n        opacity: 0.5; }\n      metadata .metadata-content .field textarea {\n        min-width: 100%;\n        max-width: 100%;\n        height: 150px;\n        line-height: 1.25em; }\n    metadata .metadata-content .image {\n      width: 100%;\n      height: 60%;\n      text-align: center; }\n      metadata .metadata-content .image img {\n        height: 100%;\n        max-width: 100%;\n        max-height: 100%; }\n    metadata .metadata-content .file {\n      width: 100%;\n      height: 60%;\n      text-align: center; }\n      metadata .metadata-content .file .icon {\n        font-size: 35em;\n        opacity: 0.5;\n        margin-bottom: 30px; }\n      metadata .metadata-content .file button {\n        font-size: 1.5em; }\n    metadata .metadata-content .technical {\n      margin-top: 20px; }\n      metadata .metadata-content .technical .information {\n        margin-bottom: 5px;\n        font-size: 1.5em; }\n        metadata .metadata-content .technical .information label {\n          width: 120px;\n          text-align: right;\n          display: inline-block;\n          margin-right: 15px; }\n  metadata .metadata-flag {\n    word-wrap: break-word;\n    box-sizing: border-box;\n    position: relative;\n    padding-left: 30px;\n    margin: 5px;\n    margin-bottom: 0;\n    font-size: 14px; }\n    metadata .metadata-flag .content {\n      color: #7a1200;\n      background-color: #ffe3b9;\n      border-radius: 0 3px 3px 0;\n      padding: 0.75em; }\n      metadata .metadata-flag .content .input {\n        color: inherit;\n        background-color: inherit;\n        border: none;\n        padding: 0;\n        width: 100%;\n        font-size: 14px;\n        outline: none;\n        resize: none; }\n    metadata .metadata-flag .close {\n      position: absolute;\n      top: 0;\n      right: 0;\n      width: 38px;\n      height: 28px;\n      padding-top: 10px;\n      font-size: 16px;\n      color: black;\n      opacity: 0.4;\n      text-align: center;\n      cursor: pointer; }\n    metadata .metadata-flag::before {\n      font-family: \"FontAwesome\";\n      content: '\\f024';\n      display: inline-block;\n      font-size: 16px;\n      color: #e2c08d;\n      background-color: #62543d;\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 30px;\n      height: 100%;\n      padding-top: 10px;\n      text-align: center;\n      border-radius: 3px 0 0 3px;\n      margin-right: 5px;\n      box-sizing: border-box; }\n  metadata .metadata-add-flag {\n    margin: 5px; }\n    metadata .metadata-add-flag .btn-default {\n      outline: none;\n      background-color: #62543d;\n      background-image: linear-gradient(#635947, #62543d);\n      font-size: 14px;\n      color: #e2c08d;\n      cursor: pointer;\n      padding: 4px 7px; }\n      metadata .metadata-add-flag .btn-default .fa {\n        font-size: 16px; }\n"
+	module.exports = "metadata {\n  box-sizing: border-box;\n  width: 100%;\n  overflow: auto; }\n  metadata .metadata-content {\n    padding: 4.5em;\n    padding-top: 1em;\n    box-sizing: border-box; }\n    metadata .metadata-content .field {\n      margin-top: 1.5em; }\n      metadata .metadata-content .field .group {\n        position: relative; }\n      metadata .metadata-content .field label {\n        display: inline-block;\n        color: #9da5b4;\n        width: 100%;\n        margin-bottom: 5px; }\n        metadata .metadata-content .field label .label {\n          font-size: 1.2em;\n          cursor: pointer; }\n        metadata .metadata-content .field label .label:hover {\n          text-decoration: underline; }\n        metadata .metadata-content .field label .definition {\n          color: rgba(157, 165, 180, 0.6); }\n      metadata .metadata-content .field input[type=text], metadata .metadata-content .field textarea {\n        opacity: 1;\n        width: 100%;\n        font-size: 1.15em;\n        line-height: 2em;\n        max-height: none;\n        padding-left: 0.5em;\n        border-radius: 3px;\n        color: #d7dae0;\n        border: 1px solid #181a1f;\n        background-color: #1b1d23; }\n      metadata .metadata-content .field input::-webkit-input-placeholder {\n        opacity: 0.5; }\n      metadata .metadata-content .field textarea {\n        min-width: 100%;\n        max-width: 100%;\n        height: 150px;\n        line-height: 1.25em; }\n      metadata .metadata-content .field .repeatables .value {\n        display: table;\n        position: relative;\n        width: 100%;\n        margin-bottom: 5px; }\n      metadata .metadata-content .field .repeatables input.with-btn {\n        border-right: none;\n        display: table-cell;\n        border-top-right-radius: 0;\n        border-bottom-right-radius: 0; }\n      metadata .metadata-content .field .repeatables .btn-input-default {\n        display: table-cell;\n        border: 1px solid #181a1f;\n        background-color: #528bff;\n        background-image: linear-gradient(#5c92ff, #528bff);\n        color: #ffffff;\n        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);\n        border-top-right-radius: 3px;\n        border-bottom-right-radius: 3px;\n        text-align: center;\n        vertical-align: middle;\n        cursor: pointer;\n        width: 40px; }\n      metadata .metadata-content .field .repeatables .btn-danger {\n        border-radius: 0;\n        border: 1px solid #181a1f;\n        background-color: #d92626;\n        background-image: linear-gradient(#da2f2f, #d92626); }\n    metadata .metadata-content .image {\n      width: 100%;\n      height: 60%;\n      text-align: center; }\n      metadata .metadata-content .image img {\n        height: 100%;\n        max-width: 100%;\n        max-height: 100%; }\n    metadata .metadata-content .file {\n      width: 100%;\n      height: 60%;\n      text-align: center; }\n      metadata .metadata-content .file .icon {\n        font-size: 35em;\n        opacity: 0.5;\n        margin-bottom: 30px; }\n      metadata .metadata-content .file button {\n        font-size: 1.5em; }\n    metadata .metadata-content .technical {\n      margin-top: 20px; }\n      metadata .metadata-content .technical .information {\n        margin-bottom: 5px;\n        font-size: 1.5em; }\n        metadata .metadata-content .technical .information label {\n          width: 120px;\n          text-align: right;\n          display: inline-block;\n          margin-right: 15px; }\n  metadata .metadata-flag {\n    word-wrap: break-word;\n    box-sizing: border-box;\n    position: relative;\n    padding-left: 30px;\n    margin: 5px;\n    margin-bottom: 0;\n    font-size: 14px; }\n    metadata .metadata-flag .content {\n      color: #7a1200;\n      background-color: #ffe3b9;\n      border-radius: 0 3px 3px 0;\n      padding: 0.75em; }\n      metadata .metadata-flag .content .input {\n        color: inherit;\n        background-color: inherit;\n        border: none;\n        padding: 0;\n        width: 100%;\n        font-size: 14px;\n        outline: none;\n        resize: none; }\n    metadata .metadata-flag .close {\n      position: absolute;\n      top: 0;\n      right: 0;\n      width: 38px;\n      height: 28px;\n      padding-top: 10px;\n      font-size: 16px;\n      color: black;\n      opacity: 0.4;\n      text-align: center;\n      cursor: pointer; }\n    metadata .metadata-flag::before {\n      font-family: \"FontAwesome\";\n      content: '\\f024';\n      display: inline-block;\n      font-size: 16px;\n      color: #e2c08d;\n      background-color: #62543d;\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 30px;\n      height: 100%;\n      padding-top: 10px;\n      text-align: center;\n      border-radius: 3px 0 0 3px;\n      margin-right: 5px;\n      box-sizing: border-box; }\n  metadata .metadata-add-flag {\n    margin: 5px; }\n    metadata .metadata-add-flag .btn-default {\n      outline: none;\n      background-color: #62543d;\n      background-image: linear-gradient(#635947, #62543d);\n      font-size: 14px;\n      color: #e2c08d;\n      cursor: pointer;\n      padding: 4px 7px; }\n      metadata .metadata-add-flag .btn-default .fa {\n        font-size: 16px; }\n"
 
 /***/ },
 /* 684 */

@@ -19,17 +19,16 @@ export class Object{
 
   getFieldValue(name: string): string {
     let field: Field = this.getField(name);
-    return (!field) ? null : field.value;
+    if (!field) { return null; }
+    field.joinValues();
+    return field.value;
   }
 
   isGood(): boolean {
     let requiredMetadata: Field[] = this.metadata.filter((metadata) => {
       return (
         metadata.map &&
-        (
-          metadata.map.obligation === 'required' ||
-          metadata.map.obligation === 'requiredWhenAvailable'
-        ) &&
+        metadata.map.obligation === 'required' &&
         metadata.value === '' &&
         !metadata.map.hidden);
     });

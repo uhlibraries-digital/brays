@@ -11,6 +11,10 @@ metadata {
     .field {
       margin-top: 1.5em;
 
+      .group {
+        position: relative;
+      }
+
       label {
         display: inline-block;
         color: #9da5b4;
@@ -49,6 +53,42 @@ metadata {
         height: 150px;
         line-height: 1.25em;
       }
+
+      .repeatables {
+        .value {
+          display: table;
+          position: relative;
+          width: 100%;
+          margin-bottom: 5px;
+        }
+        input.with-btn {
+          border-right: none;
+          display: table-cell;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+        .btn-input-default {
+          display: table-cell;
+          border: 1px solid #181a1f;
+          background-color: #528bff;
+          background-image: linear-gradient(#5c92ff, #528bff);
+          color: #ffffff;
+          text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          text-align: center;
+          vertical-align: middle;
+          cursor: pointer;
+          width: 40px;
+        }
+        .btn-danger {
+          border-radius: 0;
+          border: 1px solid #181a1f;
+          background-color: #d92626;
+          background-image: linear-gradient(#da2f2f, #d92626);
+        }
+      }
+
     }
 
     .image {

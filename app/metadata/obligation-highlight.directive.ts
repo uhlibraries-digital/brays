@@ -26,20 +26,20 @@ export class ObligationHighlight implements OnInit {
 
     switch(this.field.map.obligation) {
       case 'required':
-      case 'requiredWhenAvailable':
         color = '#d92626'; // red
         break;
       case 'recommended':
         color = '#e2c08d'; // yellow
         break;
+      case 'requiredWhenAvailable':
       case 'stronglyRecommended':
-        color = '#f98728';
+        color = '#f98728'; // orange
         break;
       default:
         color = null;
     }
 
-    if (this.field.value !== '') {
+    if (this.field.value.replace(';', '') !== '') {
       color = null;
     }
 

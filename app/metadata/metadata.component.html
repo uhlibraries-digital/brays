@@ -24,8 +24,9 @@
         <div class="label" (click)="openUrl(field.map.guidelines_uri)">{{field.map.label}}</div>
         <div class="definition">{{field.map.definition}}</div>
       </label>
+      <!-- Single Input value -->
       <input
-        *ngIf="field.map.input === 'single'"
+        *ngIf="field.map.input === 'single' && !field.map.repeatable"
         type="text"
         focusHighlight
         vocab-autocomplete
@@ -35,6 +36,7 @@
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
         (change)="save()" placeholder="{{field.name}}" />
+      <!-- MultiLine Input value -->
       <textarea
         *ngIf="field.map.input === 'multi'"
         focusHighlight
@@ -43,6 +45,34 @@
         (ngModelChange)="madeChanges(object)"
         (change)="save()" >
       </textarea>
+      <!-- Repeatable values -->
+      <div class="repeatables" *ngIf="field.map.repeatable">
+        <div class="value" *ngFor="let f of field.values; let i = index">
+          <input
+            type="text"
+            focusHighlight
+            vocab-autocomplete
+            [source-range]="field.map.range_label"
+            [source-range2]="field.map.range2_label"
+            [obligationHighlight]="field"
+            [(ngModel)]="f.value"
+            (ngModelChange)="madeChanges(object)"
+            (change)="save()"
+            placeholder="{{field.name}}"
+            class="with-btn" />
+          <span
+            *ngIf="i !== 0"
+            class="btn-input-default btn-danger"
+            (click)="removeRepeatable(field.values, i)">
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </span>
+          <span
+            class="btn-input-default"
+            (click)="addRepeatable(field.values, i)">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

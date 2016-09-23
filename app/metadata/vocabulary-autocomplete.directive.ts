@@ -85,13 +85,6 @@ export class VocabularyAutocomplete implements OnInit {
       let factory = this.resolver.resolveComponentFactory(VocabularyAutocompleteComponent);
       this.componentRef = this.viewContainerRef.createComponent(factory);
       this.dropdownVisible = true;
-
-      let mdView = document.querySelector('metadata');
-      mdView.addEventListener('scroll', () => {
-        this.positionDropdown();
-      });
-
-      this.positionDropdown();
       this.selectedIndex = 0;
     }
   }
@@ -100,11 +93,6 @@ export class VocabularyAutocomplete implements OnInit {
     if (this.componentRef) {
       this.componentRef.destroy();
     }
-
-    let mdView = document.querySelector('metadata');
-    mdView.removeEventListener('scroll', () => {
-      this.positionDropdown();
-    });
 
     this.vocabularyService.setList(null);
     this.dropdownVisible = false;
@@ -123,13 +111,6 @@ export class VocabularyAutocomplete implements OnInit {
     this.hideAutocomplete();
   }
 
-  positionDropdown() {
-    let element = this.componentRef.location.nativeElement;
-
-    element.style.top = this.el.nativeElement.getBoundingClientRect().bottom;
-    element.style.left = this.el.nativeElement.offsetLeft;
-  }
-
   highlightText(value: string) {
     if (!value) { return }
 
@@ -142,13 +123,14 @@ export class VocabularyAutocomplete implements OnInit {
     if (!this.getVocabList()) { return; }
 
     this.filteredList = this.vocabList.filter((value) => {
-      return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) === 0;
+      return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) > -1;
     });
+
     if (this.ngModel === '') {
       this.filteredList = null;
       this.hideAutocomplete();
     }
-    if (this.setFilteredList && !this.dropdownVisible) {
+    if (this.filteredList && !this.dropdownVisible) {
       this.showAutocomplete();
     }
     this.vocabularyService.setList(this.filteredList);

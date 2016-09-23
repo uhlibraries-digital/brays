@@ -71,4 +71,13 @@ export class MetadataComponent implements OnInit {
     this.el.nativeElement.scrollTop = 0;
   }
 
+  addRepeatable(values: any[], index: number = 0) {
+    values.splice(index + 1, 0, {'value': ''});
+  }
+
+  removeRepeatable(values: any[], index: number) {
+    values.splice(index, 1);
+    this.save();
+  }
+
 }

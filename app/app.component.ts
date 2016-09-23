@@ -35,6 +35,11 @@ export class AppComponent implements OnInit {
           let focusWindow = remote.getCurrentWindow();
           focusWindow.destroy();
         })
+      },
+      (err) => {
+        dialog.showErrorBox('Unable to load MAP', err.message);
+        let focusWindow = remote.getCurrentWindow();
+        focusWindow.destroy();
       }
     );
     this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
