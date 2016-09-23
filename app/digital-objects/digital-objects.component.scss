@@ -1,0 +1,119 @@
+digital-objects {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  position: relative;
+
+  &.scrollbars::-webkit-scrollbar-track {
+    background: #21252b;
+  }
+  &.scrollbars::-webkit-scrollbar-thumb {
+    border-color: #21252b;
+  }
+}
+
+.digital-objects-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -5px;
+  cursor: col-resize;
+  z-index: 3;
+  width: 8px;
+  -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.object {
+  &.status-good {
+    color: #73c990;
+  }
+  &.status-bad {
+    color: #ff6347;
+  }
+}
+
+.tree-view {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  flex-shrink: 0;
+  position: relative;
+  min-width: -webkit-min-content;
+
+  &.tree-list {
+    position: static;
+  }
+
+  &.files {
+    display: none;
+  }
+
+  .tree-item {
+    font-size: 1em;
+    padding-left: 17px;
+    box-sizing: border-box;
+
+    &.selected::before {
+      content: '';
+      background-color: #3a3f4b;
+      left:  0;
+      right: 0;
+      height: 2em;
+      position: absolute;
+    }
+
+    &.selected {
+      > .item {
+        .fa-chevron-right::before {
+          content: '\f078'
+        }
+      }
+      > .files {
+        display: block;
+      }
+    }
+
+    &.flag::before {
+      font-family: "FontAwesome";
+      content: '\f024';
+      left: 0;
+      right: 0;
+      height: 2em;
+      position: absolute;
+      padding-left: 10px;
+      line-height: 2em;
+      color: #e2c08d;
+    }
+
+    .fa {
+      width: 16px;
+      font-size: 16px;
+      line-height: 24px;
+
+      &.fa-chevron-right {
+        font-size: 8px;
+        top: -3px;
+        position: relative;
+      }
+
+    }
+
+    .file {
+      padding-left: 17px;
+    }
+
+    .item {
+      line-height: 2em;
+      max-height: 24px;
+      white-space: nowrap;
+      margin-right: 5px;
+      position: relative;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+<div class="metadata-flag" *ngIf="object && object.productionNotes !== ''">
+  <div class="content">
+    <textarea
+      #flagInput
+      autosize
+      class="input"
+      [(ngModel)]="object.productionNotes" (change)="save()">{{ object.productionNotes }}</textarea>
+  </div>
+  <div class="close" (click)="clearFlag()">
+    <i class="fa fa-times" aria-hidden="true"></i>
+  </div>
+</div>
+<div
+  class="metadata-add-flag"
+  *ngIf="object && object.productionNotes === ''">
+  <button class="btn-default" (click)="addFlag()"><i class="fa fa-flag-o" aria-hidden="true"></i> Flag Object</button>
+</div>
+<div class="metadata-content" *ngIf="object && !selectedFile">
+  <div class="field" *ngFor="let field of object.metadata | slice: 1">
+    <div class="group" *ngIf="!field.map.hidden">
+      <label>
+        <div class="label" (click)="openUrl(field.map.guidelines_uri)">{{field.map.label}}</div>
+        <div class="definition">{{field.map.definition}}</div>
+      </label>
+      <input
+        *ngIf="field.map.input === 'single'"
+        type="text"
+        focusHighlight
+        vocab-autocomplete
+        [source-range]="field.map.range_label"
+        [source-range2]="field.map.range2_label"
+        [obligationHighlight]="field"
+        [(ngModel)]="field.value"
+        (ngModelChange)="madeChanges(object)"
+        (change)="save()" placeholder="{{field.name}}" />
+      <textarea
+        *ngIf="field.map.input === 'multi'"
+        focusHighlight
+        [obligationHighlight]="field"
+        [(ngModel)]="field.value"
+        (ngModelChange)="madeChanges(object)"
+        (change)="save()" >
+      </textarea>
+    </div>
+  </div>
+</div>
+<div class="metadata-content" *ngIf="selectedFile">
+  <div class="image" *ngIf="isImage(selectedFile)">
+    <img src="{{selectedFile.path}}" title="{{selectedFile.name}}" />
+  </div>
+  <div class="file" *ngIf="!isImage(selectedFile)">
+    <div class="icon">
+      <i class="fa fa-file-text-o" aria-hidden="true"></i>
+    </div>
+    <button class="btn-default" (click)="openFile(selectedFile)">Open File</button>
+  </div>
+  <div class="technical">
+    <div class="information">
+      <label>Filename:</label><span class="value">{{selectedFile.name}}</span>
+    </div>
+    <div class="information">
+      <label>MIME type:</label><span class="value">{{selectedFile.mime}}</span>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 # Brays
 
-Is a Archivematica & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
+Is a Metadata editor & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
 
 ## To Use
 
@@ -11,36 +11,31 @@ git clone https://github.com/uhlibraries-digital/brays
 # Go to the repository
 cd brays
 # Install dependencies and run the app
-npm install && npm start
+npm install && npm run electron
 ```
 
-Brays takes in a XLSX file containing the metadata and location of files. You will need to place the metadata file and object files similar to this:
+### Packaging
 
-```
-mycollection/
-├── mycollection_metadata.xlsx
-├── object_001.jpg
-├── object_001_pm.tiff
-├── object_002.jpg
-└── object_002_pm.tiff
-```
+You can package Brays by running the following commands based on your target system:
 
-### Building
+* `npm run package:osx` will package for MacOS X x64
+* `npm run package:win` will package for Windows x64
+* `npm run package:linux` will package for Linux x64
+* `npm run package` will package all the above
 
-You can build Brays by running the following commands based on your target system:
+All packages are stored in the `bin` directory that gets created during the build process.
 
-* `npm run build:osx` will build for MacOS X x64
-* `npm run build:win` will build for Windows x64
-* `npm run build:linux` will build for Linux x64
-* `npm run build` will build all the above
+To learn more about distributing, please read the [Application Distribution](http://electron.atom.io/docs/tutorial/application-distribution/) documentation from Electron.
 
-All builds are stored in the `build` directory that gets created during the build process.
+### Development
 
-To learn more about distributing, please read the [Application Distribution](http://electron.atom.io/docs/v0.37.5/tutorial/application-distribution/) documentation from Electron.
+Brays is built with [Angular 2](https://angular.io/) using Typescript. The main application starts in `app/app.ts`.
 
-### Dependences
+To build the application you can run one of these commands:
 
-When 'Mint Arks' is enabled in settings Brays needs [Greens](https://github.com/uhlibraries-digital/greens) installed.
+* `npm run build` will build the application
+* `npm run election` will build the application and start electron
+* `npm run watch` will watch the directory for changes and re-build the application
 
 ## License
 
