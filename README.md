@@ -1,6 +1,6 @@
 # Brays
 
-Is a Metadata editor & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
+Metadata editor & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
 
 ## To Use
 
