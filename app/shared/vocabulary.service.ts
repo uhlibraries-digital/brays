@@ -7,7 +7,7 @@ export class VocabularyService {
   store: any;
   @Output() list = new EventEmitter();
   @Output() listIndex = new EventEmitter();
-  @Output() searchValue = new EventEmitter();
+  @Output() listValue = new EventEmitter();
 
   constructor(private http: Http) { }
 
@@ -62,8 +62,8 @@ export class VocabularyService {
     this.listIndex.emit(index);
   }
 
-  setSearchValue(value: string): void {
-    this.searchValue.emit(value);
+  setListValue(value: string): void {
+    this.listValue.emit(value);
   }
 
   private handleError(error: any): Promise<any> {

@@ -10,7 +10,7 @@ import { VocabularyService } from '../shared/vocabulary.service';
         <li
           *ngFor="let v of vocabList; let i = index;"
           [class.selected]="i === selectedIndex"
-          (click)="setSelection(i, $event)">
+          (click)="setSelection(v)">
           <span class="word">{{ v }}</span>
         </li>
       </ol>
@@ -27,12 +27,20 @@ export class VocabularyAutocompleteComponent {
   constructor(
     private vocabularyService: VocabularyService) {
     this.vocabularyService.list.subscribe(list => this.vocabList = list);
-    this.vocabularyService.listIndex.subscribe(index => this.selectedIndex = index);
+    this.vocabularyService.listIndex.subscribe(index => this.selectIndex(index));
   }
 
-  setSelection(index: number, e) { // STILL NEEDS LOTS OF WORK
-    this.vocabularyService.setListIndex(index);
-    console.log('setSelection: ' + index);
+  setSelection(item: string): void {
+    this.vocabularyService.setListValue(item);
+  }
+
+  selectIndex(index: number): void {
+    this.selectedIndex = index;
+    this.adjustDropdown();
+  }
+
+  adjustDropdown(): void {
+    
   }
 
 }

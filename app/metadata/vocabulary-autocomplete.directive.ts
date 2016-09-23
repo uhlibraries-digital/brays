@@ -1,4 +1,11 @@
-import { Directive, ElementRef, ViewContainerRef, ComponentFactoryResolver, ComponentRef, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Directive,
+         ElementRef,
+         ViewContainerRef,
+         ComponentFactoryResolver,
+         ComponentRef,
+         OnInit,
+         Input,
+         Output, EventEmitter, HostListener } from '@angular/core';
 import { VocabularyAutocompleteComponent } from './vocabulary-autocomplete.component';
 
 import { VocabularyService } from '../shared/vocabulary.service';
@@ -6,7 +13,7 @@ import { VocabularyService } from '../shared/vocabulary.service';
 @Directive({
   selector: "[vocab-autocomplete]"
 })
-export class VocabularyAutocomplete {
+export class VocabularyAutocomplete implements OnInit {
 
   componentRef: ComponentRef<VocabularyAutocompleteComponent>;
   vocabList: string[];
@@ -14,7 +21,6 @@ export class VocabularyAutocomplete {
 
   selectedIndex: number;
   filteredList: string[];
-  dropdownLag: number = 85;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -28,22 +34,20 @@ export class VocabularyAutocomplete {
 
   @Input() ngModel: string;
 
-  @Output() ngModelChange:EventEmitter<any> = new EventEmitter()
+  @Output() ngModelChange:EventEmitter<any> = new EventEmitter();
 
-  @HostListener('focus') onFocus() {
-    this.showAutocomplete();
-  }
-  @HostListener('focusout') onFocusout() {
-    this.hideAutocomplete(); // NEEDS WORK WHEN WANTING TO CLICK YOUR SELECTION
-  }
   @HostListener('keyup', ['$event']) onKeyup(e) {
-    if (!this.dropdownVisible) { return; }
+    //if (!this.dropdownVisible) { return; }
 
     if (e.code === 'Escape') {
       this.hideAutocomplete();
     }
-
-    this.setFilteredList();
+    else if (
+      (e.which <= 90 && e.which >= 48) ||
+      e.code === "Delete" ||
+      e.code === 'Backspace') {
+      this.setFilteredList();
+    }
   }
   @HostListener('keydown', ['$event']) onKeydown(e) {
     if (e.code === 'ArrowUp' && this.dropdownVisible) {
@@ -63,14 +67,20 @@ export class VocabularyAutocomplete {
     else if (e.code === 'Enter' && this.dropdownVisible) {
       this.setSelection();
     }
+    else if (e.code === 'Tab' && this.dropdownVisible) {
+      e.stopPropagation();
+      e.preventDefault();
+      this.hideAutocomplete();
+    }
+  }
+
+  ngOnInit(): void {
+    this.vocabularyService.listValue.subscribe((value) => {
+      this.setSelection(value);
+    });
   }
 
   showAutocomplete() {
-    this.vocabList = this.vocabularyService.getPrefLabelsByRange(this.range);
-    if (this.range2) {
-      this.vocabList = this.vocabList.concat(
-        this.vocabularyService.getPrefLabelsByRange(this.range2));
-    }
     if (this.vocabList) {
       let factory = this.resolver.resolveComponentFactory(VocabularyAutocompleteComponent);
       this.componentRef = this.viewContainerRef.createComponent(factory);
@@ -83,7 +93,6 @@ export class VocabularyAutocomplete {
 
       this.positionDropdown();
       this.selectedIndex = 0;
-      this.setFilteredList();
     }
   }
 
@@ -101,8 +110,12 @@ export class VocabularyAutocomplete {
     this.dropdownVisible = false;
   }
 
-  setSelection() {
-    let selectedText = this.filteredList[this.selectedIndex];
+  setSelection(selectedText: string = null) {
+    if (!this.dropdownVisible) { return; }
+
+    if (!selectedText) {
+      selectedText = this.filteredList[this.selectedIndex];
+    }
     this.ngModelChange.emit(selectedText);
     // Need to save the changes. Otherwise it won't do anything.
     let event = new Event('change');
@@ -126,18 +139,32 @@ export class VocabularyAutocomplete {
   }
 
   setFilteredList(): void {
+    if (!this.getVocabList()) { return; }
+
     this.filteredList = this.vocabList.filter((value) => {
       return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) === 0;
     });
-    //console.log(this.filteredList);
     if (this.ngModel === '') {
       this.filteredList = null;
+      this.hideAutocomplete();
+    }
+    if (this.setFilteredList && !this.dropdownVisible) {
+      this.showAutocomplete();
     }
     this.vocabularyService.setList(this.filteredList);
   }
 
-  ngOnDestroy() {
-    this.ngModelChange.unsubscribe();
+  private getVocabList(): string[] {
+    this.vocabList = this.vocabularyService.getPrefLabelsByRange(this.range);
+    if (this.range2) {
+      this.vocabList = this.vocabList.concat(
+        this.vocabularyService.getPrefLabelsByRange(this.range2));
+    }
+    return this.vocabList;
+  }
+
+  @HostListener('document:click') onClick() {
+    this.hideAutocomplete();
   }
 
 }

@@ -1,9 +1,3 @@
-/// <reference path="../../typings/electron.d.ts" />
-/// <reference path="../../typings/csv-parse.d.ts" />
-/// <reference path="../../typings/csv-stringify" />
-/// <reference path="../../typings/mime.d.ts" />
-/// <reference path="../../typings/object-hash.d.ts" />
-
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { remote } from 'electron';
 import { createReadStream } from 'fs';

@@ -23,6 +23,8 @@ export class MetadataComponent implements OnInit {
   @Input() object: Object;
   @Input() selectedFile: File;
 
+  showFlag: boolean = false;
+
   constructor(
     private objectService: ObjectService,
     private renderer: Renderer,
@@ -30,7 +32,10 @@ export class MetadataComponent implements OnInit {
   }
 
   ngOnInit():void {
-    this.objectService.objectChanged.subscribe(object => this.object = object);
+    this.objectService.objectChanged.subscribe((object) => {
+      this.showFlag = false;
+      this.object = object
+    });
     this.objectService.fileChanged.subscribe(file => this.selectedFile = file);
   }
 
@@ -56,10 +61,12 @@ export class MetadataComponent implements OnInit {
 
   clearFlag(): void {
     this.object.productionNotes = '';
+    this.showFlag = false;
     this.save();
   }
 
   addFlag(): void {
+    this.showFlag = true;
     this.object.productionNotes = ' ';
     this.el.nativeElement.scrollTop = 0;
   }

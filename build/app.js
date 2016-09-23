@@ -42002,6 +42002,8 @@ webpackJsonp([1,2],[
 	};
 	const core_1 = __webpack_require__(278);
 	const platform_browser_1 = __webpack_require__(461);
+	const electron_1 = __webpack_require__(657);
+	let { dialog } = electron_1.remote;
 	const map_service_1 = __webpack_require__(655);
 	const object_service_1 = __webpack_require__(656);
 	const vocabulary_service_1 = __webpack_require__(673);
@@ -42017,6 +42019,10 @@ webpackJsonp([1,2],[
 	        this.mapService.getMapFields('https://uhlibraries-digital.github.io/bcdams-map/api/map.json').then((fields) => {
 	            this.objectService.getObjects().then((objects) => {
 	                this.titleService.setTitle(objects[0].getFieldValue('dcterms.title'));
+	            }, (err) => {
+	                dialog.showErrorBox('Error opening project', err.message);
+	                let focusWindow = electron_1.remote.getCurrentWindow();
+	                focusWindow.destroy();
 	            });
 	        });
 	        this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
@@ -47278,7 +47284,7 @@ webpackJsonp([1,2],[
 	        this.http = http;
 	        this.list = new core_1.EventEmitter();
 	        this.listIndex = new core_1.EventEmitter();
-	        this.searchValue = new core_1.EventEmitter();
+	        this.listValue = new core_1.EventEmitter();
 	    }
 	    loadVocabulary(url) {
 	        this.http.get(url)
@@ -47329,8 +47335,8 @@ webpackJsonp([1,2],[
 	    setListIndex(index) {
 	        this.listIndex.emit(index);
 	    }
-	    setSearchValue(value) {
-	        this.searchValue.emit(value);
+	    setListValue(value) {
+	        this.listValue.emit(value);
 	    }
 	    handleError(error) {
 	        console.error('An error occured getting vocabulary', error);
@@ -47367,7 +47373,7 @@ webpackJsonp([1,2],[
 	__decorate([
 	    core_1.Output(), 
 	    __metadata('design:type', Object)
-	], VocabularyService.prototype, "searchValue", void 0);
+	], VocabularyService.prototype, "listValue", void 0);
 	VocabularyService = __decorate([
 	    core_1.Injectable(), 
 	    __metadata('design:paramtypes', [http_1.Http])
@@ -47539,9 +47545,13 @@ webpackJsonp([1,2],[
 	        this.objectService = objectService;
 	        this.renderer = renderer;
 	        this.el = el;
+	        this.showFlag = false;
 	    }
 	    ngOnInit() {
-	        this.objectService.objectChanged.subscribe(object => this.object = object);
+	        this.objectService.objectChanged.subscribe((object) => {
+	            this.showFlag = false;
+	            this.object = object;
+	        });
 	        this.objectService.fileChanged.subscribe(file => this.selectedFile = file);
 	    }
 	    madeChanges(object) {
@@ -47561,9 +47571,11 @@ webpackJsonp([1,2],[
 	    }
 	    clearFlag() {
 	        this.object.productionNotes = '';
+	        this.showFlag = false;
 	        this.save();
 	    }
 	    addFlag() {
+	        this.showFlag = true;
 	        this.object.productionNotes = ' ';
 	        this.el.nativeElement.scrollTop = 0;
 	    }
@@ -47684,23 +47696,17 @@ webpackJsonp([1,2],[
 	        this.viewContainerRef = viewContainerRef;
 	        this.vocabularyService = vocabularyService;
 	        this.dropdownVisible = false;
-	        this.dropdownLag = 85;
 	        this.ngModelChange = new core_1.EventEmitter();
 	    }
-	    onFocus() {
-	        this.showAutocomplete();
-	    }
-	    onFocusout() {
-	        this.hideAutocomplete();
-	    }
 	    onKeyup(e) {
-	        if (!this.dropdownVisible) {
-	            return;
-	        }
 	        if (e.code === 'Escape') {
 	            this.hideAutocomplete();
 	        }
-	        this.setFilteredList();
+	        else if ((e.which <= 90 && e.which >= 48) ||
+	            e.code === "Delete" ||
+	            e.code === 'Backspace') {
+	            this.setFilteredList();
+	        }
 	    }
 	    onKeydown(e) {
 	        if (e.code === 'ArrowUp' && this.dropdownVisible) {
@@ -47718,12 +47724,18 @@ webpackJsonp([1,2],[
 	        else if (e.code === 'Enter' && this.dropdownVisible) {
 	            this.setSelection();
 	        }
+	        else if (e.code === 'Tab' && this.dropdownVisible) {
+	            e.stopPropagation();
+	            e.preventDefault();
+	            this.hideAutocomplete();
+	        }
+	    }
+	    ngOnInit() {
+	        this.vocabularyService.listValue.subscribe((value) => {
+	            this.setSelection(value);
+	        });
 	    }
 	    showAutocomplete() {
-	        this.vocabList = this.vocabularyService.getPrefLabelsByRange(this.range);
-	        if (this.range2) {
-	            this.vocabList = this.vocabList.concat(this.vocabularyService.getPrefLabelsByRange(this.range2));
-	        }
 	        if (this.vocabList) {
 	            let factory = this.resolver.resolveComponentFactory(vocabulary_autocomplete_component_1.VocabularyAutocompleteComponent);
 	            this.componentRef = this.viewContainerRef.createComponent(factory);
@@ -47734,7 +47746,6 @@ webpackJsonp([1,2],[
 	            });
 	            this.positionDropdown();
 	            this.selectedIndex = 0;
-	            this.setFilteredList();
 	        }
 	    }
 	    hideAutocomplete() {
@@ -47748,8 +47759,13 @@ webpackJsonp([1,2],[
 	        this.vocabularyService.setList(null);
 	        this.dropdownVisible = false;
 	    }
-	    setSelection() {
-	        let selectedText = this.filteredList[this.selectedIndex];
+	    setSelection(selectedText = null) {
+	        if (!this.dropdownVisible) {
+	            return;
+	        }
+	        if (!selectedText) {
+	            selectedText = this.filteredList[this.selectedIndex];
+	        }
 	        this.ngModelChange.emit(selectedText);
 	        let event = new Event('change');
 	        this.el.nativeElement.dispatchEvent(event);
@@ -47769,16 +47785,30 @@ webpackJsonp([1,2],[
 	        this.ngModelChange.emit(txtValue);
 	    }
 	    setFilteredList() {
+	        if (!this.getVocabList()) {
+	            return;
+	        }
 	        this.filteredList = this.vocabList.filter((value) => {
 	            return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) === 0;
 	        });
 	        if (this.ngModel === '') {
 	            this.filteredList = null;
+	            this.hideAutocomplete();
+	        }
+	        if (this.setFilteredList && !this.dropdownVisible) {
+	            this.showAutocomplete();
 	        }
 	        this.vocabularyService.setList(this.filteredList);
 	    }
-	    ngOnDestroy() {
-	        this.ngModelChange.unsubscribe();
+	    getVocabList() {
+	        this.vocabList = this.vocabularyService.getPrefLabelsByRange(this.range);
+	        if (this.range2) {
+	            this.vocabList = this.vocabList.concat(this.vocabularyService.getPrefLabelsByRange(this.range2));
+	        }
+	        return this.vocabList;
+	    }
+	    onClick() {
+	        this.hideAutocomplete();
 	    }
 	};
 	__decorate([
@@ -47798,18 +47828,6 @@ webpackJsonp([1,2],[
 	    __metadata('design:type', core_1.EventEmitter)
 	], VocabularyAutocomplete.prototype, "ngModelChange", void 0);
 	__decorate([
-	    core_1.HostListener('focus'), 
-	    __metadata('design:type', Function), 
-	    __metadata('design:paramtypes', []), 
-	    __metadata('design:returntype', void 0)
-	], VocabularyAutocomplete.prototype, "onFocus", null);
-	__decorate([
-	    core_1.HostListener('focusout'), 
-	    __metadata('design:type', Function), 
-	    __metadata('design:paramtypes', []), 
-	    __metadata('design:returntype', void 0)
-	], VocabularyAutocomplete.prototype, "onFocusout", null);
-	__decorate([
 	    core_1.HostListener('keyup', ['$event']), 
 	    __metadata('design:type', Function), 
 	    __metadata('design:paramtypes', [Object]), 
@@ -47821,6 +47839,12 @@ webpackJsonp([1,2],[
 	    __metadata('design:paramtypes', [Object]), 
 	    __metadata('design:returntype', void 0)
 	], VocabularyAutocomplete.prototype, "onKeydown", null);
+	__decorate([
+	    core_1.HostListener('document:click'), 
+	    __metadata('design:type', Function), 
+	    __metadata('design:paramtypes', []), 
+	    __metadata('design:returntype', void 0)
+	], VocabularyAutocomplete.prototype, "onClick", null);
 	VocabularyAutocomplete = __decorate([
 	    core_1.Directive({
 	        selector: "[vocab-autocomplete]"
@@ -47851,11 +47875,16 @@ webpackJsonp([1,2],[
 	        this.vocabularyService = vocabularyService;
 	        this.selectedIndex = 0;
 	        this.vocabularyService.list.subscribe(list => this.vocabList = list);
-	        this.vocabularyService.listIndex.subscribe(index => this.selectedIndex = index);
+	        this.vocabularyService.listIndex.subscribe(index => this.selectIndex(index));
 	    }
-	    setSelection(index, e) {
-	        this.vocabularyService.setListIndex(index);
-	        console.log('setSelection: ' + index);
+	    setSelection(item) {
+	        this.vocabularyService.setListValue(item);
+	    }
+	    selectIndex(index) {
+	        this.selectedIndex = index;
+	        this.adjustDropdown();
+	    }
+	    adjustDropdown() {
 	    }
 	};
 	VocabularyAutocompleteComponent = __decorate([
@@ -47867,7 +47896,7 @@ webpackJsonp([1,2],[
 	        <li
 	          *ngFor="let v of vocabList; let i = index;"
 	          [class.selected]="i === selectedIndex"
-	          (click)="setSelection(i, $event)">
+	          (click)="setSelection(v)">
 	          <span class="word">{{ v }}</span>
 	        </li>
 	      </ol>

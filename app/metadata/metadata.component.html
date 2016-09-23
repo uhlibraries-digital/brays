@@ -1,4 +1,4 @@
-<div class="metadata-flag" *ngIf="object && object.productionNotes !== ''">
+<div class="metadata-flag" *ngIf="object && (object.productionNotes !== '' || showFlag)">
   <div class="content">
     <textarea
       #flagInput
@@ -12,8 +12,10 @@
 </div>
 <div
   class="metadata-add-flag"
-  *ngIf="object && object.productionNotes === ''">
-  <button class="btn-default" (click)="addFlag()"><i class="fa fa-flag-o" aria-hidden="true"></i> Flag Object</button>
+  *ngIf="object && object.productionNotes === '' && !showFlag">
+  <button class="btn-default" (click)="addFlag()">
+    <i class="fa fa-flag-o" aria-hidden="true"></i> Flag
+  </button>
 </div>
 <div class="metadata-content" *ngIf="object && !selectedFile">
   <div class="field" *ngFor="let field of object.metadata | slice: 1">
