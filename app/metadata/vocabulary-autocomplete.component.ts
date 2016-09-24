@@ -45,21 +45,24 @@ export class VocabularyAutocompleteComponent {
   adjustDropdown(): void {
     if (!this.el.nativeElement.querySelector('.selected')) { return; }
 
-    let oldSelectTop = this.el.nativeElement.querySelector('.selected').offsetTop || 0;
-    let selectHeight = this.el.nativeElement.querySelector('.selected').offsetHeight;
+    let selectedEl = this.el.nativeElement.querySelector('.selected');
+    let dropdownEl = this.el.nativeElement.querySelector('.autocomplete');
+
+    let oldSelectTop = selectedEl.offsetTop || 0;
+    let selectHeight = selectedEl.offsetHeight;
     let newSelectTop = oldSelectTop + selectHeight;
 
-    let dropdownScrollTop = this.el.nativeElement.querySelector('.autocomplete').scrollTop;
-    let dropdownHeight = this.el.nativeElement.querySelector('.autocomplete').offsetHeight;
+    let dropdownScrollTop = dropdownEl.scrollTop;
+    let dropdownHeight = dropdownEl.offsetHeight;
 
     if (this.oldSelectedIndex < this.selectedIndex) { // arrow down
       if (newSelectTop + selectHeight > dropdownHeight + dropdownScrollTop) {
-        this.el.nativeElement.querySelector('.autocomplete').scrollTop += selectHeight;
+        dropdownEl.scrollTop += selectHeight;
       }
     }
     else { // arrow up
       if (oldSelectTop - selectHeight < dropdownScrollTop) {
-        this.el.nativeElement.querySelector('.autocomplete').scrollTop -= selectHeight;
+        dropdownEl.scrollTop -= selectHeight;
       }
     }
   }
