@@ -46,6 +46,4 @@ export class ObligationHighlight implements OnInit {
     this.renderer.setElementStyle(this.el.nativeElement, 'borderColor', color);
   }
 
-
-
 }

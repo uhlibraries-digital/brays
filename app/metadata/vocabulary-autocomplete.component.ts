@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, ViewEncapsulation } from '@angular/core';
+import { Component, Input, HostListener, ViewEncapsulation, ElementRef } from '@angular/core';
 
 import { VocabularyService } from '../shared/vocabulary.service';
 
@@ -23,9 +23,11 @@ export class VocabularyAutocompleteComponent {
 
   vocabList: string[];
   selectedIndex: number = 0;
+  oldSelectedIndex: number = -1;
 
   constructor(
-    private vocabularyService: VocabularyService) {
+    private vocabularyService: VocabularyService,
+    private el: ElementRef) {
     this.vocabularyService.list.subscribe(list => this.vocabList = list);
     this.vocabularyService.listIndex.subscribe(index => this.selectIndex(index));
   }
@@ -35,12 +37,31 @@ export class VocabularyAutocompleteComponent {
   }
 
   selectIndex(index: number): void {
+    this.oldSelectedIndex = this.selectedIndex;
     this.selectedIndex = index;
     this.adjustDropdown();
   }
 
   adjustDropdown(): void {
-    // FINISH THIS!!!!
+    if (!this.el.nativeElement.querySelector('.selected')) { return; }
+
+    let oldSelectTop = this.el.nativeElement.querySelector('.selected').offsetTop || 0;
+    let selectHeight = this.el.nativeElement.querySelector('.selected').offsetHeight;
+    let newSelectTop = oldSelectTop + selectHeight;
+
+    let dropdownScrollTop = this.el.nativeElement.querySelector('.autocomplete').scrollTop;
+    let dropdownHeight = this.el.nativeElement.querySelector('.autocomplete').offsetHeight;
+
+    if (this.oldSelectedIndex < this.selectedIndex) { // arrow down
+      if (newSelectTop + selectHeight > dropdownHeight + dropdownScrollTop) {
+        this.el.nativeElement.querySelector('.autocomplete').scrollTop += selectHeight;
+      }
+    }
+    else { // arrow up
+      if (oldSelectTop - selectHeight < dropdownScrollTop) {
+        this.el.nativeElement.querySelector('.autocomplete').scrollTop -= selectHeight;
+      }
+    }
   }
 
 }

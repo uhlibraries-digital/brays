@@ -34048,8 +34048,8 @@ webpackJsonp([1,2],[
 	const digital_objects_component_1 = __webpack_require__(675);
 	const metadata_component_1 = __webpack_require__(678);
 	const vocabulary_autocomplete_component_1 = __webpack_require__(681);
-	const object_service_1 = __webpack_require__(656);
-	const map_service_1 = __webpack_require__(655);
+	const object_service_1 = __webpack_require__(657);
+	const map_service_1 = __webpack_require__(656);
 	const vocabulary_service_1 = __webpack_require__(673);
 	const focus_highlight_directive_1 = __webpack_require__(684);
 	const autosize_directive_1 = __webpack_require__(685);
@@ -42002,10 +42002,10 @@ webpackJsonp([1,2],[
 	};
 	const core_1 = __webpack_require__(278);
 	const platform_browser_1 = __webpack_require__(461);
-	const electron_1 = __webpack_require__(657);
+	const electron_1 = __webpack_require__(655);
 	let { dialog } = electron_1.remote;
-	const map_service_1 = __webpack_require__(655);
-	const object_service_1 = __webpack_require__(656);
+	const map_service_1 = __webpack_require__(656);
+	const object_service_1 = __webpack_require__(657);
 	const vocabulary_service_1 = __webpack_require__(673);
 	let AppComponent = class AppComponent {
 	    constructor(objectService, mapService, titleService, renderer, vocabularyService) {
@@ -42052,6 +42052,12 @@ webpackJsonp([1,2],[
 
 /***/ },
 /* 655 */
+/***/ function(module, exports) {
+
+	module.exports = require("electron");
+
+/***/ },
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -42093,7 +42099,7 @@ webpackJsonp([1,2],[
 
 
 /***/ },
-/* 656 */
+/* 657 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -42107,7 +42113,7 @@ webpackJsonp([1,2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	const core_1 = __webpack_require__(278);
-	const electron_1 = __webpack_require__(657);
+	const electron_1 = __webpack_require__(655);
 	const fs_1 = __webpack_require__(658);
 	const fs_2 = __webpack_require__(658);
 	const fs_3 = __webpack_require__(658);
@@ -42119,7 +42125,7 @@ webpackJsonp([1,2],[
 	const object_1 = __webpack_require__(670);
 	const field_1 = __webpack_require__(671);
 	const file_1 = __webpack_require__(672);
-	const map_service_1 = __webpack_require__(655);
+	const map_service_1 = __webpack_require__(656);
 	let { dialog } = electron_1.remote;
 	let ObjectService = class ObjectService {
 	    constructor(mapService) {
@@ -42291,12 +42297,6 @@ webpackJsonp([1,2],[
 	], ObjectService);
 	exports.ObjectService = ObjectService;
 
-
-/***/ },
-/* 657 */
-/***/ function(module, exports) {
-
-	module.exports = require("electron");
 
 /***/ },
 /* 658 */
@@ -47422,8 +47422,8 @@ webpackJsonp([1,2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	const core_1 = __webpack_require__(278);
-	const object_service_1 = __webpack_require__(656);
-	const map_service_1 = __webpack_require__(655);
+	const object_service_1 = __webpack_require__(657);
+	const map_service_1 = __webpack_require__(656);
 	const status_color_directive_1 = __webpack_require__(676);
 	let DigitalObjectsComponent = class DigitalObjectsComponent {
 	    constructor(objectService, mapService) {
@@ -47554,9 +47554,9 @@ webpackJsonp([1,2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	const core_1 = __webpack_require__(278);
-	const electron_1 = __webpack_require__(657);
+	const electron_1 = __webpack_require__(655);
 	const object_1 = __webpack_require__(670);
-	const object_service_1 = __webpack_require__(656);
+	const object_service_1 = __webpack_require__(657);
 	const file_1 = __webpack_require__(672);
 	const obligation_highlight_directive_1 = __webpack_require__(679);
 	const vocabulary_autocomplete_directive_1 = __webpack_require__(680);
@@ -47884,9 +47884,11 @@ webpackJsonp([1,2],[
 	const core_1 = __webpack_require__(278);
 	const vocabulary_service_1 = __webpack_require__(673);
 	let VocabularyAutocompleteComponent = class VocabularyAutocompleteComponent {
-	    constructor(vocabularyService) {
+	    constructor(vocabularyService, el) {
 	        this.vocabularyService = vocabularyService;
+	        this.el = el;
 	        this.selectedIndex = 0;
+	        this.oldSelectedIndex = -1;
 	        this.vocabularyService.list.subscribe(list => this.vocabList = list);
 	        this.vocabularyService.listIndex.subscribe(index => this.selectIndex(index));
 	    }
@@ -47894,10 +47896,29 @@ webpackJsonp([1,2],[
 	        this.vocabularyService.setListValue(item);
 	    }
 	    selectIndex(index) {
+	        this.oldSelectedIndex = this.selectedIndex;
 	        this.selectedIndex = index;
 	        this.adjustDropdown();
 	    }
 	    adjustDropdown() {
+	        if (!this.el.nativeElement.querySelector('.selected')) {
+	            return;
+	        }
+	        let oldSelectTop = this.el.nativeElement.querySelector('.selected').offsetTop || 0;
+	        let selectHeight = this.el.nativeElement.querySelector('.selected').offsetHeight;
+	        let newSelectTop = oldSelectTop + selectHeight;
+	        let dropdownScrollTop = this.el.nativeElement.querySelector('.autocomplete').scrollTop;
+	        let dropdownHeight = this.el.nativeElement.querySelector('.autocomplete').offsetHeight;
+	        if (this.oldSelectedIndex < this.selectedIndex) {
+	            if (newSelectTop + selectHeight > dropdownHeight + dropdownScrollTop) {
+	                this.el.nativeElement.querySelector('.autocomplete').scrollTop += selectHeight;
+	            }
+	        }
+	        else {
+	            if (oldSelectTop - selectHeight < dropdownScrollTop) {
+	                this.el.nativeElement.querySelector('.autocomplete').scrollTop -= selectHeight;
+	            }
+	        }
 	    }
 	};
 	VocabularyAutocompleteComponent = __decorate([
@@ -47918,7 +47939,7 @@ webpackJsonp([1,2],[
 	        styles: [__webpack_require__(682)],
 	        encapsulation: core_1.ViewEncapsulation.None,
 	    }), 
-	    __metadata('design:paramtypes', [vocabulary_service_1.VocabularyService])
+	    __metadata('design:paramtypes', [vocabulary_service_1.VocabularyService, core_1.ElementRef])
 	], VocabularyAutocompleteComponent);
 	exports.VocabularyAutocompleteComponent = VocabularyAutocompleteComponent;
 
