@@ -47554,6 +47554,7 @@ webpackJsonp([1,2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	const core_1 = __webpack_require__(278);
+	const platform_browser_1 = __webpack_require__(461);
 	const electron_1 = __webpack_require__(655);
 	const object_1 = __webpack_require__(670);
 	const object_service_1 = __webpack_require__(657);
@@ -47561,10 +47562,11 @@ webpackJsonp([1,2],[
 	const obligation_highlight_directive_1 = __webpack_require__(679);
 	const vocabulary_autocomplete_directive_1 = __webpack_require__(680);
 	let MetadataComponent = class MetadataComponent {
-	    constructor(objectService, renderer, el) {
+	    constructor(objectService, renderer, el, sanitizer) {
 	        this.objectService = objectService;
 	        this.renderer = renderer;
 	        this.el = el;
+	        this.sanitizer = sanitizer;
 	        this.showFlag = false;
 	    }
 	    ngOnInit() {
@@ -47582,6 +47584,9 @@ webpackJsonp([1,2],[
 	    }
 	    isImage(file) {
 	        return /^image\/*/.test(file.mime);
+	    }
+	    sanitizePath(file) {
+	        return this.sanitizer.bypassSecurityTrustUrl(file.path);
 	    }
 	    openFile(file) {
 	        electron_1.shell.openItem(file.path);
@@ -47626,7 +47631,7 @@ webpackJsonp([1,2],[
 	            vocabulary_autocomplete_directive_1.VocabularyAutocomplete
 	        ]
 	    }), 
-	    __metadata('design:paramtypes', [object_service_1.ObjectService, core_1.Renderer, core_1.ElementRef])
+	    __metadata('design:paramtypes', [object_service_1.ObjectService, core_1.Renderer, core_1.ElementRef, platform_browser_1.DomSanitizationService])
 	], MetadataComponent);
 	exports.MetadataComponent = MetadataComponent;
 

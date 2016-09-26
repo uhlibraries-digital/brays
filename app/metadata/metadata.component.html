@@ -78,7 +78,7 @@
 </div>
 <div class="metadata-content" *ngIf="selectedFile">
   <div class="image" *ngIf="isImage(selectedFile)">
-    <img src="{{selectedFile.path}}" title="{{selectedFile.name}}" />
+    <img [src]="imagePath(selectedFile)" title="{{selectedFile.name}}" />
   </div>
   <div class="file" *ngIf="!isImage(selectedFile)">
     <div class="icon">

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ElementRef, Renderer, ViewChild, ViewEncapsulation } from '@angular/core';
+import { DomSanitizationService } from '@angular/platform-browser';
 import { shell } from 'electron';
 
 import { Object } from '../shared/object';
@@ -28,7 +29,8 @@ export class MetadataComponent implements OnInit {
   constructor(
     private objectService: ObjectService,
     private renderer: Renderer,
-    private el: ElementRef) {
+    private el: ElementRef,
+    private sanitizer: DomSanitizationService) {
   }
 
   ngOnInit():void {
@@ -49,6 +51,10 @@ export class MetadataComponent implements OnInit {
 
   isImage(file: File): boolean {
     return /^image\/*/.test(file.mime);
+  }
+
+  imagePath(file: File): any {
+    return this.sanitizer.bypassSecurityTrustUrl(file.path);
   }
 
   openFile(file: File): void {
