@@ -15,11 +15,11 @@ export class Field{
 
   splitValues(): any[] {
     if (!this.map || !this.map.repeatable) { return null; }
-    return this.value.split(';').map((val) => { return {'value': val}; });
+    return this.value.split(';').map((val) => { return {'value': val.trim()}; });
   }
 
   joinValues() {
     if (!this.map || !this.map.repeatable) { return; }
-    this.value = this.values.map((val) => { return val.value; }).join(';');
+    this.value = this.values.map((val) => { return val.value; }).join('; ');
   }
 }
