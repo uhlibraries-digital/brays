@@ -22,10 +22,12 @@ metadata {
         margin-bottom: 5px;
         .label {
           font-size: 1.2em;
-          cursor: pointer;
-        }
-        .label:hover {
-          text-decoration: underline;
+          span {
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
         .definition {
           color: rgba(157, 165, 180, 0.6);
@@ -97,7 +99,7 @@ metadata {
       text-align: center;
 
       img {
-        height: 100%;
+        height: auto;
         max-width: 100%;
         max-height: 100%;
       }
@@ -117,6 +119,11 @@ metadata {
       button {
         font-size: 1.5em;
       }
+    }
+
+    .open-button {
+      margin-top: 20px;
+      text-align: center;
     }
 
     .technical {

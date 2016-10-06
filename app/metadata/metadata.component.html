@@ -21,7 +21,7 @@
   <div class="field" *ngFor="let field of object.metadata | slice: 1">
     <div class="group" *ngIf="!field.map.hidden">
       <label>
-        <div class="label" (click)="openUrl(field.map.guidelines_uri)">{{field.map.label}}</div>
+        <div class="label"><span (click)="openUrl(field.map.guidelines_uri)">{{field.map.label}}</span></div>
         <div class="definition">{{field.map.definition}}</div>
       </label>
       <!-- Single Input value -->
@@ -84,6 +84,8 @@
     <div class="icon">
       <i class="fa fa-file-text-o" aria-hidden="true"></i>
     </div>
+  </div>
+  <div class="open-button">
     <button class="btn-default" (click)="openFile(selectedFile)">Open File</button>
   </div>
   <div class="technical">
