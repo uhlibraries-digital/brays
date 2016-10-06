@@ -9,6 +9,12 @@ var menuTemplate = [
           const createWindow = require('./main.js');
           createWindow();
         }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'quit'
       }
     ]
   },
@@ -115,7 +121,11 @@ if (process.platform === 'darwin') {
         role: 'quit'
       }
     ]
-  })
+  });
+
+  // File menu
+  menuTemplate[1].submenu = menuTemplate[1].submenu.slice(0, -2);
+
   // Edit menu.
   menuTemplate[2].submenu.push(
     {
