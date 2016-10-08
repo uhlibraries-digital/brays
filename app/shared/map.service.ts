@@ -1,4 +1,4 @@
-import { Injectable }    from '@angular/core';
+import { Injectable, Output, EventEmitter }    from '@angular/core';
 import { Headers, Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
@@ -11,11 +11,18 @@ export class MapService {
 
   constructor(private http: Http) { }
 
-  getMapFields(url: string): Promise<MapField[]> {
+  loadMapFields(url: string): Promise<MapField[]> {
     return this.http.get(url)
       .toPromise()
-      .then(response => this.mapFields = response.json() as MapField[])
+      .then((response) => {
+        this.mapFields = response.json() as MapField[];
+        return this.mapFields;
+      })
       .catch(this.handleError);
+  }
+
+  getMapFields(): MapField[] {
+    return this.mapFields;
   }
 
   getMapFieldByFullName(name: string): MapField {

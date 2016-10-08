@@ -92,3 +92,19 @@ brays-panel {
   vertical-align: middle;
   cursor: pointer;
 }
+
+.btn-secondary {
+  color: #9da5b4;
+  text-shadow: none;
+  border: 1px solid #181a1f;
+  background-color: #353b45;
+  background-image: linear-gradient(#3a3f4b, #353b45);
+  border-radius: 3px;
+  height: initial;
+  padding: 0 0.8em;
+  font-size: 1em;
+  line-height: 2em;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+}

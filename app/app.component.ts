@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.mapService.getMapFields('https://uhlibraries-digital.github.io/bcdams-map/api/map.json').then(
+    this.mapService.loadMapFields('https://uhlibraries-digital.github.io/bcdams-map/api/map.json').then(
       (fields) => {
         this.objectService.getObjects().then((objects) => {
           this.titleService.setTitle(objects[0].getFieldValue('dcterms.title'));

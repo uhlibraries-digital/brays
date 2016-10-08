@@ -5,6 +5,7 @@ digital-objects {
   width: 100%;
   overflow: auto;
   position: relative;
+  -webkit-user-select: none;
 
   &.scrollbars::-webkit-scrollbar-track {
     background: #21252b;
@@ -58,7 +59,8 @@ digital-objects {
     padding-left: 17px;
     box-sizing: border-box;
 
-    &.selected::before {
+    &.selected::before,
+    &.multipleSelect::before {
       content: '';
       background-color: #3a3f4b;
       left:  0;

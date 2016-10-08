@@ -22,13 +22,16 @@ let {dialog} = remote;
 export class ObjectService {
   object: Object;
   objects: Object[];
+  selectedObjects: Object[];
 
   @Output() objectChanged = new EventEmitter();
   @Output() objectsLoaded = new EventEmitter();
   @Output() fileChanged = new EventEmitter();
+  @Output() selectedObjectsChanged = new EventEmitter();
 
   constructor(private mapService: MapService) {
     this.objects = [];
+    this.selectedObjects = [];
   }
 
   getObjects(): Promise<Object[]> {
@@ -51,6 +54,41 @@ export class ObjectService {
     }
     this.object = object;
     this.objectChanged.emit(object);
+  }
+
+  pushSelectedObject(object: Object): void {
+    this.selectedObjects.push(object);
+    this.selectedObjectsChanged.emit(this.selectedObjects);
+  }
+
+  clearSelectedObjects(): void {
+    this.selectedObjects = [];
+    this.selectedObjectsChanged.emit(this.selectedObjects);
+  }
+
+  removeSelectedObject(index: number): void {
+    this.selectedObjects.splice(index, 1);
+    this.selectedObjectsChanged.emit(this.selectedObjects);
+  }
+
+  getSelectedObjects(): Object[] {
+    return this.selectedObjects;
+  }
+
+  findIndexInSelectedObjects(object: Object): number {
+    return this.selectedObjects.findIndex((el) => {
+      return object === el;
+    });
+  }
+
+  autofill(fieldName: string, fieldValue: string): void {
+    if (this.selectedObjects.length > 0){
+      this.autofillObjects(this.selectedObjects, fieldName, fieldValue);
+      return;
+    }
+    if (this.object) {
+      this.autofillObjects(this.objects.slice(1), fieldName, fieldValue);
+    }
   }
 
   setFile(file: File) {
@@ -196,6 +234,14 @@ export class ObjectService {
         }
       }
     });
+  }
+
+  private autofillObjects(objects: Object[], fieldName: string, fieldValue: string): void {
+    for ( let object of objects ) {
+      let field = object.getField(fieldName);
+      field.setValue(fieldValue);
+      object.metadataHash = hash(object.metadata);
+    }
   }
 
 }

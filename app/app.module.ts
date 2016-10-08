@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { DigitalObjectsComponent } from './digital-objects/digital-objects.component';
 import { MetadataComponent } from './metadata/metadata.component';
 import { VocabularyAutocompleteComponent } from './metadata/vocabulary-autocomplete.component';
+import { AutofillComponent } from './digital-objects/autofill.component';
 
 import { ObjectService } from './shared/object.service';
 import { MapService } from './shared/map.service';
@@ -26,11 +27,13 @@ import { Autosize } from './shared/autosize.directive';
     DigitalObjectsComponent,
     MetadataComponent,
     VocabularyAutocompleteComponent,
+    AutofillComponent,
     FocusHighlight,
     Autosize
   ],
   entryComponents: [
-    VocabularyAutocompleteComponent
+    VocabularyAutocompleteComponent,
+    AutofillComponent
   ],
   providers: [
     ObjectService,

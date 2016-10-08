@@ -8,6 +8,7 @@
         *ngFor="let object of objects | slice:1"
         class="tree-item"
         [class.selected]="object === selectedObject"
+        [class.multipleSelect]="inSelectedObjects(object)"
         [class.flag]="object.productionNotes !== ''"
         (click)="onSelect(object, $event)" >
         <div class="item object" [status-color]="object">

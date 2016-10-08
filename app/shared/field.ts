@@ -13,6 +13,11 @@ export class Field{
     this.values = this.splitValues();
   }
 
+  setValue(value: string) {
+    this.value = value;
+    this.values = this.splitValues();
+  }
+
   splitValues(): any[] {
     if (!this.map || !this.map.repeatable) { return null; }
     return this.value.split(';').map((val) => { return {'value': val.trim()}; });
