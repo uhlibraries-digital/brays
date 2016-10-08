@@ -1,10 +1,16 @@
 <div class="autofill modal">
   <div class="content">
     <label>Select field and input value to auto fill</label>
-    <select class="fields" [(ngModel)]="selectedField" (change)="focusInputField()">
+    <select class="fields" [ngModel]="selectedField" (ngModelChange)="onFieldChange($event)">
       <option *ngFor="let field of fields" [value]="field.namespace + '.' + field.name">{{ field.label }}</option>
     </select>
-    <input focusHighlight class="field-input" type="text" [(ngModel)]="fieldValue" #fieldInput />
+    <input
+      focusHighlight
+      vocab-autocomplete
+      [source-range]="selectedRange"
+      class="field-input"
+      type="text"
+      [(ngModel)]="fieldValue" #fieldInput />
     <div class="buttons">
       <button class="btn-secondary" (click)="close()">Cancel</button>
       <button class="btn-default" (click)="autofillObjects()">Ok</button>

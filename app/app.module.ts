@@ -6,7 +6,7 @@ import { HttpModule }    from '@angular/http';
 import { AppComponent } from './app.component';
 import { DigitalObjectsComponent } from './digital-objects/digital-objects.component';
 import { MetadataComponent } from './metadata/metadata.component';
-import { VocabularyAutocompleteComponent } from './metadata/vocabulary-autocomplete.component';
+import { VocabularyAutocompleteComponent } from './shared/vocabulary-autocomplete.component';
 import { AutofillComponent } from './digital-objects/autofill.component';
 
 import { ObjectService } from './shared/object.service';

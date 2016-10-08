@@ -1,5 +1,7 @@
 import { OnInit, Component, HostListener, Output, EventEmitter, ViewChild } from '@angular/core';
 
+import { VocabularyAutocomplete } from '../shared/vocabulary-autocomplete.directive';
+
 import { ObjectService } from '../shared/object.service';
 import { MapService } from '../shared/map.service';
 
@@ -8,11 +10,15 @@ import { MapField } from '../shared/map-field';
 @Component({
   selector: 'autofill',
   templateUrl: './digital-objects/autofill.component.html',
-  styles: [ require ('./autofill.component.scss') ]
+  styles: [ require ('./autofill.component.scss') ],
+  directives: [
+    VocabularyAutocomplete
+  ]
 })
 export class AutofillComponent implements OnInit {
 
   selectedField: string;
+  selectedRange: string;
   fieldValue: string;
   fields: MapField[];
 
@@ -39,6 +45,14 @@ export class AutofillComponent implements OnInit {
       this.objectService.saveObjects();
     }
     this.close();
+  }
+
+  onFieldChange(value: string): void {
+    this.focusInputField();
+
+    this.selectedField = value;
+    let field = this.map.getMapFieldByFullName(this.selectedField);
+    this.selectedRange = field.range_label;
   }
 
   close(): void {

@@ -7,7 +7,7 @@ import { ObjectService } from '../shared/object.service';
 import { File } from '../shared/file';
 
 import { ObligationHighlight } from './obligation-highlight.directive';
-import { VocabularyAutocomplete } from './vocabulary-autocomplete.directive';
+import { VocabularyAutocomplete } from '../shared/vocabulary-autocomplete.directive';
 
 @Component({
   selector: 'metadata',
