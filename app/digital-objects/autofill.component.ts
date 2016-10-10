@@ -18,7 +18,7 @@ import { MapField } from '../shared/map-field';
 export class AutofillComponent implements OnInit {
 
   selectedField: string;
-  selectedRange: string;
+  selectedRange: any;
   fieldValue: string;
   fields: MapField[];
 
@@ -52,7 +52,7 @@ export class AutofillComponent implements OnInit {
 
     this.selectedField = value;
     let field = this.map.getMapFieldByFullName(this.selectedField);
-    this.selectedRange = field.range_label;
+    this.selectedRange = field.range;
   }
 
   close(): void {

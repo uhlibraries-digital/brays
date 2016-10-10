@@ -30,8 +30,7 @@
         type="text"
         focusHighlight
         vocab-autocomplete
-        [source-range]="field.map.range_label"
-        [source-range2]="field.map.range2_label"
+        [range]="field.map.range"
         [obligationHighlight]="field"
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
@@ -52,8 +51,7 @@
             type="text"
             focusHighlight
             vocab-autocomplete
-            [source-range]="field.map.range_label"
-            [source-range2]="field.map.range2_label"
+            [range]="field.map.range"
             [obligationHighlight]="field"
             [(ngModel)]="f.value"
             (ngModelChange)="madeChanges(object)"

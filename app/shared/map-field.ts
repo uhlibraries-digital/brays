@@ -7,10 +7,7 @@ export class MapField {
   same_as: string;
   definition: string;
   obligation: string;
-  range_label: string;
-  range_uri: string;
-  range2_label: string;
-  range2_uri: string;
+  range: any;
   required: string;
   repeatable: boolean;
   hidden: boolean;

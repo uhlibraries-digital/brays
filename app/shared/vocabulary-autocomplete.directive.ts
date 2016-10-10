@@ -29,8 +29,7 @@ export class VocabularyAutocomplete implements OnInit {
     private vocabularyService: VocabularyService) {
   }
 
-  @Input('source-range')  range: string;
-  @Input('source-range2') range2: string;
+  @Input('range')  range: any;
 
   @Input() ngModel: string;
 
@@ -137,11 +136,20 @@ export class VocabularyAutocomplete implements OnInit {
   }
 
   private getVocabList(): string[] {
-    this.vocabList = this.vocabularyService.getPrefLabelsByRange(this.range);
-    if (this.range2) {
-      this.vocabList = this.vocabList.concat(
-        this.vocabularyService.getPrefLabelsByRange(this.range2));
+    this.vocabList = [];
+    if (!this.range) {
+      return [];
     }
+    for (let range of this.range) {
+      if (range.uri) {
+        this.vocabList = this.vocabList.concat(
+          this.vocabularyService.getPrefLabelsByRange(String(range.label)));
+      }
+      if (range.values) {
+        this.vocabList = this.vocabList.concat(range.values);
+      }
+    }
+
     return this.vocabList;
   }
 
