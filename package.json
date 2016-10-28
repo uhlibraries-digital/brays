@@ -1,7 +1,7 @@
 {
   "name": "brays",
   "productName": "Brays",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Metadata editor & Hydra-in-a-Box ingest utility",
   "main": "app/main.js",
   "appBundleId": "Brays.app",

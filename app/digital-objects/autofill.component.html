@@ -9,8 +9,33 @@
       vocab-autocomplete
       [range]="selectedRange"
       class="field-input"
+      [class.hide]="fieldRepeatable"
       type="text"
       [(ngModel)]="fieldValue" #fieldInput />
+    <div
+      class="repeatables"
+      [class.hide]="!fieldRepeatable">
+      <div class="value" *ngFor="let f of fieldValues; let i = index">
+        <input
+          type="text"
+          focusHighlight
+          vocab-autocomplete
+          [range]="selectedRange"
+          [(ngModel)]="f.value"
+          class="with-btn" #fieldRepeatableInput />
+        <span
+          *ngIf="i !== 0"
+          class="btn-input-default btn-danger"
+          (click)="removeRepeatable(i)">
+          <i class="fa fa-minus" aria-hidden="true"></i>
+        </span>
+        <span
+          class="btn-input-default"
+          (click)="addRepeatable(i)">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
     <div class="buttons">
       <button class="btn-secondary" (click)="close()">Cancel</button>
       <button class="btn-default" (click)="autofillObjects()">Ok</button>
