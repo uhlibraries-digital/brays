@@ -25,23 +25,17 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.mapService.loadMapFields('https://uhlibraries-digital.github.io/bcdams-map/api/map.json').then(
-      (fields) => {
-        this.objectService.getObjects().then((objects) => {
-          this.titleService.setTitle(objects[0].getFieldValue('dcterms.title'));
-        },
-        (err) => {
-          dialog.showErrorBox('Error opening project', err.message);
-          let focusWindow = remote.getCurrentWindow();
-          focusWindow.destroy();
-        })
-      },
-      (err) => {
-        dialog.showErrorBox('Unable to load MAP', err.message);
-        let focusWindow = remote.getCurrentWindow();
-        focusWindow.destroy();
-      }
-    );
+    this.mapService.loadMapFields('https://uhlibraries-digital.github.io/bcdams-map/api/map.json')
+      .then((fields) => {
+        this.objectService.getObjects()
+          .then((objects) => {
+            this.titleService.setTitle(objects[0].getFieldValue('dcterms.title'));
+          }).catch((err) => {
+            this.handleError('Error opening project', err);
+          });
+      }).catch((err) => {
+        this.handleError('Unable to load MAP', err);
+      });
     this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
   }
 
@@ -49,6 +43,12 @@ export class AppComponent implements OnInit {
     if (!event.x || !event.y) return;
     let panel = document.querySelector('.objects-panel');
     this.renderer.setElementStyle(panel, 'width', event.x + 'px' );
+  }
+
+  private handleError(msg: string, err: any): void {
+    dialog.showErrorBox(msg, err.message);
+    let focusWindow = remote.getCurrentWindow();
+    focusWindow.destroy();
   }
 
 }

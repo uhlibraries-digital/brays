@@ -39,11 +39,9 @@ export class VocabularyService {
     if ('narrow' in node) {
       for( let label in node['narrow'] ) {
         let n: any = node['narrow'][label];
+        list.push(n.prefLabel);
         if ('narrow' in n) {
           list = list.concat(this.getPrefLabelsByNode(n));
-        }
-        else {
-          list.push(n.prefLabel);
         }
       }
     }
