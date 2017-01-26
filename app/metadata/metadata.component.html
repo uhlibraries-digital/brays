@@ -21,7 +21,7 @@
   <div class="field" *ngFor="let field of object.metadata | slice: 1">
     <div class="group" *ngIf="!field.map.hidden">
       <label>
-        <div class="label"><span (click)="openUrl(field.map.guidelines_uri)">{{field.map.label}}</span></div>
+        <div class="label"><span (click)="openUrl(field.map.guidelines)">{{field.map.label}}</span></div>
         <div class="definition">{{field.map.definition}}</div>
       </label>
       <!-- Single Input value -->
