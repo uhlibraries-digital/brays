@@ -3,12 +3,12 @@ export class MapField {
   namespace: string;
   name: string;
   uri: string;
-  guidelines_uri: string;
-  same_as: string;
+  guidelines: string;
+  source: string;
   definition: string;
   obligation: string;
   range: any;
-  required: string;
   repeatable: boolean;
-  hidden: boolean;
+  input: string;
+  visible: boolean;
 }
