@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.mapService.loadMapFields('https://vocab.lib.uh.edu/bcdams-map/api/map.json')
+    this.mapService.loadMapFields('https://vocab.lib.uh.edu/bcdams-map/api/brays.json')
       .then((fields) => {
         this.objectService.getObjects()
           .then((objects) => {

@@ -19,7 +19,7 @@
 </div>
 <div class="metadata-content" *ngIf="object && !selectedFile">
   <div class="field" *ngFor="let field of object.metadata | slice: 1">
-    <div class="group" *ngIf="!field.map.hidden">
+    <div class="group" *ngIf="field.map.visible">
       <label>
         <div class="label"><span (click)="openUrl(field.map.guidelines)">{{field.map.label}}</span></div>
         <div class="definition">{{field.map.definition}}</div>
