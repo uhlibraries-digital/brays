@@ -30,7 +30,7 @@ export class Object{
         metadata.map &&
         metadata.map.obligation === 'required' &&
         metadata.value === '' &&
-        !metadata.map.hidden);
+        metadata.map.visible);
     });
 
     return requiredMetadata.length === 0;
