@@ -6,6 +6,9 @@ export class File{
   name: string;
   mime: string;
   metadata: Field[];
+  tiffProcessing: boolean;
+  tiffImagePreviewPath: string;
+  tiffError: boolean;
 
   getField(name: string): Field {
     return this.metadata.find(field => name === field.name);

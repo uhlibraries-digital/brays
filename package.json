@@ -1,8 +1,8 @@
 {
   "name": "brays",
   "productName": "Brays",
-  "version": "0.4.3",
-  "description": "Metadata editor & Hydra-in-a-Box ingest utility",
+  "version": "0.5.0",
+  "description": "Metadata editor utility",
   "main": "app/main.js",
   "appBundleId": "Brays.app",
   "helperBundleId": "Brays.app.helper",
@@ -52,6 +52,7 @@
     "rxjs": "5.0.0-beta.6",
     "sass-loader": "^4.0.0",
     "systemjs": "0.19.27",
+    "tiff-to-png": "1.0.5",
     "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
     "typings": "^1.0.4",

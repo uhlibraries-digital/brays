@@ -103,6 +103,17 @@ metadata {
         max-width: 100%;
         max-height: 100%;
       }
+
+      .tiff-processing-icon::before {
+        font-family: "FontAwesome";
+        content: '\f021';
+        font-size: 25em;
+      }
+      .tiff-processing-error::before {
+        font-family: "FontAwesome";
+        content: '\f1c5';
+        font-size: 25em;
+      }
     }
 
     .file {

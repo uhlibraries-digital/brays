@@ -76,7 +76,9 @@
 </div>
 <div class="metadata-content" *ngIf="selectedFile">
   <div class="image" *ngIf="isImage(selectedFile)">
-    <img [src]="imagePath(selectedFile)" title="{{selectedFile.name}}" />
+    <img *ngIf="!isTiff(selectedFile)" [src]="imagePath(selectedFile)" title="{{selectedFile.name}}" />
+    <img *ngIf="isTiff(selectedFile)" [src]="convertTiff(selectedFile)" title="{{selectedFile.name}}" />
+    <div *ngIf="isTiff(selectedFile)" [class]="tiffProcessingClass(selectedFile)"></div>
   </div>
   <div class="file" *ngIf="!isImage(selectedFile)">
     <div class="icon">

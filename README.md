@@ -1,6 +1,23 @@
 # Brays
 
-Metadata editor & Hydra-in-a-Box ingest utility built on [Electron](http://electron.atom.io/).
+Metadata editor utility built on [Electron](http://electron.atom.io/).
+
+## Optional
+
+### ImageMagick
+In order the view tiff files in the viewer, you must have [ImageMagick](https://www.imagemagick.org/index.php) installed.
+
+[Download ImageMagick for Windows](https://www.imagemagick.org/script/binary-releases.php#windows)
+
+MacOS via [Homebrew](https://brew.sh/):
+```
+brew install imagemagick
+```
+
+Linux (Debian):
+```
+apt-get install imagemagick
+```
 
 ## To Use
 
