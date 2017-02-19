@@ -122,15 +122,18 @@ export class VocabularyAutocomplete implements OnInit {
     if (!this.getVocabList()) { return; }
 
     this.filteredList = this.vocabList.filter((value) => {
-      return value.toLowerCase().indexOf(this.ngModel.toLowerCase()) > -1;
+      return value && value.toLowerCase().indexOf(this.ngModel.toLowerCase()) > -1;
     });
 
     if (this.ngModel === '') {
       this.filteredList = null;
       this.hideAutocomplete();
     }
-    if (this.filteredList && !this.dropdownVisible) {
+    if (this.filteredList && this.filteredList.length > 0 && !this.dropdownVisible) {
       this.showAutocomplete();
+    }
+    else if (this.filteredList && this.filteredList.length === 0 && this.dropdownVisible) {
+      this.hideAutocomplete();
     }
     this.vocabularyService.setList(this.filteredList);
   }
