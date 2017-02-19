@@ -23,6 +23,7 @@ textarea, input {
   &.focused {
     outline: none;
     border-color: #528bff !important;
+    border-width: 1px;
     box-shadow: 0 0 0 1px #528bff;
     background-color: #1b1b23;
   }

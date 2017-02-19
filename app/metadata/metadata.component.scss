@@ -45,6 +45,21 @@ metadata {
         color: #d7dae0;
         border: 1px solid #181a1f;
         background-color: #1b1d23;
+
+        &.validation-bad {
+          border: 2px solid #d92626;
+          background-image: url('images/exclamation-triangle.png');
+          background-repeat: no-repeat;
+          background-size: auto 20px;
+          background-position: right 10px center;
+/*
+          &::-webkit-input-placeholder::before {
+            font-family: 'FontAwesome';
+            content: '\f071';
+            color: #d92626;
+          }
+*/
+        }
       }
       input::-webkit-input-placeholder{
         opacity: 0.5;

@@ -12,6 +12,7 @@ import { File } from '../shared/file';
 
 import { ObligationHighlight } from './obligation-highlight.directive';
 import { VocabularyAutocomplete } from '../shared/vocabulary-autocomplete.directive';
+import { Validate } from './validate.directive';
 
 @Component({
   selector: 'metadata',
@@ -20,7 +21,8 @@ import { VocabularyAutocomplete } from '../shared/vocabulary-autocomplete.direct
   encapsulation: ViewEncapsulation.None,
   directives:[
     ObligationHighlight,
-    VocabularyAutocomplete
+    VocabularyAutocomplete,
+    Validate
   ]
 })
 

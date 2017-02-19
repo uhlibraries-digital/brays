@@ -32,6 +32,8 @@
         vocab-autocomplete
         [range]="field.map.range"
         [obligationHighlight]="field"
+        [validate]="field"
+        checkValue="{{field.value}}"
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
         (change)="save()" placeholder="{{field.name}}" />
@@ -40,6 +42,8 @@
         *ngIf="field.map.input === 'multi'"
         focusHighlight
         [obligationHighlight]="field"
+        [validate]="field"
+        checkValue="{{field.value}}"
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
         (change)="save()" >
@@ -53,6 +57,8 @@
             vocab-autocomplete
             [range]="field.map.range"
             [obligationHighlight]="field"
+            [validate]="field"
+            checkValue="{{f.value}}"
             [(ngModel)]="f.value"
             (ngModelChange)="madeChanges(object)"
             (change)="save()"

@@ -1,3 +1,5 @@
+const edtf = require('edtf');
+
 import { Field } from './field';
 import { File } from './file';
 
@@ -33,7 +35,21 @@ export class Object{
         metadata.map.visible);
     });
 
-    return requiredMetadata.length === 0;
+    let goodDate = true; // Assume a good date incase field is empty
+    let date = this.getFieldValue('dc.date');
+    if (date && date !== '') {
+      try {
+        let dates = date.split('; ');
+        for (let d of dates) {
+          edtf.parse(d);
+        }
+      }
+      catch(e) {
+        goodDate = false;
+      }
+    }
+
+    return requiredMetadata.length === 0 && goodDate;
   }
 
 }
