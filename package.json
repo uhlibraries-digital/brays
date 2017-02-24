@@ -36,6 +36,7 @@
     "babel": "^5.8.29",
     "csv": "^1.1.0",
     "core-js": "^2.4.0",
+    "dateformat": "^2.0.0",
     "denodeify": "^1.2.1",
     "edtf": "^2.1.0",
     "electron-packager": "^7.3.0",

@@ -41,7 +41,7 @@ export class Object{
       try {
         let dates = date.split('; ');
         for (let d of dates) {
-          edtf.parse(d);
+          let test = edtf(d);
         }
       }
       catch(e) {

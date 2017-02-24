@@ -1,0 +1,10 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/types/typed-dateformat/80dfd72ec9a4383a279a6f419a660059502038e5/typings.json",
+    "raw": "registry:npm/dateformat#1.0.0+20160723033700",
+    "main": "lib/dateformat.d.ts",
+    "version": "1.0.0",
+    "name": "dateformat"
+  }
+}

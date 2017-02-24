@@ -75,6 +75,7 @@
             (click)="addRepeatable(field.values, i)">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </span>
+          <edtf-humanize *ngIf="field.name === 'dc.date'" date="{{f.value}}"></edtf-humanize>
         </div>
       </div>
     </div>

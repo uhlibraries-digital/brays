@@ -49,7 +49,7 @@ export class Validate implements OnInit {
     }
 
     try {
-      edtf.parse(this.checkValue);
+      let test = edtf(this.checkValue);
     }
     catch(e) {
       this.error = 'Invalid Extended Date Time Format (EDTF)';
