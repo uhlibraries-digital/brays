@@ -21,7 +21,7 @@ export class EdtfHumanizer {
   decade_suffix = "s"
   century_suffix = "s"
 
-  unspecified_digit_substitute = "x"
+  unspecified_digit_substitute = "0"
 
   interval_connector = " to "
   interval_unspecified_suffix = "s"
@@ -122,7 +122,8 @@ export class EdtfHumanizer {
   private unspecifiedYear(date: any): string {
     let d = this.datePrecision(date);
     if (date.unspecified && date.unspecified.is('year')) {
-      let yearSub = this.yearPrecision(date).replace(/X/g, this.unspecified_digit_substitute);
+      let yearSub = this.yearPrecision(date).replace(/X/g,
+        this.unspecified_digit_substitute) + this.interval_unspecified_suffix;
       d = d.replace(date.year, yearSub);
     }
     return d;
