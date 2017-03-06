@@ -8,13 +8,14 @@ import * as dateformat from 'dateformat';
 const edtf = require('edtf');
 
 export class EdtfHumanizer {
-  date: any;
+
+  private date: any;
 
   day_precision_format = "UTC:mmmm d, yyyy"
   month_precision_format = "UTC:mmmm yyyy"
   year_precision_format = "UTC:yyyy"
 
-  approximate_date_prefix = "circa "
+  approximate_date_prefix = "approximately "
 
   uncertain_date_suffix = "?"
 
@@ -22,8 +23,9 @@ export class EdtfHumanizer {
   century_suffix = "s"
 
   unspecified_digit_substitute = "0"
+  unspecified_digit_suffix = "s"
 
-  interval_connector = " to "
+  interval_connector = "-"
   interval_unspecified_suffix = "s"
 
   set_dates_connector = ", "
@@ -36,11 +38,27 @@ export class EdtfHumanizer {
 
   unknown = "unknown"
 
+  seasons = {
+    21: 'Spring',
+    22: 'Summer',
+    23: 'Fall',
+    24: 'Winter'
+  }
+
   constructor(date: string) {
-    this.date = edtf(date);
+    try {
+      this.date = edtf(date);
+    }
+    catch(e) {
+      this.date = null;
+    }
   }
 
   humanize(): string {
+    if (!this.date) {
+      return this.unknown;
+    }
+
     switch(this.date.type) {
       case 'Century':
         return this.humanizeCentury();
@@ -58,22 +76,22 @@ export class EdtfHumanizer {
         return this.humanizeSet();
     }
 
-    return '';
+    return this.unknown;
   }
 
-  humanizeCentury(): string {
+  private humanizeCentury(): string {
     return this.date.year + this.century_suffix;
   }
 
-  humanizeDecade(): string {
+  private humanizeDecade(): string {
     return this.date.decade + this.decade_suffix;
   }
 
-  humanizeDate(): string {
+  private humanizeDate(): string {
     return this.approximate(this.date) + this.simpleDate(this.date);
   }
 
-  humanizeInterval(): string {
+  private humanizeInterval(): string {
     return this.approximate(this.date.lower) +
       this.simpleDate(this.date.lower) +
       this.interval_connector +
@@ -81,20 +99,13 @@ export class EdtfHumanizer {
       this.simpleDate(this.date.upper);
   }
 
-  humanizeSeason(): string {
-    let seasons = {
-      21: 'Spring',
-      22: 'Summer',
-      23: 'Autumn',
-      24: 'Winter'
-    }
-
+  private humanizeSeason(): string {
     return this.approximate(this.date) +
-      seasons[this.date.season] + ' ' +
+      this.seasons[this.date.season] + ' ' +
       this.date.year + this.uncertain(this.date);
   }
 
-  humanizeList(): string {
+  private humanizeList(): string {
     let dates = this.iterateDate(this.date);
     if (dates.length === 2) {
       return dates.join(this.list_two_dates_connector);
@@ -103,7 +114,7 @@ export class EdtfHumanizer {
       .replace(/,\s([^,]+)$/, this.list_last_date_connector + '$1');
   }
 
-  humanizeSet(): string {
+  private humanizeSet(): string {
     let dates = this.iterateDate(this.date);
     let earlier = (this.date.earlier) ? 'Before ' : '';
     let later = (this.date.later) ? ' and later' : '';
@@ -123,7 +134,7 @@ export class EdtfHumanizer {
     let d = this.datePrecision(date);
     if (date.unspecified && date.unspecified.is('year')) {
       let yearSub = this.yearPrecision(date).replace(/X/g,
-        this.unspecified_digit_substitute) + this.interval_unspecified_suffix;
+        this.unspecified_digit_substitute) + this.unspecified_digit_suffix;
       d = d.replace(date.year, yearSub);
     }
     return d;

@@ -8,6 +8,7 @@ Metadata editor utility built on [Electron](http://electron.atom.io/).
 In order the view tiff files in the viewer, you must have [ImageMagick](https://www.imagemagick.org/index.php) installed.
 
 [Download ImageMagick for Windows](https://www.imagemagick.org/script/binary-releases.php#windows)
+and ensure you have "Install legacy utilities" checked during install.
 
 MacOS via [Homebrew](https://brew.sh/):
 ```
