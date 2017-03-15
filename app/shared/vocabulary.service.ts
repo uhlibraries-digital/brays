@@ -17,8 +17,6 @@ export class VocabularyService {
       .then((response) => {
         let data: string = response.text();
         this.store = this.parse(data);
-        console.log('vocabulary list:');
-        console.log(this.store);
       })
       .catch(this.handleError);
   }

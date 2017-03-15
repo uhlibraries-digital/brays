@@ -14,6 +14,7 @@ import { Object } from './object';
 import { Field } from './field';
 import { File } from './file';
 import { MapService } from './map.service';
+import { LoggerService } from './logger.service';
 import { MapField } from './map-field';
 
 let {dialog} = remote;
@@ -28,15 +29,24 @@ export class ObjectService {
   @Output() objectsLoaded = new EventEmitter();
   @Output() fileChanged = new EventEmitter();
   @Output() selectedObjectsChanged = new EventEmitter();
+  @Output() loading = new EventEmitter();
 
-  constructor(private mapService: MapService) {
+  constructor(
+    private mapService: MapService,
+    private log: LoggerService) {
     this.objects = [];
     this.selectedObjects = [];
   }
 
   getObjects(): Promise<Object[]> {
+    this.loading.emit(true);
     let filename = this.openFile();
-    return this.readFile(filename).then(value => value as Object[]);
+    return this.readFile(filename)
+      .then(value => value as Object[])
+      .catch((err) => {
+        this.log.error(err);
+        this.loading.emit(false);
+      });
   }
 
   getObject(id: number): Object {
@@ -91,24 +101,49 @@ export class ObjectService {
     }
   }
 
-  setFile(file: File) {
+  setFile(file: File): void {
     this.fileChanged.emit(file);
   }
 
-  saveObjects(){
-    if (this.objects.length === 0) return;
+  saveObjects(): void {
+    if (this.objects.length === 0) {
+      console.log('No objects to save');
+      return;
+    }
+    this.loading.emit(true);
 
-    let csv: any[] = [];
     let headers: string[] = this.objects[0].headers;
 
-    csv.push(headers.concat('productionNotes'));
+    let csv = stringify({delimiter: ','});
+    let data = '';
+    csv.on('readable', () => {
+      let row: any;
+      while (row = csv.read()) {
+        data += row;
+      }
+    });
+    csv.on('finish', () => {
+      writeFile(this.objects[0].input_file, data, (err) => {
+        this.loading.emit(false);
+        if (err) {
+          this.log.error(err.message);
+          throw err;
+        }
+      });
+    });
+    csv.on('error', (err) => {
+      this.loading.emit(false);
+      this.log.error(err.message);
+    });
+
+    csv.write(headers.concat('productionNotes'));
     for( let object of this.objects ){
       let csvrow: string[] = [];
       for ( let header of headers ) {
         csvrow.push(object.getFieldValue(header));
       }
       csvrow.push(object.productionNotes);
-      csv.push(csvrow);
+      csv.write(csvrow);
 
       for ( let file of object.files ) {
         csvrow = [];
@@ -116,18 +151,13 @@ export class ObjectService {
           csvrow.push(file.getFieldValue(header));
         }
         csvrow.push(''); // need blank column for productionNotes
-        csv.push(csvrow);
+        csv.write(csvrow);
       }
     }
-
-    if (csv.length === 0) {
-      console.error('CSV array is blank!!!!');
-      return;
-    }
-    this.writeFile(this.objects[0].input_file, csv);
+    csv.end();
   }
 
-  openFile() {
+  openFile(): any {
     return dialog.showOpenDialog({
       filters: [
         { name: 'CSV', extensions: ['csv'] }
@@ -136,11 +166,15 @@ export class ObjectService {
     });
   }
 
-  processFile(err, data, filename) {
+  processFile(err, data, filename): any[] {
     if (err) {
+      this.loading.emit(false);
+      this.log.error(err.message);
       throw err;
     }
     if (data === undefined) {
+      this.loading.emit(false);
+      this.log.error('There is no data in the file');
       throw Error('There is no data in the file');
     }
 
@@ -171,38 +205,43 @@ export class ObjectService {
         }
       }
 
-      if (statSync(base_path + data[i][0]).isDirectory()) {
-        let object: Object = new Object();
-        object.id = i;
-        object.headers = newheader;
-        object.base_path = base_path;
-        object.input_file = filename;
-        object.path = base_path + data[i][0];
-        object.title = basename(data[i][0]) + ': ' + title;
-        object.metadata = metadata;
-        object.metadataHash = hash(metadata);
-        object.files = [];
-        object.productionNotes = data[i][pnIndex] || '';
+      try {
+        if (statSync(base_path + data[i][0]).isDirectory()) {
+          let object: Object = new Object();
+          object.id = i;
+          object.headers = newheader;
+          object.base_path = base_path;
+          object.input_file = filename;
+          object.path = base_path + data[i][0];
+          object.title = basename(data[i][0]) + ': ' + title;
+          object.metadata = metadata;
+          object.metadataHash = hash(metadata);
+          object.files = [];
+          object.productionNotes = data[i][pnIndex] || '';
 
-        this.objects.push(object);
+          this.objects.push(object);
+        }
+        else {
+          let file: File = new File();
+          file.id = i;
+          file.path = base_path + data[i][0];
+          file.mime = lookup(base_path + data[i][0]);
+          file.metadata = metadata;
+          file.name = basename(data[i][0]);
+
+          let object: Object = this.objects.pop();
+          object.files.push(file);
+          this.objects.push(object);
+        }
       }
-      else {
-        let file: File = new File();
-        file.id = i;
-        file.path = base_path + data[i][0];
-        file.mime = lookup(base_path + data[i][0]);
-        file.metadata = metadata;
-        file.name = basename(data[i][0]);
-
-        let object: Object = this.objects.pop();
-        object.files.push(file);
-        this.objects.push(object);
+      catch(e) {
+        console.error(e);
+        this.log.error("No such file or directory '" + base_path + data[i][0] + "'");
       }
     }
 
-    console.log('csv (objects):');
-    console.log(this.objects);
     this.objectsLoaded.emit(this.objects);
+    this.loading.emit(false);
     return this.objects;
   }
 
@@ -221,17 +260,6 @@ export class ObjectService {
             }
           )
         );
-      }
-    });
-  }
-
-  writeFile(filename, data) {
-    stringify(data, (err, output) => {
-      if (err) throw err;
-      writeFile(filename, output), (err) => {
-        if (err) {
-          dialog.showErrorBox('Error saving file', err.message);
-        }
       }
     });
   }
