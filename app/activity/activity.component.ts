@@ -4,11 +4,11 @@ import { ObjectService } from '../shared/object.service';
 
 
 @Component({
-  selector: 'loading',
-  templateUrl: './loading/loading.component.html',
-  styles: [ require('./loading.component.scss') ]
+  selector: 'activity',
+  templateUrl: './activity/activity.component.html',
+  styles: [ require('./activity.component.scss') ]
 })
-export class LoadingComponent implements OnInit {
+export class ActivityComponent implements OnInit {
 
   private loading: Boolean = false;
 

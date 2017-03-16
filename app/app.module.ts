@@ -5,7 +5,7 @@ import { HttpModule }    from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { NotificationComponent } from './notification/notification.component';
-import { LoadingComponent } from './loading/loading.component';
+import { ActivityComponent } from './activity/activity.component';
 import { DigitalObjectsComponent } from './digital-objects/digital-objects.component';
 import { MetadataComponent } from './metadata/metadata.component';
 import { EdtfHumanizeComponent } from './metadata/edtf-humanize.component';
@@ -29,7 +29,7 @@ import { Autosize } from './shared/autosize.directive';
   declarations: [
     AppComponent,
     NotificationComponent,
-    LoadingComponent,
+    ActivityComponent,
     DigitalObjectsComponent,
     MetadataComponent,
     EdtfHumanizeComponent,
