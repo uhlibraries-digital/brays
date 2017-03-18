@@ -35,6 +35,7 @@ metadata {
       }
 
       input[type=text], textarea{
+        position: relative;
         opacity: 1;
         width: 100%;
         font-size: 1.15em;
@@ -53,6 +54,28 @@ metadata {
           background-size: auto 20px;
           background-position: right 10px center;
         }
+
+        &.obligation-recommened,
+        &.obligation-required,
+        &.obligation-strong {
+          background-repeat: no-repeat;
+          background-size: auto 20px;
+          background-position: right 10px center;
+        }
+
+        &.obligation-recommened {
+          border-color: #e2c08d;
+          background-image: url('images/recommened.png');
+        }
+        &.obligation-required {
+          border-color: #d92626;
+          background-image: url('images/required.png');
+        }
+        &.obligation-strong {
+          border-color: #f98728;
+          background-image: url('images/strongly-recommended.png');
+        }
+
       }
       input::-webkit-input-placeholder{
         opacity: 0.5;

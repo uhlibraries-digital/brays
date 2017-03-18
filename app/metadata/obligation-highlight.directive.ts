@@ -22,28 +22,29 @@ export class ObligationHighlight implements OnInit {
   }
 
   highlight(): void {
-    let color: string;
+    let oclass: string;
+    let remove: boolean = false;
 
     switch(this.field.map.obligation) {
       case 'required':
-        color = '#d92626'; // red
+        oclass = 'obligation-required';
         break;
       case 'recommended':
-        color = '#e2c08d'; // yellow
+        oclass = 'obligation-recommened';
         break;
       case 'requiredWhenAvailable':
       case 'stronglyRecommended':
-        color = '#f98728'; // orange
+        oclass = 'obligation-strong';
         break;
       default:
-        color = null;
+        oclass = '';
     }
 
-    if (this.field.value.replace(';', '') !== '') {
-      color = null;
-    }
+    remove = this.field.value.replace('; ', '') === '';
 
-    this.renderer.setElementStyle(this.el.nativeElement, 'borderColor', color);
+    if (oclass) {
+      this.renderer.setElementClass(this.el.nativeElement, oclass, remove);
+    }
   }
 
 }
