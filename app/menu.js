@@ -14,6 +14,21 @@ var menuTemplate = [
         type: 'separator'
       },
       {
+        label: 'Export To',
+        submenu: [
+          {
+            label: 'CONTENTdm Package...',
+            click(item, focusedWindow) {
+              if (!focusedWindow) return;
+              focusedWindow.webContents.send('export-cdm');
+            }
+          }
+        ]
+      },
+      {
+        type: 'separator'
+      },
+      {
         role: 'quit'
       }
     ]

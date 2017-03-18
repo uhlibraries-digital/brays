@@ -5,3 +5,4 @@
 /// <reference path="globals/object-hash/index.d.ts" />
 /// <reference path="modules/dateformat/index.d.ts" />
 /// <reference path="modules/mime/index.d.ts" />
+/// <reference path="modules/mkdirp/index.d.ts" />

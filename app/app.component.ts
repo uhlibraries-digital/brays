@@ -1,12 +1,13 @@
 import { Component, Renderer, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
-import { remote } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 let {dialog} = remote;
 
 import { MapService } from './shared/map.service';
 import { ObjectService } from './shared/object.service';
 import { VocabularyService } from './shared/vocabulary.service';
+import { ContentDmService } from './shared/content-dm.service';
 
 @Component({
   selector: 'app',
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit {
     private mapService: MapService,
     private titleService: Title,
     private renderer: Renderer,
-    private vocabularyService: VocabularyService) {
+    private vocabularyService: VocabularyService,
+    private cdm: ContentDmService) {
   }
 
   ngOnInit() {
@@ -37,6 +39,10 @@ export class AppComponent implements OnInit {
         this.handleError('Unable to load MAP', err);
       });
     this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
+
+    ipcRenderer.on('export-cdm', (event, arg) => {
+      this.cdm.export();
+    });
   }
 
   onDragHandle(event: MouseEvent) {

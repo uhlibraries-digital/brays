@@ -16,6 +16,7 @@ import { ObjectService } from './shared/object.service';
 import { LoggerService } from './shared/logger.service';
 import { MapService } from './shared/map.service';
 import { VocabularyService } from './shared/vocabulary.service';
+import { ContentDmService } from './shared/content-dm.service';
 
 import { FocusHighlight } from './shared/focus-highlight.directive';
 import { Autosize } from './shared/autosize.directive';
@@ -47,7 +48,8 @@ import { Autosize } from './shared/autosize.directive';
     ObjectService,
     MapService,
     Title,
-    VocabularyService
+    VocabularyService,
+    ContentDmService
   ],
   bootstrap: [ AppComponent ]
 })
