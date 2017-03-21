@@ -62,7 +62,7 @@ export class ContentDmService {
     let i = 1;
     for (let file of object.files) {
       let row = Array(header.length).fill('');
-      row[0] = 'Item ' + ("000" + (i++)).slice(-3);
+      row[0] = 'File ' + ("000" + (i++)).slice(-3);
       row[row.length-1] = file.name;
       csv.push(row);
 
