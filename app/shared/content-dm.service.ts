@@ -51,7 +51,7 @@ export class ContentDmService {
   }
 
   private processCompoundObject(object: any): void {
-    let header = this.getMetadataFields(object).concat(['']);
+    let header = this.getMetadataFields(object).concat(['Object File Name']);
     let objectRow = this.getMetadataValues(object).concat(['']);
 
     let csv = [header];
@@ -76,7 +76,7 @@ export class ContentDmService {
     if (!file) { return; }
 
     if (this.singles.length === 0) {
-      this.singles.push(this.getMetadataFields(object).concat(['']));
+      this.singles.push(this.getMetadataFields(object).concat(['Object File Name']));
     }
     this.singles.push(this.getMetadataValues(object).concat([file.name]));
     let path = this.location + '/Singles';
