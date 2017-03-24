@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
       }).catch((err) => {
         this.handleError('Unable to load MAP', err);
       });
-    this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl');
+    this.vocabularyService.loadVocabulary('https://vocab.lib.uh.edu/en/hierarchy.ttl?depth=4');
 
     ipcRenderer.on('export-cdm', (event, arg) => {
       this.cdm.export();
