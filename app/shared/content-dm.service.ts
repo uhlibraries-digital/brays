@@ -51,8 +51,10 @@ export class ContentDmService {
   }
 
   private processCompoundObject(object: any): void {
-    let header = this.getMetadataFields(object).concat(['Object File Name']);
-    let objectRow = this.getMetadataValues(object).concat(['']);
+    let header = this.getMetadataFields(object).concat(
+      ['Transcript', 'File Name', 'Object File Name']
+    );
+    let objectRow = this.getMetadataValues(object).concat(['', '', '']);
 
     let csv = [header];
     csv.push(objectRow);
@@ -63,7 +65,7 @@ export class ContentDmService {
     for (let file of object.files) {
       let row = Array(header.length).fill('');
       row[0] = 'File ' + ("000" + (i++)).slice(-3);
-      row[row.length-1] = file.name;
+      row[row.length-1] = row[row.length-2] = file.name;
       csv.push(row);
 
       this.copyFile(file.path, path + '/' + file.name);
@@ -76,9 +78,13 @@ export class ContentDmService {
     if (!file) { return; }
 
     if (this.singles.length === 0) {
-      this.singles.push(this.getMetadataFields(object).concat(['Object File Name']));
+      this.singles.push(this.getMetadataFields(object).concat(
+        ['Transcript', 'File Name', 'Object File Name']
+      ));
     }
-    this.singles.push(this.getMetadataValues(object).concat([file.name]));
+    this.singles.push(this.getMetadataValues(object).concat(
+      ['', file.name, file.name]
+    ));
     let path = this.location + '/Singles';
     mkdirp.sync(path);
     this.copyFile(file.path, path + '/' + file.name);
