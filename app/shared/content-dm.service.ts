@@ -155,35 +155,19 @@ export class ContentDmService {
   }
 
   private createTextFile(data: any[], path: string): void {
-    let csv = stringify({ delimiter: '\t'});
-    let output = '';
-
     this.startActivity();
 
-    csv.on('readable', () => {
-      let row: any;
-      while (row = csv.read()) {
-        output += row;
+    let output = data.map((row) => {
+      return row.join("\t");
+    }).join("\n");
+
+    writeFile(path, output, (err) => {
+      this.endActivity();
+      if (err) {
+        this.log.error(err.message);
+        throw err;
       }
     });
-    csv.on('finish', () => {
-      writeFile(path, output, (err) => {
-        this.endActivity();
-        if (err) {
-          this.log.error(err.message);
-          throw err;
-        }
-      });
-    });
-    csv.on('error', (err) => {
-      this.endActivity();
-      this.log.error(err.message);
-    });
-
-    for(let row of data) {
-      csv.write(row);
-    }
-    csv.end();
   }
 
   private startActivity(): void {
