@@ -11,4 +11,5 @@ export class MapField {
   repeatable: boolean;
   input: string;
   visible: boolean;
+  editable: boolean;
 }
