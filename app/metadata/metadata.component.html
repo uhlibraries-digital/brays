@@ -37,7 +37,7 @@
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
         (change)="save()" placeholder="{{field.name}}"
-        [disabled]="field.map.editable && field.map.editable === false" />
+        [disabled]="field.map.editable === false" />
       <!-- MultiLine Input value -->
       <textarea
         *ngIf="field.map.input === 'multi'"
@@ -48,7 +48,7 @@
         [(ngModel)]="field.value"
         (ngModelChange)="madeChanges(object)"
         (change)="save()"
-        [disabled]="field.map.editable && field.map.editable === false" >
+        [disabled]="field.map.editable === false" >
       </textarea>
       <!-- Repeatable values -->
       <div class="repeatables" *ngIf="field.map.repeatable">
@@ -66,7 +66,7 @@
             (change)="save()"
             placeholder="{{field.name}}"
             class="with-btn"
-            [disabled]="field.map.editable && field.map.editable === false" />
+            [disabled]="field.map.editable === false" />
           <span
             *ngIf="i !== 0"
             class="btn-input-default btn-danger"
