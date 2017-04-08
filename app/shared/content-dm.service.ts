@@ -7,6 +7,9 @@ import * as stringify from 'csv-stringify';
 
 import { ObjectService } from './object.service';
 import { LoggerService } from './logger.service';
+
+import { EdtfHumanizer } from './edtf-humanizer';
+
 let { dialog } = remote;
 let { BrowserWindow } = remote;
 
@@ -71,9 +74,11 @@ export class ContentDmService {
 
   private processCompoundObject(object: any): void {
     let header = this.getMetadataFields(object).concat(
-      ['Transcript', 'File Name', 'Object File Name']
+      ['Date (EDTF)', 'Transcript', 'File Name', 'Object File Name']
     );
-    let objectRow = this.getMetadataValues(object).concat(['', '', '']);
+    let objectRow = this.getMetadataValues(object).concat(
+      [object.getFieldValue('dc.date'), '', '', '']
+    );
 
     let csv = [header];
     csv.push(objectRow);
@@ -98,11 +103,11 @@ export class ContentDmService {
 
     if (this.singles.length === 0) {
       this.singles.push(this.getMetadataFields(object).concat(
-        ['Transcript', 'File Name', 'Object File Name']
+        ['Date (EDTF)', 'Transcript', 'File Name', 'Object File Name']
       ));
     }
     this.singles.push(this.getMetadataValues(object).concat(
-      ['', file.name, file.name]
+      [object.getFieldValue('dc.date'), '', file.name, file.name]
     ));
     let path = this.location + '/Singles';
     mkdirp.sync(path);
@@ -132,7 +137,22 @@ export class ContentDmService {
         return field.map.visible;
       })
       .map((field) => {
-        return field.value;
+        let value = field.value;
+        /**
+         Huminizing the DC Date just for CONTENTdm
+         You will need to set the CONTENTdm Date field in the template
+         to 'string' in order to use this.
+        */
+        if (field.name === 'dc.date') {
+          let dates = field.value.split('; ');
+          let HDates = [];
+          for (let d of dates) {
+            let h = new EdtfHumanizer(d.trim());
+            HDates.push(h.humanize());
+          }
+          value = HDates.join('; ');
+        }
+        return value;
       })
   }
 
