@@ -11,7 +11,6 @@ import { LoggerService } from './logger.service';
 import { EdtfHumanizer } from './edtf-humanizer';
 
 let { dialog } = remote;
-let { BrowserWindow } = remote;
 
 @Injectable()
 export class ContentDmService {
@@ -21,9 +20,6 @@ export class ContentDmService {
 
   private singles: any[];
   private activityBucket: any[];
-  private totalProcess: number;
-  private processNumber: number;
-  private window: any;
 
   constructor(
     private objectService: ObjectService,
@@ -36,7 +32,6 @@ export class ContentDmService {
     if (!this.location) { return; }
 
     this.activityBucket = [];
-    this.processNumber = 0;
 
     this.startActivity();
     this.process();
@@ -47,16 +42,6 @@ export class ContentDmService {
     this.singles = [];
     let objects = this.objects.slice(1);
 
-    this.totalProcess = objects
-      .map((object) => {
-        return object.files.length;
-      })
-      .reduce((total, number) => {
-        return total + number;
-      }) + objects.length;
-
-    this.window = BrowserWindow.getFocusedWindow();
-    this.window.setProgressBar(0);
 
     for(let object of objects) {
       if (object.files.length > 1) {
@@ -65,7 +50,6 @@ export class ContentDmService {
       else {
         this.processSingleObject(object);
       }
-      this.window.setProgressBar(++this.processNumber / this.totalProcess);
     }
     if (this.singles.length > 0) {
       this.createTextFile(this.singles, this.location + '/Singles.txt');
@@ -162,14 +146,12 @@ export class ContentDmService {
       let ws = createWriteStream(dest);
       ws.on('finish', () => {
         this.endActivity();
-        this.window.setProgressBar(++this.processNumber / this.totalProcess);
       });
 
       createReadStream(src).pipe(ws);
     }
     catch(e) {
       this.endActivity();
-      this.window.setProgressBar(++this.processNumber / this.totalProcess);
       this.log.error(e.message);
     }
   }

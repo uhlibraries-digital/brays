@@ -1,7 +1,7 @@
 {
   "name": "brays",
   "productName": "Brays",
-  "version": "1.1.0-beta.5",
+  "version": "1.1.0-beta.6",
   "description": "Metadata editor utility",
   "main": "app/main.js",
   "appBundleId": "Brays.app",

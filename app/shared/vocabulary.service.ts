@@ -68,7 +68,7 @@ export class VocabularyService {
   }
 
   private parse(data: string): any {
-    let data_nodes = data.match(/[^A-Za-z ]:([^\.]*\..*)/gm);
+    let data_nodes = data.match(/[^A-Za-z ]:(?:[^\"]|(?:\".*?\"))*?[.]/gm);
     let nodes = {};
 
     for ( let n of data_nodes ) {
