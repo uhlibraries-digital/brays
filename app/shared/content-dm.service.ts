@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { remote } from 'electron';
 import { basename } from 'path';
-import { createReadStream, createWriteStream, writeFile } from 'fs';
+import { createReadStream, createWriteStream, writeFile, statSync } from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as stringify from 'csv-stringify';
 
@@ -11,6 +11,7 @@ import { LoggerService } from './logger.service';
 import { EdtfHumanizer } from './edtf-humanizer';
 
 let { dialog } = remote;
+const progress = require('progress-stream');
 
 @Injectable()
 export class ContentDmService {
@@ -20,6 +21,11 @@ export class ContentDmService {
 
   private singles: any[];
   private activityBucket: any[];
+
+  private totalProgress: number = 0;
+  private fileProcess: any = {};
+
+  private win: any;
 
   constructor(
     private objectService: ObjectService,
@@ -32,6 +38,10 @@ export class ContentDmService {
     if (!this.location) { return; }
 
     this.activityBucket = [];
+    this.totalProgress = 0;
+    this.fileProcess = {};
+
+    this.win = remote.getCurrentWindow();
 
     this.startActivity();
     this.process();
@@ -143,12 +153,27 @@ export class ContentDmService {
   private copyFile(src: string, dest: string): void {
     this.startActivity();
     try{
+      let stat = statSync(src);
+      this.totalProgress += stat.size;
+      this.fileProcess[src] = 0;
+      let pro = progress({
+        length: stat.size
+      });
+      pro.on('progress', (p) => {
+        this.fileProcess[src] = p.transferred;
+        let sum = 0;
+        for (let psum in this.fileProcess) {
+          sum += this.fileProcess[psum];
+        }
+        this.setProgressBar(sum / this.totalProgress);
+      });
+
       let ws = createWriteStream(dest);
       ws.on('finish', () => {
         this.endActivity();
       });
 
-      createReadStream(src).pipe(ws);
+      createReadStream(src).pipe(pro).pipe(ws);
     }
     catch(e) {
       this.endActivity();
@@ -182,7 +207,12 @@ export class ContentDmService {
     if (this.activityBucket.length === 0) {
       this.objectService.loading.emit(false);
       this.log.info('Done exporting CONTENTdm package');
+      this.setProgressBar(0);
     }
+  }
+
+  private setProgressBar(progress): void {
+    this.win.setProgressBar(progress || -1);
   }
 
 }

@@ -1,6 +1,7 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/timeout';
 
 @Injectable()
 export class VocabularyService {
@@ -13,6 +14,7 @@ export class VocabularyService {
 
   loadVocabulary(url: string): void {
     this.http.get(url)
+      .timeout(600000)
       .toPromise()
       .then((response) => {
         let data: string = response.text();
