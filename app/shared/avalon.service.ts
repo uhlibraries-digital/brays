@@ -106,9 +106,10 @@ export class AvalonService {
       let files = [];
       for (let file of object.files) {
         files.push('content/' + file.name);
-        this.copyFile(file.path, this.location + '/content /' + file.name);
+        files.push('00:00:10');
+        this.copyFile(file.path, this.location + '/content/' + file.name);
       }
-      files = this.fillArray(files, '', fileCount);
+      files = this.fillArray(files, '', fileCount * 2);
       csv.write(row.concat(files));
     }
 
@@ -189,6 +190,9 @@ export class AvalonService {
     for(let h of this.avalonFields) {
       for(let i = 0; i < h.count; i++) {
         header.push(h.label);
+        if (h.label === 'File') {
+          header.push('Offset')
+        }
       }
     }
     return header;
