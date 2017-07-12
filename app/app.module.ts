@@ -11,12 +11,15 @@ import { MetadataComponent } from './metadata/metadata.component';
 import { EdtfHumanizeComponent } from './metadata/edtf-humanize.component';
 import { VocabularyAutocompleteComponent } from './shared/vocabulary-autocomplete.component';
 import { AutofillComponent } from './digital-objects/autofill.component';
+import { PromptComponent } from './prompt/prompt.component';
 
 import { ObjectService } from './shared/object.service';
 import { LoggerService } from './shared/logger.service';
 import { MapService } from './shared/map.service';
 import { VocabularyService } from './shared/vocabulary.service';
 import { ContentDmService } from './shared/content-dm.service';
+import { AvalonService } from './shared/avalon.service';
+import { PromptService } from './prompt/prompt.service';
 
 import { FocusHighlight } from './shared/focus-highlight.directive';
 import { Autosize } from './shared/autosize.directive';
@@ -37,7 +40,8 @@ import { Autosize } from './shared/autosize.directive';
     VocabularyAutocompleteComponent,
     AutofillComponent,
     FocusHighlight,
-    Autosize
+    Autosize,
+    PromptComponent
   ],
   entryComponents: [
     VocabularyAutocompleteComponent,
@@ -49,7 +53,9 @@ import { Autosize } from './shared/autosize.directive';
     MapService,
     Title,
     VocabularyService,
-    ContentDmService
+    ContentDmService,
+    AvalonService,
+    PromptService
   ],
   bootstrap: [ AppComponent ]
 })

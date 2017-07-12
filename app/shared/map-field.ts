@@ -12,4 +12,5 @@ export class MapField {
   input: string;
   visible: boolean;
   editable: boolean;
+  crosswalk: any;
 }

@@ -22,6 +22,13 @@ var menuTemplate = [
               if (!focusedWindow) return;
               focusedWindow.webContents.send('export-cdm');
             }
+          },
+          {
+            label: 'Avalon Package...',
+            click(item, focusedWindow) {
+              if (!focusedWindow) return;
+              focusedWindow.webContents.send('export-avalon');
+            }
           }
         ]
       },

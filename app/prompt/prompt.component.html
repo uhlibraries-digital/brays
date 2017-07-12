@@ -1,0 +1,15 @@
+<div *ngIf="display" class="prompt modal">
+  <div class="content">
+    <label>{{ fieldLabel }}</label>
+    <input
+      focusHighlight
+      class="field-input"
+      type="text"
+      (keydown)="keydownCheck($event)"
+      [(ngModel)]="fieldValue" #fieldInput />
+    <div class="buttons">
+      <button class="btn-secondary" (click)="close()">Cancel</button>
+      <button class="btn-default" (click)="submit()">Ok</button>
+    </div>
+  </div>
+</div>

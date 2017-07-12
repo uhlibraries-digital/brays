@@ -29,7 +29,7 @@ git clone https://github.com/uhlibraries-digital/brays
 # Go to the repository
 cd brays
 # Install dependencies and run the app
-npm install && npm run electron
+npm install && npm start
 ```
 
 ### Packaging

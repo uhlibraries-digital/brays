@@ -8,6 +8,7 @@ import { MapService } from './shared/map.service';
 import { ObjectService } from './shared/object.service';
 import { VocabularyService } from './shared/vocabulary.service';
 import { ContentDmService } from './shared/content-dm.service';
+import { AvalonService } from './shared/avalon.service';
 
 @Component({
   selector: 'app',
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit {
     private titleService: Title,
     private renderer: Renderer,
     private vocabularyService: VocabularyService,
-    private cdm: ContentDmService) {
+    private cdm: ContentDmService,
+    private avalon: AvalonService) {
   }
 
   ngOnInit() {
@@ -42,6 +44,9 @@ export class AppComponent implements OnInit {
 
     ipcRenderer.on('export-cdm', (event, arg) => {
       this.cdm.export();
+    });
+    ipcRenderer.on('export-avalon', (event, arg) => {
+      this.avalon.export();
     });
   }
 
