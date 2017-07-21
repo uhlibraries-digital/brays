@@ -134,13 +134,27 @@ export class AvalonService {
       let values = [];
       if (field.values) {
         values = field.values.map((values) => {
+          if (avalonField.type) {
+            return [values.value, values.value !== '' ? avalonField.type : ''];
+          }
           return values.value;
         });
+        if (avalonField.type) {
+          values = values.reduce((prev, curr) => {
+            return prev.concat(curr);
+          })
+        }
       }
       else {
         values.push(field.value);
+        if (avalonField.type) {
+          values.push(field.value !== '' ? avalonField.type : '');
+        }
       }
-      values = this.fillArray(values, '', avalonField.count);
+
+      let fieldCount = avalonField.type ? avalonField.count * 2 : avalonField.count;
+
+      values = this.fillArray(values, '', fieldCount);
       row = row.concat(values);
     }
     return row;
@@ -171,6 +185,7 @@ export class AvalonService {
 
           return {
             'label': field.map.crosswalk.avalon.label,
+            'type': field.map.crosswalk.avalon.type || null,
             'name': field.name,
             'count': count
           };
@@ -190,6 +205,9 @@ export class AvalonService {
     for(let h of this.avalonFields) {
       for(let i = 0; i < h.count; i++) {
         header.push(h.label);
+        if (h.type) {
+          header.push(h.label + ' Type');
+        }
         if (h.label === 'File') {
           header.push('Offset')
         }
