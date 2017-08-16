@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { remote } from 'electron';
 import { basename } from 'path';
-import { createReadStream, createWriteStream, writeFile, statSync } from 'fs';
+import { createReadStream, createWriteStream, writeFile, statSync } from 'graceful-fs';
 import * as mkdirp from 'mkdirp';
 import * as stringify from 'csv-stringify';
 

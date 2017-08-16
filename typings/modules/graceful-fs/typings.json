@@ -1,0 +1,9 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/types/npm-graceful-fs/84adcae7061f5f71409cac66fc6628929e536022/typings.json",
+    "raw": "registry:npm/graceful-fs#4.0.0+20160723033700",
+    "main": "graceful-fs.d.ts",
+    "name": "graceful-fs"
+  }
+}
