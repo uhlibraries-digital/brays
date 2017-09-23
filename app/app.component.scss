@@ -1,3 +1,5 @@
+@import 'scss/bootstrap';
+
 body {
   margin: 0;
   padding: 0;
@@ -8,11 +10,6 @@ body {
   box-sizing: border-box;
   overflow: hidden;
   font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
-}
-
-.container {
-  padding: 0;
-  margin: 0;
 }
 
 app {
@@ -77,36 +74,4 @@ brays-panel {
   color: #9ba5b4;
   background-color: #282c34;
   border: 1px solid #181a1f;
-}
-
-.btn-default {
-  border: 1px solid #181a1f;
-  background-color: #528bff;
-  background-image: linear-gradient(#5c92ff, #528bff);
-  color: #ffffff;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-  height: initial;
-  padding: 0 0.8em;
-  font-size: 1em;
-  line-height: 2em;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  color: #9da5b4;
-  text-shadow: none;
-  border: 1px solid #181a1f;
-  background-color: #353b45;
-  background-image: linear-gradient(#3a3f4b, #353b45);
-  border-radius: 3px;
-  height: initial;
-  padding: 0 0.8em;
-  font-size: 1em;
-  line-height: 2em;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
 }

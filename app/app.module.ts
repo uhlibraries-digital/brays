@@ -21,7 +21,6 @@ import { ContentDmService } from './shared/content-dm.service';
 import { AvalonService } from './shared/avalon.service';
 import { PromptService } from './prompt/prompt.service';
 
-import { FocusHighlight } from './shared/focus-highlight.directive';
 import { Autosize } from './shared/autosize.directive';
 
 @NgModule({
@@ -39,7 +38,6 @@ import { Autosize } from './shared/autosize.directive';
     EdtfHumanizeComponent,
     VocabularyAutocompleteComponent,
     AutofillComponent,
-    FocusHighlight,
     Autosize,
     PromptComponent
   ],

@@ -13,13 +13,13 @@
 <div
   class="metadata-add-flag"
   *ngIf="object && object.productionNotes === '' && !showFlag">
-  <button class="btn-default" (click)="addFlag()">
+  <button class="btn btn-primary" (click)="addFlag()">
     <i class="fa fa-flag-o" aria-hidden="true"></i> Flag
   </button>
 </div>
 <div class="metadata-content" *ngIf="object && !selectedFile">
   <div class="field" *ngFor="let field of object.metadata | slice: 1">
-    <div class="group" *ngIf="field.map.visible">
+    <div class="group input-group form-group" *ngIf="field.map.visible">
       <label>
         <div class="label"><span (click)="openUrl(field.map.guidelines)">{{field.map.label}}</span></div>
         <div class="definition">{{field.map.definition}}</div>
@@ -28,7 +28,7 @@
       <input
         *ngIf="field.map.input === 'single' && !field.map.repeatable"
         type="text"
-        focusHighlight
+        class="form-control"
         vocab-autocomplete
         [range]="field.map.range"
         [obligationHighlight]="field"
@@ -41,7 +41,7 @@
       <!-- MultiLine Input value -->
       <textarea
         *ngIf="field.map.input === 'multi'"
-        focusHighlight
+        class="form-control"
         [obligationHighlight]="field"
         [validate]="field"
         checkValue="{{field.value}}"
@@ -52,10 +52,9 @@
       </textarea>
       <!-- Repeatable values -->
       <div class="repeatables" *ngIf="field.map.repeatable">
-        <div class="value" *ngFor="let f of field.values; let i = index">
+        <div class="value input-group form-group" *ngFor="let f of field.values; let i = index">
           <input
             type="text"
-            focusHighlight
             vocab-autocomplete
             [range]="field.map.range"
             [obligationHighlight]="field"
@@ -65,7 +64,7 @@
             (ngModelChange)="madeChanges(object)"
             (change)="save()"
             placeholder="{{field.name}}"
-            class="with-btn"
+            class="with-btn form-control"
             [disabled]="field.map.editable === false" />
           <span
             *ngIf="i !== 0"
@@ -96,7 +95,7 @@
     </div>
   </div>
   <div class="open-button">
-    <button class="btn-default" (click)="openFile(selectedFile)">Open File</button>
+    <button class="btn btn-primary" (click)="openFile(selectedFile)">Open File</button>
   </div>
   <div class="technical">
     <div class="information">

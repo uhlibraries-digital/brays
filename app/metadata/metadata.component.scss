@@ -38,14 +38,6 @@ metadata {
         position: relative;
         opacity: 1;
         width: 100%;
-        font-size: 1.15em;
-        line-height: 2em;
-        max-height: none;
-        padding-left: 0.5em;
-        border-radius: 3px;
-        color: #d7dae0;
-        border: 1px solid #181a1f;
-        background-color: #1b1d23;
 
         &.validation-bad {
           border: 2px solid #d92626;
@@ -251,14 +243,20 @@ metadata {
   .metadata-add-flag {
     margin: 5px;
 
-    .btn-default {
-      outline: none;
+    .btn-primary {
       background-color: #62543d;
       background-image: linear-gradient(#635947, #62543d);
       font-size: 14px;
       color: #e2c08d;
-      cursor: pointer;
       padding: 4px 7px;
+
+      &:hover,
+      &:focus,
+      &.focus {
+        color: #e2c08d;
+        background-color: #62543d;
+        border-color: #181a1f;
+      }
 
       .fa {
         font-size: 16px;
