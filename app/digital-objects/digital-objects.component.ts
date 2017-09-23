@@ -18,16 +18,11 @@ import { File } from '../shared/file';
 import { ObjectService } from '../shared/object.service';
 import { MapService } from '../shared/map.service';
 
-import { StatusColor } from './status-color.directive';
-
 @Component({
   selector: "digital-objects",
   templateUrl: './digital-objects/digital-objects.component.html',
   styles: [ require ('./digital-objects.component.scss') ],
-  encapsulation: ViewEncapsulation.None,
-  directives: [
-    StatusColor
-  ]
+  encapsulation: ViewEncapsulation.None
 })
 export class DigitalObjectsComponent implements OnInit {
   objects: Object[];

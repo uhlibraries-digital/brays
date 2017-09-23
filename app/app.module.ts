@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { NotificationComponent } from './notification/notification.component';
@@ -22,12 +23,17 @@ import { AvalonService } from './shared/avalon.service';
 import { PromptService } from './prompt/prompt.service';
 
 import { Autosize } from './shared/autosize.directive';
+import { ObligationHighlight } from './metadata/obligation-highlight.directive';
+import { VocabularyAutocomplete } from './shared/vocabulary-autocomplete.directive';
+import { Validate } from './metadata/validate.directive';
+import { StatusColor } from './digital-objects/status-color.directive';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    NgbModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -38,8 +44,12 @@ import { Autosize } from './shared/autosize.directive';
     EdtfHumanizeComponent,
     VocabularyAutocompleteComponent,
     AutofillComponent,
+    PromptComponent,
     Autosize,
-    PromptComponent
+    ObligationHighlight,
+    VocabularyAutocomplete,
+    Validate,
+    StatusColor
   ],
   entryComponents: [
     VocabularyAutocompleteComponent,

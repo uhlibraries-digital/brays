@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ElementRef, Renderer, ViewChild, ViewEncapsulation } from '@angular/core';
-import { DomSanitizationService } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { existsSync, statSync } from 'fs';
 import { shell } from 'electron';
 import { remote } from 'electron';
@@ -18,12 +18,7 @@ import { Validate } from './validate.directive';
   selector: 'metadata',
   templateUrl: './metadata/metadata.component.html',
   styles: [ require('./metadata.component.scss') ],
-  encapsulation: ViewEncapsulation.None,
-  directives:[
-    ObligationHighlight,
-    VocabularyAutocomplete,
-    Validate
-  ]
+  encapsulation: ViewEncapsulation.None
 })
 
 export class MetadataComponent implements OnInit {
@@ -37,7 +32,7 @@ export class MetadataComponent implements OnInit {
     private objectService: ObjectService,
     private renderer: Renderer,
     private el: ElementRef,
-    private sanitizer: DomSanitizationService) {
+    private sanitizer: DomSanitizer) {
     this.converter = new ConvertTiff({
       logLevel: 0,
       type: 'jpg'

@@ -10,10 +10,7 @@ import { MapField } from '../shared/map-field';
 @Component({
   selector: 'autofill',
   templateUrl: './digital-objects/autofill.component.html',
-  styles: [ require ('./autofill.component.scss') ],
-  directives: [
-    VocabularyAutocomplete
-  ]
+  styles: [ require ('./autofill.component.scss') ]
 })
 export class AutofillComponent implements OnInit, AfterViewInit {
 
