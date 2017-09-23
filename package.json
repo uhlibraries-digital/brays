@@ -66,6 +66,7 @@
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
+    "bootstrap": "4.0.0-alpha.4",
     "font-awesome": "^4.6.3",
     "zone.js": "^0.6.12"
   }

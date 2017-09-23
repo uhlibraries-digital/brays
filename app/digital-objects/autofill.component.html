@@ -1,14 +1,13 @@
-<div class="autofill modal">
-  <div class="content">
+<div class="autofill prompt-modal">
+  <div class="content input-group form-group">
     <label>Select field and input value to auto fill</label>
     <select class="fields" [ngModel]="selectedField" (ngModelChange)="onFieldChange($event)">
       <option *ngFor="let field of fields" [value]="field.namespace + '.' + field.name">{{ field.label }}</option>
     </select>
     <input
-      focusHighlight
       vocab-autocomplete
       [range]="selectedRange"
-      class="field-input"
+      class="field-input form-control"
       [class.hide]="fieldRepeatable"
       type="text"
       [(ngModel)]="fieldValue" #fieldInput />
@@ -18,7 +17,6 @@
       <div class="value" *ngFor="let f of fieldValues; let i = index">
         <input
           type="text"
-          focusHighlight
           vocab-autocomplete
           [range]="selectedRange"
           [(ngModel)]="f.value"
@@ -37,8 +35,8 @@
       </div>
     </div>
     <div class="buttons">
-      <button class="btn-secondary" (click)="close()">Cancel</button>
-      <button class="btn-default" (click)="autofillObjects()">Ok</button>
+      <button class="btn btn-secondary" (click)="close()">Cancel</button>
+      <button class="btn btn-primary" (click)="autofillObjects()">Ok</button>
     </div>
   </div>
 </div>
