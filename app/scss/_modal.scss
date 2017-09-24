@@ -7,6 +7,10 @@
   border-bottom: 1px solid #000;
 }
 
+.modal-title {
+  color: $text-color;
+}
+
 .modal-footer {
   background-color: $light-background-color;
   border-top: 1px solid #000;

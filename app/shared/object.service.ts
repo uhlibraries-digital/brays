@@ -178,6 +178,7 @@ export class ObjectService {
       throw Error('There is no data in the file');
     }
 
+    this.objects = [];
     let base_path: string = filename.match(/.*[/\\]/).toString();
     let header = data[0];
     let newheader = [data[0][0]];

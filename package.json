@@ -1,7 +1,7 @@
 {
   "name": "brays",
   "productName": "Brays",
-  "version": "1.2.0",
+  "version": "1.3.0-alpha.1",
   "description": "Metadata editor utility",
   "main": "app/main.js",
   "appBundleId": "Brays.app",
@@ -53,6 +53,7 @@
     "node-sass": "^3.8.0",
     "object-hash": "^1.1.4",
     "progress-stream": "^2.0.0",
+    "random-seed": "^0.3.0",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "^0.1.3",
     "rimraf": "^2.5.2",

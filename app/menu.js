@@ -66,6 +66,17 @@ var menuTemplate = [
       },
       {
         role: 'selectall'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Preferences...',
+        accelerator: 'CmdOrCtrl+,',
+        click(item, focusedWindow) {
+          if (!focusedWindow) return;
+          focusedWindow.webContents.send('show-preferences');
+        }
       }
     ]
   },
@@ -121,6 +132,16 @@ if (process.platform === 'darwin') {
         type: 'separator'
       },
       {
+        label: 'Preferences...',
+        click(item, focusedWindow) {
+          if (!focusedWindow) return;
+          focusedWindow.webContents.send('show-preferences');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         role: 'services',
         submenu: []
       },
@@ -149,6 +170,7 @@ if (process.platform === 'darwin') {
   menuTemplate[1].submenu = menuTemplate[1].submenu.slice(0, -2);
 
   // Edit menu.
+  menuTemplate[2].submenu = menuTemplate[2].submenu.slice(0, -2);
   menuTemplate[2].submenu.push(
     {
       type: 'separator'

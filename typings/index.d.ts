@@ -7,3 +7,4 @@
 /// <reference path="modules/graceful-fs/index.d.ts" />
 /// <reference path="modules/mime/index.d.ts" />
 /// <reference path="modules/mkdirp/index.d.ts" />
+/// <reference path="modules/random-seed/index.d.ts" />

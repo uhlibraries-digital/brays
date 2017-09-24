@@ -21,6 +21,7 @@ import { VocabularyService } from './shared/vocabulary.service';
 import { ContentDmService } from './shared/content-dm.service';
 import { AvalonService } from './shared/avalon.service';
 import { PromptService } from './prompt/prompt.service';
+import { LocalStorageService } from './shared/local-storage.service';
 
 import { Autosize } from './shared/autosize.directive';
 import { ObligationHighlight } from './metadata/obligation-highlight.directive';
@@ -63,7 +64,8 @@ import { StatusColor } from './digital-objects/status-color.directive';
     VocabularyService,
     ContentDmService,
     AvalonService,
-    PromptService
+    PromptService,
+    LocalStorageService
   ],
   bootstrap: [ AppComponent ]
 })

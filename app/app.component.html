@@ -8,3 +8,24 @@
 <div class="brays-panel panel-right metadata-panel">
   <metadata class="scrollbars"></metadata>
 </div>
+<template ngbModalContainer></template>
+
+<template #preferencesDisplay let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title"><i class="fa fa-cogs" aria-hidden="true"></i> Preferences</h4>
+  </div>
+  <div class="modal-body">
+    <div class="input-group form-group">
+      <label class="input-group-addon">Access MAP Url</label>
+      <input class="form-control" type="text" [(ngModel)]="preferences.map" />
+    </div>
+    <div class="input-group form-group">
+      <label class="input-group-addon">Vocabulary Url</label>
+      <input class="form-control" type="text" [(ngModel)]="preferences.vocab" />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="d()">Close</button>
+    <button type="button" class="btn btn-primary" (click)="c()">Save</button>
+  </div>
+</template>
