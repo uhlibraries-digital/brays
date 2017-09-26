@@ -4,7 +4,7 @@ import { createReadStream } from 'fs';
 import { statSync } from 'fs';
 import { writeFile } from 'fs';
 import { basename } from 'path';
-import { lookup } from 'mime';
+import { getType } from 'mime';
 
 import * as parse from 'csv-parse';
 import * as stringify from 'csv-stringify';
@@ -226,7 +226,7 @@ export class ObjectService {
           let file: File = new File();
           file.id = i;
           file.path = base_path + data[i][0];
-          file.mime = lookup(base_path + data[i][0]);
+          file.mime = getType(base_path + data[i][0]);
           file.metadata = metadata;
           file.name = basename(data[i][0]);
 

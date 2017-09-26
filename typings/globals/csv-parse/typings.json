@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/0060fb0862f896102106ba5b47fcbd8489aa60ef/csv-parse/csv-parse.d.ts",
-    "raw": "registry:dt/csv-parse#1.1.0+20160602150508",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/0060fb0862f896102106ba5b47fcbd8489aa60ef/csv-parse/csv-parse.d.ts"
-  }
-}
