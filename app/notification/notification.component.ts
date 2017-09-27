@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 import { LoggerService } from '../shared/logger.service';
+import { ProgressBarService } from '../shared/progress-bar.service';
 
 import { Entry } from '../shared/entry';
+import { ProgressBar } from '../shared/progress-bar';
 
 @Component({
   selector: 'notification',
@@ -12,9 +14,11 @@ import { Entry } from '../shared/entry';
 export class NotificationComponent implements OnInit {
 
   entries: Entry[];
+  progressbars: ProgressBar[];
 
   constructor(
-    private log: LoggerService) {
+    private log: LoggerService,
+    private progress: ProgressBarService) {
   }
 
   ngOnInit(): void {
@@ -24,6 +28,9 @@ export class NotificationComponent implements OnInit {
         this.entries.push(entry);
       }
     });
+    this.progress.changed.subscribe((bars) => {
+      this.progressbars = bars;
+    })
   }
 
   notifyClass(n: any): string {

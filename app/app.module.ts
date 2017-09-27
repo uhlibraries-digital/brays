@@ -22,6 +22,7 @@ import { ContentDmService } from './shared/content-dm.service';
 import { AvalonService } from './shared/avalon.service';
 import { PromptService } from './prompt/prompt.service';
 import { LocalStorageService } from './shared/local-storage.service';
+import { ProgressBarService } from './shared/progress-bar.service';
 
 import { Autosize } from './shared/autosize.directive';
 import { ObligationHighlight } from './metadata/obligation-highlight.directive';
@@ -65,7 +66,8 @@ import { StatusColor } from './digital-objects/status-color.directive';
     ContentDmService,
     AvalonService,
     PromptService,
-    LocalStorageService
+    LocalStorageService,
+    ProgressBarService
   ],
   bootstrap: [ AppComponent ]
 })

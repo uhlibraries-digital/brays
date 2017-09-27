@@ -5,15 +5,16 @@ $component-border-radius: 2px;
 
 progress {
   height: $progress-height;
+  width: 100%;
   -webkit-appearance: none;
   border-radius: $component-border-radius;
+  border: 1px solid $dark-blue;
   background-color: #666;
   background-image:
      -webkit-linear-gradient(-30deg,
                              transparent 33%, rgba(0, 0, 0, .1) 33%,
                              rgba(0,0, 0, .1) 66%, transparent 66%),
                              $progress-shine-gradient;
-  border-radius: 2px;
   background-size: 25px $progress-height, 100% 100%, 100% 100%;
   -webkit-animation: animate-stripes 5s linear infinite; // stop animation after 6 runs (30s) to limit CPU usage
 }

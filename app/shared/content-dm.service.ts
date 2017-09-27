@@ -7,6 +7,7 @@ import * as stringify from 'csv-stringify';
 
 import { ObjectService } from './object.service';
 import { LoggerService } from './logger.service';
+import { ProgressBarService } from './progress-bar.service';
 
 import { EdtfHumanizer } from './edtf-humanizer';
 
@@ -24,12 +25,14 @@ export class ContentDmService {
 
   private totalProgress: number = 0;
   private fileProcess: any = {};
+  private progressBarId: string = '';
 
   private win: any;
 
   constructor(
     private objectService: ObjectService,
-    private log: LoggerService){
+    private log: LoggerService,
+    private barService: ProgressBarService){
     this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
   }
 
@@ -207,12 +210,22 @@ export class ContentDmService {
     if (this.activityBucket.length === 0) {
       this.objectService.loading.emit(false);
       this.log.info('Done exporting CONTENTdm package');
-      this.setProgressBar(0);
+      this.clearProgressBar();
     }
   }
 
-  private setProgressBar(progress): void {
+  private setProgressBar(progress: number): void {
     this.win.setProgressBar(progress || -1);
+    if (!this.progressBarId) {
+      this.progressBarId = this.barService.newProgressBar(1, 'Exporting CONTENTdm package');
+    }
+    this.barService.setProgressBar(this.progressBarId, progress);
+  }
+
+  private clearProgressBar(): void {
+    this.setProgressBar(0);
+    this.barService.clearProgressBar(this.progressBarId);
+    this.progressBarId = '';
   }
 
 }
