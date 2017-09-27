@@ -45,17 +45,6 @@
     }
 
     input[type=text]{
-      opacity: 1;
-      width: 100%;
-      font-size: 1.15em;
-      line-height: 2em;
-      max-height: none;
-      padding-left: 0.5em;
-      border-radius: 3px;
-      color: #d7dae0;
-      border: 1px solid #181a1f;
-      background-color: #1b1d23;
-
       &::-webkit-input-placeholder{
         opacity: 0.5;
       }
