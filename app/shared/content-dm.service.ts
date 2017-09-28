@@ -209,7 +209,7 @@ export class ContentDmService {
     this.activityBucket.pop();
     if (this.activityBucket.length === 0) {
       this.objectService.loading.emit(false);
-      this.log.info('Done exporting CONTENTdm package');
+      this.log.success('Done exporting CONTENTdm package');
       this.clearProgressBar();
     }
   }

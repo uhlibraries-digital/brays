@@ -276,7 +276,7 @@ export class AvalonService {
     this.activityBucket.pop();
     if (this.activityBucket.length === 0) {
       this.objectService.loading.emit(false);
-      this.log.info('Done exporting Avalon package');
+      this.log.success('Done exporting Avalon package');
       this.clearProgressBar();
     }
   }
