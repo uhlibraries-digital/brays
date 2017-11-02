@@ -7,7 +7,7 @@ import { dialog } from 'electron';
 import { remote } from 'electron';
 import { shell } from 'electron';
 import * as childProcess from 'child_process';
-let { app, Menu, MenuItem } = remote;
+let { app, Menu, MenuItem, webContents } = remote;
 
 @Injectable()
 export class ElectronService {
@@ -20,6 +20,7 @@ export class ElectronService {
   shell: typeof shell;
   Menu: typeof Menu;
   MenuItem: typeof MenuItem;
+  webContents: typeof webContents;
 
   constructor() {
     // Conditional imports
@@ -32,6 +33,7 @@ export class ElectronService {
       this.Menu = Menu;
       this.MenuItem = MenuItem;
       this.shell = shell;
+      this.webContents = webContents;
     }
   }
 

@@ -52,6 +52,10 @@ Brays is built with [Angular 4](https://angular.io/) using Typescript. The main 
 To build the application you can run one of these commands:
 
 * `npm run build` will build the application
+* `npm start` will build the application and start it
+
+You need run a build `npm run build` before running `npm start` for the first time.
+You will only need to do this once.
 
 ## License
 
