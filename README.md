@@ -1,5 +1,7 @@
 # Brays
 
+[![Build Status](https://travis-ci.org/uhlibraries-digital/brays.svg?branch=master)](https://travis-ci.org/uhlibraries-digital/brays)
+
 Metadata editor utility built on [Electron](http://electron.atom.io/).
 
 ## Optional
