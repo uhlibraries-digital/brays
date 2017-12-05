@@ -43,12 +43,17 @@ export class ObjectService {
 
   getObjects(): Promise<any> {
     this.loading.emit(true);
-    let filename = this.openFile().toString();
+    let filename = this.openFile();
 
     return new Promise((resolve, reject) => {
+      if (!filename) {
+        reject(Error('No file selected'));
+      }
+      filename = filename.toString();
       readFile(filename, 'utf8', (err, data) => {
         if (err) {
           this.log.error(err.message);
+          reject(err);
         }
         resolve(this.processFile(err, data, filename));
       });
@@ -122,6 +127,7 @@ export class ObjectService {
         metadata[field.name] = field.value;
       }
       object.originalData.metadata = metadata;
+      object.originalData.productionNotes = object.productionNotes
       objects.push(object.originalData);
     }
     this.projectData.objects = objects;
@@ -203,6 +209,14 @@ export class ObjectService {
     for (let field of this.mapService.mapFields) {
       let fullname: string = field.namespace + '.' + field.name;
       let value = object.metadata[fullname] || '';
+
+      if (fullname === 'uhlib.aSpaceUri') {
+        value = (object.artificial ? object.parent_uri : object.record_uri) || '';
+      }
+      if (fullname === 'dcterms.source') {
+        value = object.pm_ark;
+      }
+
       metadata.push(new Field(fullname, value, field));
     }
     return metadata;
