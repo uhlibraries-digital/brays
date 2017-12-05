@@ -174,7 +174,7 @@ export class AvalonService {
     let objects = this.objects.slice(1);
     let header = [];
     for (let object of objects) {
-      header = object.metadata.slice(1)
+      header = object.metadata.slice()
         .filter((field) => {
           return field.map.crosswalk !== undefined && field.map.crosswalk.avalon !== undefined
         })
@@ -220,7 +220,7 @@ export class AvalonService {
   }
 
   private getMetadataFields(object: any): any[] {
-    return object.metadata.slice(1)
+    return object.metadata.slice()
       .filter((field) => {
         return field.map.visible &&
           field.map.crosswalk !== undefined &&

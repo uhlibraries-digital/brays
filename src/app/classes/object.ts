@@ -14,6 +14,7 @@ export class Object{
   files: File[];
   metadataHash: string;
   productionNotes: string;
+  originalData: any;
 
   getField(name: string): Field {
     return this.metadata.find(field => name === field.name);

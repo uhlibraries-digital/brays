@@ -117,7 +117,7 @@ export class ContentDmService {
   }
 
   private getMetadataFields(object: any): any[] {
-    return object.metadata.slice(1)
+    return object.metadata.slice()
       .filter((field) => {
         return field.map.visible;
       })
@@ -127,7 +127,7 @@ export class ContentDmService {
   }
 
   private getMetadataValues(object: any): any[] {
-    return object.metadata.slice(1)
+    return object.metadata.slice()
       .filter((field) => {
         return field.map.visible;
       })

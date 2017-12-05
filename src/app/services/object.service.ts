@@ -1,11 +1,12 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { createReadStream } from 'fs';
-import { statSync } from 'fs';
-import { writeFile } from 'fs';
-import { basename } from 'path';
+import {
+  statSync,
+  writeFile,
+  readFile
+} from 'fs';
+import { basename, dirname } from 'path';
 
-import * as parse from 'csv-parse';
-import * as stringify from 'csv-stringify';
 import * as hash from 'object-hash';
 import * as mime from 'mime';
 
@@ -24,12 +25,13 @@ export class ObjectService {
   object: Object;
   objects: Object[];
   selectedObjects: Object[];
+  projectData: any;
 
-  @Output() objectChanged = new EventEmitter();
-  @Output() objectsLoaded = new EventEmitter();
-  @Output() fileChanged = new EventEmitter();
-  @Output() selectedObjectsChanged = new EventEmitter();
-  @Output() loading = new EventEmitter();
+  objectChanged: EventEmitter<any> = new EventEmitter();
+  objectsLoaded: EventEmitter<any> = new EventEmitter();
+  fileChanged: EventEmitter<any> = new EventEmitter();
+  selectedObjectsChanged: EventEmitter<any> = new EventEmitter();
+  loading: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private mapService: MapService,
@@ -41,12 +43,16 @@ export class ObjectService {
 
   getObjects(): Promise<any> {
     this.loading.emit(true);
-    let filename = this.openFile();
-    return this.readFile(filename)
-      .catch((err) => {
-        this.log.error(err);
-        this.loading.emit(false);
+    let filename = this.openFile().toString();
+
+    return new Promise((resolve, reject) => {
+      readFile(filename, 'utf8', (err, data) => {
+        if (err) {
+          this.log.error(err.message);
+        }
+        resolve(this.processFile(err, data, filename));
       });
+    });
   }
 
   getObject(id: number): Object {
@@ -58,7 +64,8 @@ export class ObjectService {
 
   setObject(object: Object) {
     if (object) {
-      let base_title = object.title.match(/.*:\s/).toString();
+      let title_regex = object.title.match(/.*:\s/);
+      let base_title = title_regex ? title_regex.toString() : '';
       object.title = base_title + object.getFieldValue('dcterms.title');
       object.metadataHash = hash(object.metadata);
     }
@@ -106,139 +113,64 @@ export class ObjectService {
   }
 
   saveObjects(): void {
-    if (this.objects.length === 0) {
-      console.log('No objects to save');
-      return;
-    }
     this.loading.emit(true);
-
-    let headers: string[] = this.objects[0].headers;
-
-    let csv = stringify({delimiter: ','});
-    let data = '';
-    csv.on('readable', () => {
-      let row: any;
-      while (row = csv.read()) {
-        data += row;
+    let objects = [];
+    for (let object of this.objects.slice(1)) {
+      let metadata = {};
+      for (let field of object.metadata) {
+        field.joinValues();
+        metadata[field.name] = field.value;
       }
-    });
-    csv.on('finish', () => {
-      writeFile(this.objects[0].input_file, data, (err) => {
-        this.loading.emit(false);
-        if (err) {
-          this.log.error(err.message);
-          throw err;
-        }
-      });
-    });
-    csv.on('error', (err) => {
-      this.loading.emit(false);
-      this.log.error(err.message);
-    });
-
-    csv.write(headers.concat('productionNotes'));
-    for( let object of this.objects ){
-      let csvrow: string[] = [];
-      for ( let header of headers ) {
-        csvrow.push(object.getFieldValue(header));
-      }
-      csvrow.push(object.productionNotes);
-      csv.write(csvrow);
-
-      for ( let file of object.files ) {
-        csvrow = [];
-        for ( let header of headers ) {
-          csvrow.push(file.getFieldValue(header));
-        }
-        csvrow.push(''); // need blank column for productionNotes
-        csv.write(csvrow);
-      }
+      object.originalData.metadata = metadata;
+      objects.push(object.originalData);
     }
-    csv.end();
+    this.projectData.objects = objects;
+
+    let dataString = JSON.stringify(this.projectData);
+    let filename = this.objects[0].input_file;
+
+    writeFile(filename, dataString, (err) => {
+      this.loading.emit(false);
+      if (err) {
+        this.log.error(err.message);
+        throw err;
+      }
+    });
   }
 
   openFile(): any {
     return this.electronService.dialog.showOpenDialog({
       filters: [
-        { name: 'CSV', extensions: ['csv'] }
+        { name: 'Project File', extensions: ['carp'] }
       ],
       title: "Open Project"
     });
   }
 
   processFile(err, data, filename): Object[] {
-    if (err) {
-      this.loading.emit(false);
-      this.log.error(err.message);
-      throw err;
-    }
-    if (data === undefined) {
-      this.loading.emit(false);
-      this.log.error('There is no data in the file');
-      throw Error('There is no data in the file');
-    }
-
+    this.projectData = JSON.parse(data);
     this.objects = [];
-    let base_path: string = filename.match(/.*[/\\]/).toString();
-    let header = data[0];
-    let newheader = [data[0][0]];
-    let pnIndex: number = header.indexOf('productionNotes');
 
-    for ( let field of this.mapService.mapFields ) {
-      newheader.push(field.namespace + '.' + field.name);
-    }
+    this.objects.push(this.collectionObject(this.projectData, filename));
 
-    for ( var i = 1; i < data.length; i++ ) {
-      let metadata: Field[] = [];
-      let title: string;
+    let i = 1;
+    for (let pObject of this.projectData.objects) {
+      let object: Object = new Object();
+      object.originalData = pObject;
+      object.id = i;
+      object.metadata = this.processMetadata(pObject);
+      object.metadataHash = hash(object.metadata);
+      object.title = this.padLeft(i, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
+      object.base_path = dirname(filename);
+      object.input_file = filename;
+      object.path = dirname(filename);
+      object.productionNotes = pObject.productionNotes || '';
 
-      metadata.push(new Field(header[0], data[i][0], null));
-      for ( let field of this.mapService.mapFields ) {
-        let fullname: string = field.namespace + '.' + field.name;
-        let index: number = header.indexOf(fullname);
-        let value: string;
-        if ( index >= 0) {
-          value = data[i][index];
-        }
-        metadata.push(new Field(fullname, value, field));
-        if (fullname === 'dcterms.title') {
-          title = value;
-        }
-      }
+      let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
+      object.files = this.processObjectFiles(acFiles, dirname(filename));
 
-      try {
-        if (statSync(base_path + data[i][0]).isDirectory()) {
-          let object: Object = new Object();
-          object.id = i;
-          object.headers = newheader;
-          object.base_path = base_path;
-          object.input_file = filename;
-          object.path = base_path + data[i][0];
-          object.title = basename(data[i][0]) + ': ' + title;
-          object.metadata = metadata;
-          object.metadataHash = hash(metadata);
-          object.files = [];
-          object.productionNotes = data[i][pnIndex] || '';
-
-          this.objects.push(object);
-        }
-        else {
-          let file: File = new File();
-          file.id = i;
-          file.path = base_path + data[i][0];
-          file.mime = mime.getType(file.path);
-          file.metadata = metadata;
-          file.name = basename(data[i][0]);
-
-          let object: Object = this.objects.pop();
-          object.files.push(file);
-          this.objects.push(object);
-        }
-      }
-      catch(e) {
-        console.error(e);
-        this.log.error("No such file or directory '" + base_path + data[i][0] + "'");
-      }
+      this.objects.push(object);
+      i++;
     }
 
     this.objectsLoaded.emit(this.objects);
@@ -246,23 +178,47 @@ export class ObjectService {
     return this.objects;
   }
 
-  readFile(filename): Promise<Object[]> {
-    return new Promise((resolve, reject) => {
-      if (!filename) {
-        reject(Error('No file selected.'))
-      }
-      else {
-        filename = filename.toString();
-        createReadStream(filename).pipe(
-          parse(
-            { delimiter: ',' },
-            (err, data) => {
-              resolve(this.processFile(err, data, filename));
-            }
-          )
-        );
+  private collectionObject(project: any, filename: string): Object {
+    let object: Object = new Object();
+    object.id = 0;
+    object.title = project.collectionTitle || '';
+    object.input_file = filename;
+    object.metadata = this.processMetadata({
+      'metadata': {
+        'dcterms.title': object.title
       }
     });
+    object.metadataHash = hash(object.metadata);
+    object.path = dirname(filename);
+    object.productionNotes = '';
+
+    return object;
+  }
+
+  private processMetadata(object: any): Field[] {
+    let metadata: Field[] = [];
+    if (!object.metadata) {
+      object.metadata = {};
+    }
+    for (let field of this.mapService.mapFields) {
+      let fullname: string = field.namespace + '.' + field.name;
+      let value = object.metadata[fullname] || '';
+      metadata.push(new Field(fullname, value, field));
+    }
+    return metadata;
+  }
+
+  private processObjectFiles(objectFiles: any[], basepath: string): File[] {
+    let files: File[] = [];
+    for (let objectFile of objectFiles) {
+      let file = new File();
+      file.path = basepath + '/' + objectFile.path;
+      file.name = basename(file.path);
+      file.mime = mime.getType(file.path);
+      file.metadata = [];
+      files.push(file);
+    }
+    return files;
   }
 
   private autofillObjects(objects: Object[], fieldName: string, fieldValue: string): void {
@@ -271,6 +227,11 @@ export class ObjectService {
       field.setValue(fieldValue);
       object.metadataHash = hash(object.metadata);
     }
+  }
+
+  private padLeft(value: any, length: number, character: string): string {
+    value = String(value);
+    return Array(length - value.length + 1).join(character || " ") + value;
   }
 
 }

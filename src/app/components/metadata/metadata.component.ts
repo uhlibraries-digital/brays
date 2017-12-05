@@ -64,7 +64,7 @@ export class MetadataComponent implements OnInit {
 
   convertTiff(file: File): any {
     if (file.tiffProcessing || file.tiffError) {
-      return this.sanitizer.bypassSecurityTrustUrl('images/spacer.png');
+      return this.sanitizer.bypassSecurityTrustUrl('assets/spacer.png');
     }
     file.tiffImagePreviewPath = this.getCovertedTiffPath(file);
     if (file.tiffImagePreviewPath !== '') {
@@ -84,7 +84,7 @@ export class MetadataComponent implements OnInit {
     file.tiffProcessing = true;
     file.tiffError = false;
     this.converter.convertArray(tiffs, tmpLocation);
-    return this.sanitizer.bypassSecurityTrustUrl('images/spacer.png');
+    return this.sanitizer.bypassSecurityTrustUrl('assets/spacer.png');
   }
 
   getCovertedTiffPath(file: File): string {
