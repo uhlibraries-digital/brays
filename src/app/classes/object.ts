@@ -4,6 +4,7 @@ import { Field } from './field';
 import { File } from './file';
 
 export class Object{
+  uuid: string;
   id: number;
   base_path: string;
   input_file: string;
@@ -25,6 +26,11 @@ export class Object{
     if (!field) { return null; }
     field.joinValues();
     return field.value;
+  }
+
+  setField(name: string, value: string) {
+    let field = this.metadata.find(field => name === field.name);
+    field.setValue(value);
   }
 
   isGood(): boolean {

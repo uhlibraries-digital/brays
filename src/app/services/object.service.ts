@@ -18,6 +18,7 @@ import { MapField } from '../classes/map-field';
 import { MapService } from './map.service';
 import { LoggerService } from './logger.service';
 import { ElectronService } from './electron.service';
+import { WatchService } from './watch.service';
 
 
 @Injectable()
@@ -32,13 +33,19 @@ export class ObjectService {
   fileChanged: EventEmitter<any> = new EventEmitter();
   selectedObjectsChanged: EventEmitter<any> = new EventEmitter();
   loading: EventEmitter<any> = new EventEmitter();
+  projectFileLocationChanged: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private mapService: MapService,
     private log: LoggerService,
-    private electronService: ElectronService) {
-    this.objects = [];
-    this.selectedObjects = [];
+    private electronService: ElectronService,
+    private watch: WatchService) {
+      this.objects = [];
+      this.selectedObjects = [];
+
+      this.watch.projectChanged.subscribe((filename) => {
+        this.updateProject(filename);
+      })
   }
 
   getObjects(): Promise<any> {
@@ -161,27 +168,35 @@ export class ObjectService {
 
     let i = 1;
     for (let pObject of this.projectData.objects) {
-      let object: Object = new Object();
-      object.originalData = pObject;
-      object.id = i;
-      object.metadata = this.processMetadata(pObject);
-      object.metadataHash = hash(object.metadata);
-      object.title = this.padLeft(i, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
-      object.base_path = dirname(filename);
-      object.input_file = filename;
-      object.path = dirname(filename);
-      object.productionNotes = pObject.productionNotes || '';
-
-      let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
-      object.files = this.processObjectFiles(acFiles, dirname(filename));
-
+      let object = this.createObject(pObject, i++, filename);
       this.objects.push(object);
-      i++;
     }
 
     this.objectsLoaded.emit(this.objects);
     this.loading.emit(false);
+    this.watch.projectFile(filename);
     return this.objects;
+  }
+
+  private createObject(pObject: any, index: number, filename: string): Object {
+    let object: Object = new Object();
+    object.originalData = pObject;
+    object.uuid = pObject.uuid;
+    object.id = index;
+    object.metadata = this.processMetadata(pObject);
+    object.setField('dcterms.source', pObject.pm_ark || '');
+    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
+    object.metadataHash = hash(object.metadata);
+    object.title = this.padLeft(index, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
+    object.base_path = dirname(filename);
+    object.input_file = filename;
+    object.path = dirname(filename);
+    object.productionNotes = pObject.productionNotes || '';
+
+    let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
+    object.files = this.processObjectFiles(acFiles, dirname(filename));
+
+    return object;
   }
 
   private collectionObject(project: any, filename: string): Object {
@@ -209,14 +224,6 @@ export class ObjectService {
     for (let field of this.mapService.mapFields) {
       let fullname: string = field.namespace + '.' + field.name;
       let value = object.metadata[fullname] || '';
-
-      if (fullname === 'uhlib.aSpaceUri') {
-        value = (object.artificial ? object.parent_uri : object.record_uri) || '';
-      }
-      if (fullname === 'dcterms.source') {
-        value = object.pm_ark;
-      }
-
       metadata.push(new Field(fullname, value, field));
     }
     return metadata;
@@ -246,6 +253,72 @@ export class ObjectService {
   private padLeft(value: any, length: number, character: string): string {
     value = String(value);
     return Array(length - value.length + 1).join(character || " ") + value;
+  }
+
+  private updateProject(filename): void {
+    readFile(filename, 'utf8', (err, data) => {
+      if (err) {
+        this.log.error(err.message);
+      }
+      this.processUpdate(data, filename);
+    });
+  }
+
+  private processUpdate(data: any, filename: string): void {
+    this.projectData = JSON.parse(data);
+    let i = 1;
+    for (let pObject of this.projectData.objects) {
+      let object = this.objects.find((o) => {
+        return pObject.uuid && o.uuid === pObject.uuid;
+      });
+      if (!object) {
+        let newObject = this.createObject(pObject, i++, filename);
+        this.objects.push(newObject);
+      }
+      else {
+        this.updateObject(object, pObject, i++, filename);
+      }
+    }
+
+    /**
+     * Remove any objects that got deleted from the project file
+     */
+    let markForRemoval = this.objects.filter((o) => {
+      let f = this.projectData.objects.find(p => p.uuid === o.uuid);
+      return !f && o.uuid;
+    }).map((r) => {
+      return this.objects.indexOf(r);
+    });
+    for (let i of markForRemoval) {
+      this.objects.splice(i, 1);
+    }
+
+    /**
+     * Re-order the object.id with the new id/index after removal
+     */
+    for (let i = 1; i < this.objects.length; i++) {
+      this.objects[i].id = i;
+      this.objects[i].title = this.padLeft(i, 3, '0') + ': ' + this.objects[i].getFieldValue('dcterms.title');
+    }
+
+    /**
+     * Re-sort the objects by id
+     */
+    this.objects.sort((a, b) => {
+      return a.id - b.id;
+    });
+  }
+
+  private updateObject(object: any, pObject: any, index: number, filename: string): void {
+    object.originalData = pObject;
+    object.id = index;
+    object.title = this.padLeft(index, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
+    object.setField('dcterms.source', pObject.pm_ark || '');
+    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
+    object.productionNotes = pObject.productionNotes || '';
+
+    let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
+    object.files = this.processObjectFiles(acFiles, dirname(filename));
   }
 
 }

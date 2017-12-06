@@ -32,6 +32,7 @@ import { ObjectService } from './services/object.service';
 import { VocabularyService } from './services/vocabulary.service';
 import { ProgressBarService } from './services/progress-bar.service';
 import { PromptService } from './services/prompt.service';
+import { WatchService } from './services/watch.service';
 
 /* Directives */
 import { Autosize } from './directives/autosize.directive';
@@ -74,7 +75,8 @@ import { VocabularyAutocomplete } from './directives/vocabulary-autocomplete.dir
     ObjectService,
     VocabularyService,
     ProgressBarService,
-    PromptService
+    PromptService,
+    WatchService
   ],
   entryComponents: [
     VocabularyAutocompleteComponent,
