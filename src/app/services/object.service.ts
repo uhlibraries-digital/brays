@@ -286,11 +286,10 @@ export class ObjectService {
     let markForRemoval = this.objects.filter((o) => {
       let f = this.projectData.objects.find(p => p.uuid === o.uuid);
       return !f && o.uuid;
-    }).map((r) => {
-      return this.objects.indexOf(r);
     });
-    for (let i of markForRemoval) {
-      this.objects.splice(i, 1);
+    for (let remove of markForRemoval) {
+      let index = this.objects.findIndex(o => o.uuid && o.uuid === remove.uuid)
+      this.objects.splice(index, 1);
     }
 
     /**
