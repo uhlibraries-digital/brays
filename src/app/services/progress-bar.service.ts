@@ -1,6 +1,6 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 
-import { ProgressBar } from '../classes/progress-bar';
+import { ProgressBar } from 'app/classes/progress-bar';
 
 @Injectable()
 export class ProgressBarService {

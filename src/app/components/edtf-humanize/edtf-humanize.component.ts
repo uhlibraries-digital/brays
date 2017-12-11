@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation, OnChanges } from '@angular/core';
 
-import { EdtfHumanizer } from '../../classes/edtf-humanizer';
+import { EdtfHumanizer } from 'app/classes/edtf-humanizer';
 
 @Component({
   selector: 'edtf-humanize',

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LoggerService } from '../../services/logger.service';
-import { ProgressBarService } from '../../services/progress-bar.service';
+import { LoggerService } from 'app/services/logger.service';
+import { ProgressBarService } from 'app/services/progress-bar.service';
 
-import { Entry } from '../../classes/entry';
-import { ProgressBar } from '../../classes/progress-bar';
+import { Entry } from 'app/classes/entry';
+import { ProgressBar } from 'app/classes/progress-bar';
 
 @Component({
   selector: 'notification',

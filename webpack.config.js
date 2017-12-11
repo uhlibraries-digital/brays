@@ -28,7 +28,6 @@ const styles = [
 
 //we add all our external scripts we want to load externally, like inserting in our index.html --> like as if it's .angular-cli.json
 const scripts = [
-
 ];
 
 //create file path for each , so we use for our excludes and includes where needed
@@ -152,7 +151,7 @@ if(scripts.length > 0){
       ],
       "sassLoader": {
         "sourceMap": false,
-        "includePaths": [ "./src/styles" ]
+        "includePaths": []
       },
       "lessLoader": {
         "sourceMap": false
@@ -342,9 +341,7 @@ module.exports = {
           "use": [
             "css-loader?{\"sourceMap\":false,\"importLoaders\":1}",
             "postcss-loader",
-            "sass-loader?" + JSON.stringify({
-              "includePaths": [ "./src/styles" ]
-            })
+            "sass-loader"
           ],
           "fallback": "style-loader",
           "publicPath": ""
@@ -379,6 +376,10 @@ module.exports = {
       {
         "test": /\.ts$/,
         "loader": "@ngtools/webpack"
+      },
+      {
+        "test": /\.json$/,
+        "loader": "json-loader"
       }
     ]
   },

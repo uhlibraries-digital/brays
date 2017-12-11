@@ -9,14 +9,14 @@ import { Component,
          ViewEncapsulation,
          HostListener } from '@angular/core';
 
-import { AutofillComponent } from '../autofill/autofill.component';
+import { AutofillComponent } from 'app/components/autofill/autofill.component';
 
-import { Object } from '../../classes/object';
-import { File } from '../../classes/file';
+import { Object } from 'app/classes/object';
+import { File } from 'app/classes/file';
 
-import { ObjectService } from '../../services/object.service';
-import { MapService } from '../../services/map.service';
-import { ElectronService } from '../../services/electron.service';
+import { ObjectService } from 'app/services/object.service';
+import { MapService } from 'app/services/map.service';
+import { ElectronService } from 'app/services/electron.service';
 
 @Component({
   selector: "digital-objects",

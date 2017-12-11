@@ -10,10 +10,10 @@ import { basename, dirname } from 'path';
 import * as hash from 'object-hash';
 import * as mime from 'mime';
 
-import { Object } from '../classes/object';
-import { Field } from '../classes/field';
-import { File } from '../classes/file';
-import { MapField } from '../classes/map-field';
+import { Object } from 'app/classes/object';
+import { Field } from 'app/classes/field';
+import { File } from 'app/classes/file';
+import { MapField } from 'app/classes/map-field';
 
 import { MapService } from './map.service';
 import { LoggerService } from './logger.service';

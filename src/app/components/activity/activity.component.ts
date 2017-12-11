@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ObjectService } from '../../services/object.service';
+import { ObjectService } from 'app/services/object.service';
 
 
 @Component({
@@ -10,7 +10,7 @@ import { ObjectService } from '../../services/object.service';
 })
 export class ActivityComponent implements OnInit {
 
-  private loading: Boolean = false;
+  loading: Boolean = false;
 
   constructor(
     private objects: ObjectService) {

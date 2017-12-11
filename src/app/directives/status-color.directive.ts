@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Renderer, Input, OnInit } from '@angular/core';
-import { Object } from '../classes/object';
-import { Field } from '../classes/field';
+import { Object } from 'app/classes/object';
+import { Field } from 'app/classes/field';
 
 @Directive({
   selector: '[status-color]'

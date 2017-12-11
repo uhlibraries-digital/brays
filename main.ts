@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, Menu } from 'electron';
 import { menuTemplate } from './menu';
 import * as path from 'path';
-const pkg = require('../package.json');
+const pkg = require('./package.json');
 
 let win, serve;
 const args = process.argv.slice(1);
@@ -28,7 +28,7 @@ export function createWindow() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 
   // and load the index.html of the app.
-  win.loadURL('file://' + __dirname + '/index.html');
+  win.loadURL(`file://${__dirname}/index.html`);
 
   // Emitted when the window is closed.
   win.on('closed', () => {

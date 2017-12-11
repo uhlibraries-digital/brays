@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Renderer, Input, OnInit, HostListener } from '@angular/core';
-import { Field } from '../classes/field';
+import { Field } from 'app/classes/field';
 
 @Directive({
   selector: '[obligationHighlight]'

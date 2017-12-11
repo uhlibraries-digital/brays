@@ -6,9 +6,9 @@ import { Directive,
          OnInit,
          Input,
          Output, EventEmitter, HostListener } from '@angular/core';
-import { VocabularyAutocompleteComponent } from '../components/vocabulary-autocomplete/vocabulary-autocomplete.component';
+import { VocabularyAutocompleteComponent } from 'app/components/vocabulary-autocomplete/vocabulary-autocomplete.component';
 
-import { VocabularyService } from '../services/vocabulary.service';
+import { VocabularyService } from 'app/services/vocabulary.service';
 
 @Directive({
   selector: "[vocab-autocomplete]"

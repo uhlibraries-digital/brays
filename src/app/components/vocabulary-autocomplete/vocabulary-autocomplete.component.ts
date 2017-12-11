@@ -1,6 +1,6 @@
 import { Component, Input, HostListener, ViewEncapsulation, ElementRef } from '@angular/core';
 
-import { VocabularyService } from '../../services/vocabulary.service';
+import { VocabularyService } from 'app/services/vocabulary.service';
 
 @Component({
   selector: 'auto-complete',

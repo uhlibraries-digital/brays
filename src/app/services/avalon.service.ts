@@ -7,10 +7,10 @@ import * as stringify from 'csv-stringify';
 import { ElectronService } from './electron.service';
 import { ObjectService } from './object.service';
 import { LoggerService } from './logger.service';
-import { PromptService } from '../services/prompt.service';
+import { PromptService } from 'app/services/prompt.service';
 import { ProgressBarService } from './progress-bar.service';
 
-import { EdtfHumanizer } from '../classes/edtf-humanizer';
+import { EdtfHumanizer } from 'app/classes/edtf-humanizer';
 
 //const progress = require('progress-stream');
 

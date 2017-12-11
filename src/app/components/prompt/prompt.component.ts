@@ -6,7 +6,7 @@ import { Component,
          AfterViewChecked,
          HostListener } from '@angular/core';
 
-import { PromptService } from '../../services/prompt.service';
+import { PromptService } from 'app/services/prompt.service';
 
 @Component({
   selector: 'prompt',

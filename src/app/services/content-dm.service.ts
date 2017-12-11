@@ -9,7 +9,7 @@ import { LoggerService } from './logger.service';
 import { ProgressBarService } from './progress-bar.service';
 import { ElectronService } from './electron.service';
 
-import { EdtfHumanizer } from '../classes/edtf-humanizer';
+import { EdtfHumanizer } from 'app/classes/edtf-humanizer';
 
 @Injectable()
 export class ContentDmService {

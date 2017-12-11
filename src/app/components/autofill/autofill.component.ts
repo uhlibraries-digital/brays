@@ -1,12 +1,12 @@
 import { OnInit, Component, HostListener, Output, EventEmitter } from '@angular/core';
 import { ViewChild, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
 
-import { VocabularyAutocomplete } from '../../directives/vocabulary-autocomplete.directive';
+import { VocabularyAutocomplete } from 'app/directives/vocabulary-autocomplete.directive';
 
-import { ObjectService } from '../../services/object.service';
-import { MapService } from '../../services/map.service';
+import { ObjectService } from 'app/services/object.service';
+import { MapService } from 'app/services/map.service';
 
-import { MapField } from '../../classes/map-field';
+import { MapField } from 'app/classes/map-field';
 
 @Component({
   selector: 'autofill',
