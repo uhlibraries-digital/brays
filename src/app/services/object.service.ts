@@ -184,6 +184,10 @@ export class ObjectService {
     object.uuid = pObject.uuid;
     object.id = index;
     object.metadata = this.processMetadata(pObject);
+
+    if (object.getFieldValue('dcterms.title') === '' && pObject.title) {
+      object.setField('dcterms.title', pObject.title);
+    }
     object.setField('dcterms.source', pObject.pm_ark || '');
     object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
     object.metadataHash = hash(object.metadata);
