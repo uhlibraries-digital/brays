@@ -189,7 +189,7 @@ export class ObjectService {
       object.setField('dcterms.title', pObject.title);
     }
     object.setField('dcterms.source', pObject.pm_ark || '');
-    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
+    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.uri) || ''));
     object.metadataHash = hash(object.metadata);
     object.title = this.padLeft(index, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
     object.base_path = dirname(filename);
