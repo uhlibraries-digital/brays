@@ -175,7 +175,7 @@ if(scripts.length > 0){
       "exclude": [],
       "tsConfigPath": "src/tsconfig.app.json"
     }));
-
+    /*
     plugins.push(new UglifyJsPlugin({
       "mangle": {
         "screw_ie8": true
@@ -185,7 +185,7 @@ if(scripts.length > 0){
         "warnings": false
       },
       "sourceMap": false
-    }));
+    }));*/
 
   } else {
     plugins.push(new AotPlugin({
