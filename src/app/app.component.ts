@@ -9,6 +9,7 @@ import { VocabularyService } from './services/vocabulary.service';
 import { ContentDmService } from './services/content-dm.service';
 import { AvalonService } from './services/avalon.service';
 import { LocalStorageService } from './services/local-storage.service';
+import { MetadataExportService } from './services/metadata-export.service';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
     private vocabularyService: VocabularyService,
     private cdm: ContentDmService,
     private avalon: AvalonService,
+    private metaexport: MetadataExportService,
     private storage: LocalStorageService,
     public electronService: ElectronService) { }
 
@@ -50,6 +52,9 @@ export class AppComponent implements OnInit {
       });
       this.electronService.ipcRenderer.on('export-avalon', (event, arg) => {
         this.avalon.export();
+      });
+      this.electronService.ipcRenderer.on('export-metadata', (event, arg) => {
+        this.metaexport.export();
       });
     }
 

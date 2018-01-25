@@ -28,6 +28,7 @@ import { ElectronService } from './services/electron.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { LoggerService } from './services/logger.service';
 import { MapService } from './services/map.service';
+import { MetadataExportService } from './services/metadata-export.service';
 import { ObjectService } from './services/object.service';
 import { VocabularyService } from './services/vocabulary.service';
 import { ProgressBarService } from './services/progress-bar.service';
@@ -72,6 +73,7 @@ import { VocabularyAutocomplete } from './directives/vocabulary-autocomplete.dir
     LocalStorageService,
     LoggerService,
     MapService,
+    MetadataExportService,
     ObjectService,
     VocabularyService,
     ProgressBarService,

@@ -33,6 +33,10 @@ export class Object{
     field.setValue(value);
   }
 
+  getId(): string {
+    return this.padLeft(this.id, 3, '0');
+  }
+
   isGood(): boolean {
     let requiredMetadata: Field[] = this.metadata.filter((metadata) => {
       return (
@@ -57,6 +61,11 @@ export class Object{
     }
 
     return requiredMetadata.length === 0 && goodDate;
+  }
+
+  private padLeft(value: any, length: number, character: string): string {
+    value = String(value);
+    return Array(length - value.length + 1).join(character || " ") + value;
   }
 
 }

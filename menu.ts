@@ -30,6 +30,13 @@ let menu: any[] = [
               if (!focusedWindow) return;
               focusedWindow.webContents.send('export-avalon');
             }
+          },
+          {
+            label: 'Metadata...',
+            click(item, focusedWindow) {
+              if (!focusedWindow) return;
+              focusedWindow.webContents.send('export-metadata');
+            }
           }
         ]
       },
