@@ -12,15 +12,18 @@ export class VocabularyService {
 
   constructor(private http: Http) { }
 
-  loadVocabulary(url: string): void {
-    this.http.get(url)
+  loadVocabulary(url: string): Promise<any> {
+    return this.http.get(url)
       .timeout(600000)
       .toPromise()
       .then((response) => {
         let data: string = response.text();
         this.store = this.parse(data);
+        return this.store;
       })
-      .catch(this.handleError);
+      .catch((err) => {
+        return this.handleError(err);
+      });
   }
 
   getPrefLabelsByRange(range_label: string): any {
@@ -72,6 +75,10 @@ export class VocabularyService {
   private parse(data: string): any {
     let data_nodes = data.match(/[^A-Za-z ]:(?:[^\"]|(?:\".*?\"))*?[.]/gm);
     let nodes = {};
+
+    if (!data_nodes) {
+      throw Error('Unable to parse vocabulary turtle data');
+    }
 
     for ( let n of data_nodes ) {
       let identifier = /^:([^\s]*)/m.exec(n);

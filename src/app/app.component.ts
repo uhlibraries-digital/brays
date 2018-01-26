@@ -10,6 +10,7 @@ import { ContentDmService } from './services/content-dm.service';
 import { AvalonService } from './services/avalon.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { MetadataExportService } from './services/metadata-export.service';
+import { LoggerService } from './services/logger.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
     private avalon: AvalonService,
     private metaexport: MetadataExportService,
     private storage: LocalStorageService,
+    private log: LoggerService,
     public electronService: ElectronService) { }
 
     ngOnInit() {
@@ -74,9 +76,12 @@ export class AppComponent implements OnInit {
               this.handleError('Error opening project', err);
             });
         }).catch((err) => {
-          this.handleError('Unable to load MAP', err);
+          this.log.error('Unable to load MAP', err);
         });
-      this.vocabularyService.loadVocabulary(this.preferences.vocab);
+      this.vocabularyService.loadVocabulary(this.preferences.vocab)
+        .catch((err) => {
+          this.log.error(err + '. Make sure you have the correct URL for your vocabulary in Preferences.')
+        });
     }
 
     private setupPreferences(): void {
