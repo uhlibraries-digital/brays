@@ -5,6 +5,7 @@ let ConvertTiff = require('tiff-to-png');
 
 import { Object } from 'app/classes/object';
 import { File } from 'app/classes/file';
+import { MapField } from 'app/classes/map-field';
 
 import { ObjectService } from 'app/services/object.service';
 import { ElectronService } from 'app/services/electron.service';
@@ -147,6 +148,23 @@ export class MetadataComponent implements OnInit {
   removeRepeatable(values: any[], index: number) {
     values.splice(index, 1);
     this.save();
+  }
+
+  hasRangeValues(field: MapField): boolean {
+    for(let range of field.range) {
+      if (range.values) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  rangeValues(field: MapField): string[] {
+    let values = [''];
+    for (let range of field.range) {
+      values = values.concat(range.values);
+    }
+    return values;
   }
 
 }

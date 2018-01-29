@@ -26,7 +26,7 @@
       </label>
       <!-- Single Input value -->
       <input
-        *ngIf="field.map.input === 'single' && !field.map.repeatable"
+        *ngIf="field.map.input === 'single' && !field.map.repeatable && !hasRangeValues(field.map)"
         type="text"
         class="form-control"
         vocab-autocomplete
@@ -38,6 +38,20 @@
         (ngModelChange)="madeChanges(object)"
         (change)="save()" placeholder="{{field.name}}"
         [disabled]="field.map.editable === false" />
+      <!-- Single Select value -->
+      <select
+        *ngIf="field.map.input === 'single' && !field.map.repeatable && hasRangeValues(field.map)"
+        [obligationHighlight]="field"
+        class="with-btn form-control"
+        [(ngModel)]="field.value"
+        (ngModelChange)="madeChanges(object)"
+        (change)="save()"
+        [disabled]="field.map.editable === false">
+          <option
+            *ngFor="let v of rangeValues(field.map)"
+            [ngValue]="v"
+            [selected]="field.value === v">{{ v }}</option>
+      </select>
       <!-- MultiLine Input value -->
       <textarea
         *ngIf="field.map.input === 'multi'"
@@ -53,7 +67,9 @@
       <!-- Repeatable values -->
       <div class="repeatables" *ngIf="field.map.repeatable">
         <div class="value input-group form-group" *ngFor="let f of field.values; let i = index">
+          <!-- Single Input value -->
           <input
+            *ngIf="!hasRangeValues(field.map)"
             type="text"
             vocab-autocomplete
             [range]="field.map.range"
@@ -66,6 +82,20 @@
             placeholder="{{field.name}}"
             class="with-btn form-control"
             [disabled]="field.map.editable === false" />
+          <!-- Single Select value -->
+          <select
+            *ngIf="hasRangeValues(field.map)"
+            [obligationHighlight]="field"
+            class="with-btn form-control"
+            [(ngModel)]="f.value"
+            (ngModelChange)="madeChanges(object)"
+            (change)="save()"
+            [disabled]="field.map.editable === false">
+              <option
+                *ngFor="let v of rangeValues(field.map)"
+                [ngValue]="v"
+                [selected]="f.value === v">{{ v }}</option>
+          </select>
           <span
             *ngIf="i !== 0"
             class="btn-input-default btn-danger"

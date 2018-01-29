@@ -40,6 +40,7 @@ export class ObligationHighlight implements OnInit {
         oclass = '';
     }
 
+    this.field.joinValues();
     remove = this.field.value.replace('; ', '') === '';
 
     if (oclass) {
