@@ -82,7 +82,7 @@ export class Validate implements OnInit {
     if (checkList.length > 0) {
       let test = checkList.find(term => term === this.checkValue);
       if (!test) {
-        this.field.validationErrors.push("Vocabulary term '${ this.checkValue }' not found");
+        this.field.validationErrors.push(`Vocabulary term '${ this.checkValue }' not found`);
       }
       return test ? true : false;
     }
