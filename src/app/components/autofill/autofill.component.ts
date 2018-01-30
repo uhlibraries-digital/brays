@@ -1,4 +1,4 @@
-import { OnInit, Component, HostListener, Output, EventEmitter } from '@angular/core';
+import { OnInit, Component, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { ViewChild, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
 
 import { VocabularyAutocomplete } from 'app/directives/vocabulary-autocomplete.directive';
@@ -30,6 +30,7 @@ export class AutofillComponent implements OnInit, AfterViewInit {
   @ViewChildren('fieldRepeatableInput') fieldRepeatableInput: QueryList<ElementRef>;
 
   constructor(
+    private changeRef: ChangeDetectorRef,
     private objectService: ObjectService,
     private map: MapService) {
   }
@@ -83,6 +84,8 @@ export class AutofillComponent implements OnInit, AfterViewInit {
     this.selectedRangeValues = this.rangeValues(field);
     this.fieldRangeValues = this.selectedRangeValues.length > 0;
     this.fieldRepeatable = field.repeatable;
+
+    this.changeRef.detectChanges();
     this.focusInputField();
   }
 

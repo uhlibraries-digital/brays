@@ -8,7 +8,7 @@
       vocab-autocomplete
       [range]="selectedRange"
       class="field-input form-control"
-      [class.hide]="fieldRepeatable && fieldRangeValues"
+      [class.hide]="!(!fieldRepeatable && !fieldRangeValues)"
       type="text"
       [(ngModel)]="fieldValue" #fieldInput />
     <select
