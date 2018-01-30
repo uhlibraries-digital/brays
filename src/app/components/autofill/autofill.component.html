@@ -8,9 +8,18 @@
       vocab-autocomplete
       [range]="selectedRange"
       class="field-input form-control"
-      [class.hide]="fieldRepeatable"
+      [class.hide]="fieldRepeatable && fieldRangeValues"
       type="text"
       [(ngModel)]="fieldValue" #fieldInput />
+    <select
+      class="form-control range-select"
+      [class.hide]="!(!fieldRepeatable && fieldRangeValues)"
+      [(ngModel)]="fieldValue" #fieldRangeInput>
+        <option
+          *ngFor="let v of selectedRangeValues"
+          [ngValue]="v"
+          [selected]="fieldValue === v">{{ v }}</option>
+    </select>
     <div
       class="repeatables"
       [class.hide]="!fieldRepeatable">
@@ -20,7 +29,16 @@
           vocab-autocomplete
           [range]="selectedRange"
           [(ngModel)]="f.value"
-          class="with-btn form-control" #fieldRepeatableInput />
+          class="with-btn form-control"
+          [class.hide]="fieldRangeValues" #fieldRepeatableInput />
+        <select
+          [class.hide]="!fieldRangeValues"
+          class="with-btn form-control range-select"
+          [(ngModel)]="f.value">
+            <option
+              *ngFor="let v of selectedRangeValues"
+              [ngValue]="v">{{ v }}</option>
+        </select>
         <span
           *ngIf="i !== 0"
           class="btn-input-default btn-danger"

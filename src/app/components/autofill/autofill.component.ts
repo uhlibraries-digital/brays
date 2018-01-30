@@ -17,10 +17,12 @@ export class AutofillComponent implements OnInit, AfterViewInit {
 
   selectedField: string;
   selectedRange: any;
+  selectedRangeValues: string[];
   fieldValue: string;
   fieldValues: any[];
   fields: MapField[];
   fieldRepeatable: boolean;
+  fieldRangeValues: boolean;
 
   @Output() dismissAutofill = new EventEmitter();
 
@@ -38,12 +40,14 @@ export class AutofillComponent implements OnInit, AfterViewInit {
       this.fields = fields;
     });
     this.fieldRepeatable = false;
+    this.fieldRangeValues = false;
+    this.selectedRangeValues = [];
     this.fieldValues = [];
   }
 
   ngAfterViewInit(): void {
     this.fieldRepeatableInput.changes.subscribe(children => {
-      if (this.fieldRepeatable) {
+      if (this.fieldRepeatable && !this.fieldRangeValues) {
         children.last.nativeElement.focus();
       }
       else {
@@ -53,7 +57,9 @@ export class AutofillComponent implements OnInit, AfterViewInit {
   }
 
   focusInputField(): void {
-    this.fieldInput.nativeElement.focus();
+    if (!this.fieldRangeValues) {
+      this.fieldInput.nativeElement.focus();
+    }
   }
 
   autofillObjects(): void {
@@ -74,6 +80,8 @@ export class AutofillComponent implements OnInit, AfterViewInit {
 
     let field = this.map.getMapFieldByFullName(this.selectedField);
     this.selectedRange = field.range;
+    this.selectedRangeValues = this.rangeValues(field);
+    this.fieldRangeValues = this.selectedRangeValues.length > 0;
     this.fieldRepeatable = field.repeatable;
     this.focusInputField();
   }
@@ -88,6 +96,17 @@ export class AutofillComponent implements OnInit, AfterViewInit {
 
   removeRepeatable(index: number): void {
     this.fieldValues.splice(index, 1);
+  }
+
+  rangeValues(field: MapField): string[] {
+    let values = [];
+    for (let r of field.range) {
+      if (r.values) {
+        values = values.concat(r.values);
+      }
+    }
+
+    return values.length > 0 ? [''].concat(values) : [];
   }
 
   @HostListener('document:keydown', ['$event']) onKeypress(e) {
