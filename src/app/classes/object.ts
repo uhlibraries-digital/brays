@@ -46,21 +46,11 @@ export class Object{
         metadata.map.visible);
     });
 
-    let goodDate = true; // Assume a good date incase field is empty
-    let date = this.getFieldValue('dc.date');
-    if (date && date !== '') {
-      try {
-        let dates = date.split('; ');
-        for (let d of dates) {
-          let test = edtf(d);
-        }
-      }
-      catch(e) {
-        goodDate = false;
-      }
-    }
+    let fieldErrors = this.metadata.filter((field) => {
+      return !field.valid;
+    });
 
-    return requiredMetadata.length === 0 && goodDate;
+    return requiredMetadata.length === 0 && fieldErrors.length === 0;
   }
 
   private padLeft(value: any, length: number, character: string): string {

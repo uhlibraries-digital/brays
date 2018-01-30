@@ -5,12 +5,16 @@ export class Field{
   map: MapField;
   value: string;
   values: any[];
+  valid: boolean;
+  validationErrors: string[];
 
   constructor(name: string, value: string, map: MapField) {
     this.name = name;
     this.value = value || '';
     this.map = map;
     this.values = this.splitValues();
+    this.valid = true;
+    this.validationErrors = [];
   }
 
   setValue(value: string) {
