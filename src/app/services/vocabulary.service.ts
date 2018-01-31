@@ -13,6 +13,10 @@ export class VocabularyService {
   constructor(private http: Http) { }
 
   loadVocabulary(url: string): Promise<any> {
+    if (url === '') {
+      this.store = null;
+      return Promise.resolve(this.store);
+    }
     return this.http.get(url)
       .timeout(600000)
       .toPromise()
