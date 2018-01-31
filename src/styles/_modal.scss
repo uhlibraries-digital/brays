@@ -46,15 +46,25 @@
     overflow-y: auto;
   }
 
-  .modal-nav-list .item {
-    display: block;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
+  .modal-nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 
-  .modal-nav-list .selected {
-    color: $light-text-color;
-    background-color: $select-background-color;
+    .item {
+      display: block;
+      padding: 10px 20px;
+      cursor: pointer;
+      color: $text-color;
+    }
+
+    .selected {
+      .item {
+        color: $light-text-color;  
+      }
+      background-color: $select-background-color;
+    }
+
   }
 
 }

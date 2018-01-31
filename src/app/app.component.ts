@@ -11,6 +11,7 @@ import { AvalonService } from './services/avalon.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { MetadataExportService } from './services/metadata-export.service';
 import { LoggerService } from './services/logger.service';
+import { PreferencesService } from './services/preferences.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ import { LoggerService } from './services/logger.service';
 })
 export class AppComponent implements OnInit {
   private preferences: any;
+  private preferenceIndex: number = 0;
 
   @ViewChild('preferencesDisplay') preferencesDisplay: any;
 
@@ -34,17 +36,21 @@ export class AppComponent implements OnInit {
     private metaexport: MetadataExportService,
     private storage: LocalStorageService,
     private log: LoggerService,
+    private preferenceService: PreferencesService,
     public electronService: ElectronService) { }
 
     ngOnInit() {
-
-      this.preferences = this.storage.get('preferences');
-      if ((typeof this.preferences) !== 'object' || !this.preferences) {
-        this.setupPreferences();
+      this.preferenceService.preferencesChange.subscribe((data) => {
+        this.preferences = data;
+      });
+      this.preferenceService.load();
+      if (this.preferenceService.new) {
+        this.showPreferences();
       }
       else {
         this.loadApp();
       }
+
 
       this.electronService.ipcRenderer.on('show-preferences', (event, arg) => {
         this.showPreferences();
@@ -84,25 +90,18 @@ export class AppComponent implements OnInit {
         });
     }
 
-    private setupPreferences(): void {
-      this.preferences = {
-        'map': '',
-        'vocab': ''
-      };
-      this.showPreferences();
-    }
-
     private showPreferences(): void {
+      this.preferenceIndex = 0;
       this.modalService.open(this.preferencesDisplay, {
         backdrop: 'static',
         keyboard: false,
         size: 'lg'
       }).result.then((result) => {
-        this.storage.set('preferences', this.preferences);
+        this.preferenceService.set(this.preferences);
         this.loadApp();
       },
       (reason) => {
-        this.preferences = this.storage.get('preferences');
+        this.preferences = this.preferenceService.data;
       });
     }
 

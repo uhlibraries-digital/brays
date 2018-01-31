@@ -134,7 +134,8 @@ export class ObjectService {
         metadata[field.name] = field.value;
       }
       object.originalData.metadata = metadata;
-      object.originalData.productionNotes = object.productionNotes
+      object.originalData.productionNotes = object.productionNotes;
+      object.originalData.do_ark = object.do_ark || '';
       objects.push(object.originalData);
     }
     this.projectData.objects = objects;
@@ -196,6 +197,7 @@ export class ObjectService {
     object.input_file = filename;
     object.path = dirname(filename);
     object.productionNotes = pObject.productionNotes || '';
+    object.do_ark = pObject.do_ark || '';
 
     let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
     object.files = this.processObjectFiles(acFiles, dirname(filename));

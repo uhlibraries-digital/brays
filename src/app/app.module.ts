@@ -25,14 +25,17 @@ import { VocabularyAutocompleteComponent } from './components/vocabulary-autocom
 import { AvalonService } from './services/avalon.service';
 import { ContentDmService } from './services/content-dm.service';
 import { ElectronService } from './services/electron.service';
+import { GreensService } from './services/greens.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { LoggerService } from './services/logger.service';
 import { MapService } from './services/map.service';
 import { MetadataExportService } from './services/metadata-export.service';
+import { MintService } from './services/mint.service';
 import { ObjectService } from './services/object.service';
-import { VocabularyService } from './services/vocabulary.service';
+import { PreferencesService } from './services/preferences.service';
 import { ProgressBarService } from './services/progress-bar.service';
 import { PromptService } from './services/prompt.service';
+import { VocabularyService } from './services/vocabulary.service';
 import { WatchService } from './services/watch.service';
 
 /* Directives */
@@ -70,14 +73,17 @@ import { VocabularyAutocomplete } from './directives/vocabulary-autocomplete.dir
     AvalonService,
     ContentDmService,
     ElectronService,
+    GreensService,
     LocalStorageService,
     LoggerService,
     MapService,
     MetadataExportService,
+    MintService,
     ObjectService,
-    VocabularyService,
+    PreferencesService,
     ProgressBarService,
     PromptService,
+    VocabularyService,
     WatchService
   ],
   entryComponents: [

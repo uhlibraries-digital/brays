@@ -9,6 +9,7 @@ import { ObjectService } from './object.service';
 import { LoggerService } from './logger.service';
 import { PromptService } from 'app/services/prompt.service';
 import { ProgressBarService } from './progress-bar.service';
+import { MintService } from './mint.service';
 
 import { EdtfHumanizer } from 'app/classes/edtf-humanizer';
 
@@ -37,8 +38,9 @@ export class AvalonService {
     private log: LoggerService,
     private prompt: PromptService,
     private electronService: ElectronService,
-    private barService: ProgressBarService ){
-    this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
+    private barService: ProgressBarService,
+    private mint: MintService){
+      this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
   }
 
   export(): void {
@@ -60,8 +62,16 @@ export class AvalonService {
     this.win = this.electronService.remote.getCurrentWindow();
 
     this.startActivity();
-    this.process();
-    this.endActivity();
+    this.mint.arks(this.objects.slice(1))
+      .then(() => {
+        this.objectService.saveObjects();
+        this.process();
+        this.endActivity();
+      })
+      .catch(() => {
+        this.log.error('Sorry something happend during minting. Export failed!');
+        this.endActivity();
+      });
   }
 
   private process(): void {
@@ -70,6 +80,8 @@ export class AvalonService {
     let data = '';
 
     this.startActivity();
+    this.setProgressBar(0);
+
     csv.on('readable', () => {
       let row: any;
       while (row = csv.read()) {
