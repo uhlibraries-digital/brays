@@ -10,6 +10,7 @@ import { LoggerService } from './logger.service';
 import { PromptService } from 'app/services/prompt.service';
 import { ProgressBarService } from './progress-bar.service';
 import { MintService } from './mint.service';
+import { PreferencesService } from './preferences.service';
 
 import { EdtfHumanizer } from 'app/classes/edtf-humanizer';
 
@@ -31,6 +32,8 @@ export class AvalonService {
   private fileProcess: any = {};
   private progressBarId: string = '';
 
+  private preferences: string = '';
+
   private win: any;
 
   constructor(
@@ -39,8 +42,11 @@ export class AvalonService {
     private prompt: PromptService,
     private electronService: ElectronService,
     private barService: ProgressBarService,
-    private mint: MintService){
+    private mint: MintService,
+    private preferenceService: PreferencesService){
       this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
+      this.preferenceService.preferencesChange.subscribe(data => this.preferences = data);
+      this.preferences = this.preferenceService.data;
   }
 
   export(): void {
@@ -149,6 +155,10 @@ export class AvalonService {
       let values = [];
       if (field.values) {
         values = field.values.map((values) => {
+          if (field.name === 'dcterms.identifier'
+            && object.do_ark !== '' && values.value === object.do_ark) {
+              avalonField.type = 'digital object';
+            }
           if (avalonField.type) {
             return [values.value, values.value !== '' ? avalonField.type : ''];
           }
