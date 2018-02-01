@@ -10,9 +10,7 @@ const edtf = require('edtf');
 export class Validate implements OnInit {
 
   @Input('validate') field: Field;
-  @Input() checkValueIndex: Number;
-
-  checkValue: string;
+  @Input('ngModel') checkValue: String;
 
   constructor(
     private el: ElementRef,
@@ -20,7 +18,8 @@ export class Validate implements OnInit {
     private vocab: VocabularyService) {
   }
 
-  @HostListener('change') onChange() {
+  @HostListener('ngModelChange', ['$event']) onChange(event: any) {
+    this.checkValue = event;
     this.validate();
   }
 
@@ -31,15 +30,6 @@ export class Validate implements OnInit {
   validate(): void {
     let valid: boolean = false;
     this.field.validationErrors = [];
-
-    let index = Number(this.checkValueIndex);
-    if (index === -1) {
-      this.checkValue = this.field.value;
-    }
-    else {
-      this.checkValue = this.field.values[index].value;
-    }
-
     if (this.field.name === 'dc.date') {
       valid = this.isValidEDTF();
     }
@@ -96,7 +86,10 @@ export class Validate implements OnInit {
       return r.uri;
     });
     for (let r of ranges) {
-      list = list.concat(this.vocab.getPrefLabelsByRange(r.label));
+      let prefLabel = this.vocab.getPrefLabelsByRange(r.label);
+      if (prefLabel) {
+        list = list.concat(prefLabel);
+      }
     }
     return list;
   }
