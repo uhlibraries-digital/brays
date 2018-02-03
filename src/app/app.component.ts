@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { MapService } from './services/map.service';
 import { ObjectService } from './services/object.service';
+import { ValidationService } from './services/valication.service';
 import { VocabularyService } from './services/vocabulary.service';
 import { ContentDmService } from './services/content-dm.service';
 import { AvalonService } from './services/avalon.service';
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit {
     private modalService: NgbModal,
     private titleService: Title,
     private renderer: Renderer,
+    private validationService: ValidationService,
     private vocabularyService: VocabularyService,
     private cdm: ContentDmService,
     private avalon: AvalonService,
@@ -85,6 +87,9 @@ export class AppComponent implements OnInit {
           this.log.error('Unable to load MAP', err);
         });
       this.vocabularyService.loadVocabulary(this.preferences.vocab)
+        .then((store) => {
+          this.validationService.validateAll();
+        })
         .catch((err) => {
           this.log.error(err + '. Make sure you have the correct URL for your vocabulary in Preferences.')
         });

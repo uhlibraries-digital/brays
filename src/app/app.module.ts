@@ -35,6 +35,7 @@ import { ObjectService } from './services/object.service';
 import { PreferencesService } from './services/preferences.service';
 import { ProgressBarService } from './services/progress-bar.service';
 import { PromptService } from './services/prompt.service';
+import { ValidationService } from './services/valication.service';
 import { VocabularyService } from './services/vocabulary.service';
 import { WatchService } from './services/watch.service';
 
@@ -83,6 +84,7 @@ import { VocabularyAutocomplete } from './directives/vocabulary-autocomplete.dir
     PreferencesService,
     ProgressBarService,
     PromptService,
+    ValidationService,
     VocabularyService,
     WatchService
   ],

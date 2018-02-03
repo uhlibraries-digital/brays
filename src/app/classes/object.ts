@@ -1,5 +1,3 @@
-const edtf = require('edtf');
-
 import { Field } from './field';
 import { File } from './file';
 
