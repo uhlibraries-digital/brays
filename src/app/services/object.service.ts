@@ -321,6 +321,9 @@ export class ObjectService {
     object.originalData = pObject;
     object.id = index;
     object.title = this.padLeft(index, 3, '0') + ': ' + object.getFieldValue('dcterms.title');
+    if (object.getFieldValue('dc.date') === '' && pObject.dates) {
+      object.setField('dc.date', pObject.dates.join('; '));
+    }
     object.setField('dcterms.source', pObject.pm_ark || '');
     object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
     object.productionNotes = pObject.productionNotes || '';
