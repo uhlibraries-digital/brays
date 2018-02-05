@@ -325,7 +325,7 @@ export class ObjectService {
       object.setField('dc.date', pObject.dates.join('; '));
     }
     object.setField('dcterms.source', pObject.pm_ark || '');
-    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.record_uri) || ''));
+    object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.uri) || ''));
     object.productionNotes = pObject.productionNotes || '';
 
     let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
