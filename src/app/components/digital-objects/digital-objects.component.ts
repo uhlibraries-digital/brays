@@ -16,6 +16,7 @@ import { File } from 'app/classes/file';
 
 import { ObjectService } from 'app/services/object.service';
 import { MapService } from 'app/services/map.service';
+import { ValidationService } from 'app/services/valication.service';
 import { ElectronService } from 'app/services/electron.service';
 
 @Component({
@@ -45,6 +46,7 @@ export class DigitalObjectsComponent implements OnInit {
   }
 
   constructor(
+    private validationService: ValidationService,
     private objectService: ObjectService,
     private map: MapService,
     private viewContainerRef: ViewContainerRef,
@@ -54,7 +56,10 @@ export class DigitalObjectsComponent implements OnInit {
 
   ngOnInit() {
     this.objectService.objectChanged.subscribe(object => this.object = this.selectedObject = object);
-    this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
+    this.objectService.objectsLoaded.subscribe((objects) => {
+      this.objects = objects;
+      this.validationService.validateAll();
+    });
     this.objectService.selectedObjectsChanged.subscribe(objects => this.selectedObjects = objects);
 
     this.buildContextMenu();
