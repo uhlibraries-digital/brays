@@ -30,6 +30,8 @@ export class ValidationService {
   }
 
   validateAll(): void {
+    if (!this.objects) { return; }
+    
     for (let object of this.objects) {
       for (let field of object.metadata) {
         let values = field.value.split(';').map(v => v.trim());

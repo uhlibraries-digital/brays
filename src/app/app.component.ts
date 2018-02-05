@@ -91,6 +91,7 @@ export class AppComponent implements OnInit {
           this.validationService.validateAll();
         })
         .catch((err) => {
+          console.error(err);
           this.log.error(err + '. Make sure you have the correct URL for your vocabulary in Preferences.')
         });
     }
