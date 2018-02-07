@@ -34,7 +34,7 @@ export class VocabularyService {
     if (!this.store) { return null; }
     if (!range_label) { return null; }
 
-    range_label = range_label.toLowerCase()
+    range_label = range_label.toLowerCase().replace(' ', '');
     if (!(range_label in this.store)) { return null; }
 
     let node = this.store[range_label];
@@ -86,16 +86,18 @@ export class VocabularyService {
 
     for ( let n of data_nodes ) {
       let identifier = /^:([^\s]*)/m.exec(n);
+      let identifier_str = identifier[1].toLowerCase().replace(' ', '');
       let label_reg = n.match(/prefLabel \"([^\"]*)\"/m);
       let label: string = (label_reg) ? label_reg[1] : null;
       let children_array = n.match(/:narrower :[^;\.]*[;\.]/gm);
-      nodes[identifier[1]] = { 'prefLabel': label };
+      nodes[identifier_str] = { 'prefLabel': label };
 
       if (children_array) {
-        nodes[identifier[1]]['narrow'] = {};
+        nodes[identifier_str]['narrow'] = {};
         for ( let c of children_array ) {
           let id = /\s:(.*)[;\.]/g.exec(c);
-          nodes[identifier[1]]['narrow'][id[1]] = nodes[id[1]];
+          let id_str = id[1].toLowerCase().replace(' ', '');
+          nodes[identifier_str]['narrow'][id_str] = nodes[id_str];
         }
       }
     }
