@@ -9,6 +9,8 @@ import { MapField } from 'app/classes/map-field';
 
 import { ObjectService } from 'app/services/object.service';
 import { ElectronService } from 'app/services/electron.service';
+import { PreferencesService } from 'app/services/preferences.service';
+import { LoggerService } from 'app/services/logger.service';
 
 import { ObligationHighlight } from 'app/directives/obligation-highlight.directive';
 import { VocabularyAutocomplete } from 'app/directives/vocabulary-autocomplete.directive';
@@ -26,6 +28,7 @@ export class MetadataComponent implements OnInit {
 
   showFlag: boolean = false;
   converter: any;
+  preferences: any;
 
   private spacer: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAA6RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPgogICAgICAgICA8eG1wOk1vZGlmeURhdGU+MjAxNy0wMi0xN1QxMzowMjo3MTwveG1wOk1vZGlmeURhdGU+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+UGl4ZWxtYXRvciAzLjU8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6Q29tcHJlc3Npb24+NTwvdGlmZjpDb21wcmVzc2lvbj4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6WVJlc29sdXRpb24+NzI8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOlhSZXNvbHV0aW9uPjcyPC90aWZmOlhSZXNvbHV0aW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOkNvbG9yU3BhY2U+MTwvZXhpZjpDb2xvclNwYWNlPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+MTwvZXhpZjpQaXhlbFlEaW1lbnNpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgq9qnkFAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=";
 
@@ -34,11 +37,15 @@ export class MetadataComponent implements OnInit {
     private renderer: Renderer,
     private el: ElementRef,
     private sanitizer: DomSanitizer,
-    private electronService: ElectronService) {
+    private electronService: ElectronService,
+    private preferenceService: PreferencesService,
+    private log: LoggerService) {
     this.converter = new ConvertTiff({
       logLevel: 0,
       type: 'jpg'
     });
+    this.preferenceService.preferencesChange.subscribe((data) => this.preferences = data);
+    this.preferences = this.preferenceService.data;
   }
 
   ngOnInit():void {
@@ -127,6 +134,14 @@ export class MetadataComponent implements OnInit {
 
   openUrl(uri: string): void {
     this.electronService.shell.openExternal(uri);
+  }
+
+  openAspaceUri(uri: string): void {
+    if (!this.preferences.aspace) {
+      this.log.error("No ArchivesSpace URL set in preferences");
+      return;
+    }
+    this.electronService.shell.openExternal(this.preferences.aspace + uri);
   }
 
   clearFlag(): void {

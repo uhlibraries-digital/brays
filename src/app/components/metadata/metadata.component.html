@@ -62,6 +62,10 @@
         (change)="save()"
         [disabled]="field.map.editable === false" >
       </textarea>
+      <span
+        *ngIf="field.name === 'uhlib.aSpaceUri'"
+        class="aspace-link"
+        (click)="openAspaceUri(field.value)">Goto to archival object</span>
       <!-- Repeatable values -->
       <div class="repeatables" *ngIf="field.map.repeatable">
         <div class="value input-group form-group" *ngFor="let f of field.values; let i = index">

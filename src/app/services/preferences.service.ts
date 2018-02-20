@@ -53,6 +53,7 @@ export class PreferencesService {
     return {
       'map': '',
       'vocab': '',
+      'aspace': '',
       'minter': {
         'endpoint': '',
         'prefix': '',
