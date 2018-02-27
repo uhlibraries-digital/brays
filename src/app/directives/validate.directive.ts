@@ -21,6 +21,10 @@ export class Validate implements OnInit {
     this.validate();
   }
 
+  @HostListener('change') onFieldChange() {
+    this.field.valid = this.validationService.validFieldValues(this.field);
+  }
+
   ngOnInit(): void {
     this.validate();
   }

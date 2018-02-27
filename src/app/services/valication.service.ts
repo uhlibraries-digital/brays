@@ -21,23 +21,19 @@ export class ValidationService {
   validate(field: Field, checkValue: string): boolean {
     let valid: boolean;
     if (field.name === 'dc.date') {
-      field.valid = this.isValidEDTF(field, checkValue);
+      valid = this.isValidEDTF(field, checkValue);
     }
     else {
-      field.valid = this.isValidVocab(field, checkValue);
+      valid = this.isValidVocab(field, checkValue);
     }
-    return field.valid;
+    return valid;
   }
 
   validateAll(): void {
     if (!this.objects) { return; }
-    
     for (let object of this.objects) {
       for (let field of object.metadata) {
-        let values = field.value.split(';').map(v => v.trim());
-        for (let value of values) {
-          this.validate(field, value);
-        }
+        field.valid = this.validFieldValues(field);
       }
       /**
        * Taking advantage of a metadata hash bug
@@ -45,6 +41,18 @@ export class ValidationService {
        */
       object.metadataHash = hash(object.metadata);
     }
+  }
+
+  validFieldValues(field: Field): boolean {
+    field.validationErrors = [];
+    let fieldValid = true;
+    let values = field.value.split(';').map(v => v.trim());
+    for (let value of values) {
+      if (!this.validate(field, value)) {
+        fieldValid = false;
+      }
+    }
+    return fieldValid;
   }
 
   private isValidEDTF(field: Field, checkValue: string): boolean {
