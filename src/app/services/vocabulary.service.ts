@@ -17,7 +17,14 @@ export class VocabularyService {
       this.store = null;
       return Promise.resolve(this.store);
     }
-    return this.http.get(url)
+
+    let headers = new Headers({
+      'Cache-Control': 'no-cache, no-store',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }); 
+
+    return this.http.get(url, { headers: headers })
       .timeout(600000)
       .toPromise()
       .then((response) => {
