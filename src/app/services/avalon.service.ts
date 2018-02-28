@@ -159,6 +159,9 @@ export class AvalonService {
             && object.do_ark !== '' && values.value === object.do_ark) {
               avalonField.type = 'digital object';
             }
+          else if (field.name === 'dcterms.identifier') {
+            avalonField.type = 'other';
+          }
           if (avalonField.type) {
             return [values.value, values.value !== '' ? avalonField.type : ''];
           }
