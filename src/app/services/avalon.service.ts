@@ -196,7 +196,7 @@ export class AvalonService {
     let objects = this.objects.slice(1);
     let header = [];
     for (let object of objects) {
-      header = object.metadata.slice()
+      let Metaheader = object.metadata.slice()
         .filter((field) => {
           return field.map.crosswalk !== undefined && field.map.crosswalk.avalon !== undefined
         })
@@ -216,10 +216,10 @@ export class AvalonService {
           };
         });
       let hasFile = header.find((avfield) => {
-        return avfield.label === 'Field'
+        return avfield.label === 'File'
       });
       let fileCount = hasFile ? Math.max(hasFile.count, object.files.length) : object.files.length;
-      header = header.concat([{'label': 'File', 'count': fileCount}]);
+      header = Metaheader.concat([{'label': 'File', 'count': fileCount}]);
     }
 
     return header;
