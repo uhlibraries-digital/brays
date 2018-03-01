@@ -5,6 +5,7 @@ import { VocabularyAutocomplete } from 'app/directives/vocabulary-autocomplete.d
 
 import { ObjectService } from 'app/services/object.service';
 import { MapService } from 'app/services/map.service';
+import { ValidationService } from 'app/services/valication.service';
 
 import { MapField } from 'app/classes/map-field';
 
@@ -32,6 +33,7 @@ export class AutofillComponent implements OnInit, AfterViewInit {
   constructor(
     private changeRef: ChangeDetectorRef,
     private objectService: ObjectService,
+    private validationService: ValidationService,
     private map: MapService) {
   }
 
@@ -71,6 +73,7 @@ export class AutofillComponent implements OnInit, AfterViewInit {
       }
       this.objectService.autofill(this.selectedField, this.fieldValue);
       this.objectService.saveObjects();
+      this.validationService.validateAll();
     }
     this.close();
   }
