@@ -53,7 +53,6 @@ export class ContentDmService {
     this.singles = [];
     let objects = this.objects.slice(1);
 
-
     for(let object of objects) {
       if (object.files.length > 1) {
         this.processCompoundObject(object);
@@ -78,7 +77,7 @@ export class ContentDmService {
     let csv = [header];
     csv.push(objectRow);
 
-    let path = this.location + '/' + basename(object.path);
+    let path = this.location + '/' + this.padLeft(object.id, 3, '0');
     mkdirp.sync(path);
     let i = 1;
     for (let file of object.files) {
@@ -94,7 +93,10 @@ export class ContentDmService {
 
   private processSingleObject(object: any): void {
     let file = object.files[0] || undefined;
-    if (!file) { return; }
+    if (!file) {
+      this.log.warn("'" + object.title + "' doesn't have any access files");
+      return;
+    }
 
     if (this.singles.length === 0) {
       this.singles.push(this.getMetadataFields(object).concat(
@@ -222,6 +224,12 @@ export class ContentDmService {
     this.setProgressBar(0);
     this.barService.clearProgressBar(this.progressBarId);
     this.progressBarId = '';
+  }
+
+  private padLeft(value: any, length: number, character: string): string {
+    value = String(value);
+    if (value.length > length) { return value; }
+    return Array(length - value.length + 1).join(character || " ") + value;
   }
 
 }

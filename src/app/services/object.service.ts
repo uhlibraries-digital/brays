@@ -242,7 +242,7 @@ export class ObjectService {
     let files: File[] = [];
     for (let objectFile of objectFiles) {
       let file = new File();
-      file.path = basepath + '/' + objectFile.path;
+      file.path = basepath + '/' + objectFile.path.replace(/\\/g, '/');
       file.name = basename(file.path);
       file.mime = mime.getType(file.path);
       file.metadata = [];
