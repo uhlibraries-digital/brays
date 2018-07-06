@@ -24,6 +24,7 @@ export class EdtfHumanizeComponent implements OnChanges {
       }
     }
     catch(e) {
+      console.error(e);
       this.humanizeDate = 'unknown';
       return;
     }

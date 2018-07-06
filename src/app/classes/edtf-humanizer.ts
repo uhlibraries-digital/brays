@@ -175,7 +175,7 @@ export class EdtfHumanizer {
 
   private iterateDate(date: any): string[] {
     let list = [];
-    for(let d of date) {
+    for(let d of date.values) {
       list.push(this.approximate(d) + this.simpleDate(d));
     }
     return list;
