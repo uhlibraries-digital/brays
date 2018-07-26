@@ -14,7 +14,7 @@
   "productName": "Brays",
   "appBundleId": "Brays.app",
   "helperBundleId": "Brays.app.helper",
-  "homepage": "",
+  "homepage": "https://github.com/uhlibraries-digital/brays",
   "main": "main.js",
   "scripts": {
     "ng": "ng",

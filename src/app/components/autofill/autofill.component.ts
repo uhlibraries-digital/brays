@@ -98,10 +98,12 @@ export class AutofillComponent implements OnInit, AfterViewInit {
 
   addRepeatable(index: number = 0): void {
     this.fieldValues.splice(index + 1, 0, {'value': ''});
+    this.changeRef.detectChanges();
   }
 
   removeRepeatable(index: number): void {
     this.fieldValues.splice(index, 1);
+    this.changeRef.detectChanges();
   }
 
   rangeValues(field: MapField): string[] {
