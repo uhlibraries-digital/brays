@@ -33,6 +33,7 @@ export class ObjectService {
   fileChanged: EventEmitter<any> = new EventEmitter();
   selectedObjectsChanged: EventEmitter<any> = new EventEmitter();
   loading: EventEmitter<any> = new EventEmitter();
+  saving: EventEmitter<any> = new EventEmitter();
   projectFileLocationChanged: EventEmitter<any> = new EventEmitter();
 
   constructor(
@@ -42,6 +43,7 @@ export class ObjectService {
     private watch: WatchService) {
       this.objects = [];
       this.selectedObjects = [];
+      this.saving.emit(false);
 
       this.watch.projectChanged.subscribe((filename) => {
         this.updateProject(filename);
@@ -126,6 +128,7 @@ export class ObjectService {
 
   saveObjects(): void {
     this.loading.emit(true);
+    this.saving.emit(true);
     let objects = [];
     for (let object of this.objects.slice(1)) {
       let metadata = {};
@@ -145,6 +148,7 @@ export class ObjectService {
 
     writeFile(filename, dataString, (err) => {
       this.loading.emit(false);
+      this.saving.emit(false);
       if (err) {
         this.log.error(err.message);
         throw err;

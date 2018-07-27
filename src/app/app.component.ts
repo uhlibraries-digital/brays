@@ -1,4 +1,4 @@
-import { Component, Renderer, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Renderer, OnInit, ViewChild, ViewEncapsulation, HostListener } from '@angular/core';
 import { ElectronService } from './services/electron.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Title } from '@angular/platform-browser';
@@ -22,6 +22,7 @@ import { PreferencesService } from './services/preferences.service';
 export class AppComponent implements OnInit {
   private preferences: any;
   private preferenceIndex: number = 0;
+  private saving = false;
 
   @ViewChild('preferencesDisplay') preferencesDisplay: any;
 
@@ -41,7 +42,17 @@ export class AppComponent implements OnInit {
     private preferenceService: PreferencesService,
     public electronService: ElectronService) { }
 
+    @HostListener('window:beforeunload') checkActivity(event) {
+      if (this.saving) {
+        this.log.warn('Your project is being saved...')
+        return false;
+      }
+      return true;
+    }
+
     ngOnInit() {
+      this.objectService.saving.subscribe(saving => this.saving = saving);
+
       this.preferenceService.preferencesChange.subscribe((data) => {
         this.preferences = data;
       });
