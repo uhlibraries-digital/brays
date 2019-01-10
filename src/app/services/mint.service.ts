@@ -24,7 +24,7 @@ export class MintService {
       this.updatePreferences(this.preferenceService.data);
   }
 
-  arks(objects: any): Promise<any> {
+  public async arks(objects: any): Promise<any> {
     if (!this.preferenceService.data.minter || this.preferenceService.data.minter.endpoint === '') {
       this.log.warn("Minter preferences are not set so I can't mint any objects.");
       return Promise.resolve();
@@ -32,25 +32,20 @@ export class MintService {
 
     this.progressBarId = this.barService.newProgressBar(1, 'Minting Arks');
     let minted = 0;
-    let chunks = this.createChunks(objects, 8);
-    return chunks.reduce(
-      (acc, chunk) => acc.then(() => {
-        return Promise.all(chunk.map(object => this.mintObject(object)));
-      })
-      .then(() => {
-        minted += chunk.length;
-        this.barService.setProgressBar(this.progressBarId, minted / objects.length);
-      }),
-      Promise.resolve()
-    )
-    .then(() => {
-      this.barService.clearProgressBar(this.progressBarId);
-      this.progressBarId = '';
-    })
-    .catch((err) => {
-      this.barService.clearProgressBar(this.progressBarId);
-      this.progressBarId = '';
-    });
+    for (let object of objects) {
+      try {
+        await this.mintObject(object);
+      }
+      catch(err) {
+        Promise.reject(err);
+      }
+      this.barService.setProgressBar(this.progressBarId, ((++minted) / objects.length));
+    }
+
+    this.barService.clearProgressBar(this.progressBarId);
+    this.progressBarId = '';
+
+    return Promise.resolve();
   }
 
   private mintObject(object: any): Promise<any> {
@@ -73,14 +68,6 @@ export class MintService {
       .catch((err) => {
         this.log.error(err);
       });
-  }
-
-  private createChunks(objs: any, size: number): any[] {
-    let chunks = [];
-    for (let i = 0; i < objs.length; i += size) {
-      chunks.push(objs.slice(i, i + size));
-    }
-    return chunks;
   }
 
   private updatePreferences(data: any): void {
