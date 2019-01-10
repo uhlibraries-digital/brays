@@ -8,6 +8,7 @@ import { ObjectService } from './services/object.service';
 import { ValidationService } from './services/valication.service';
 import { VocabularyService } from './services/vocabulary.service';
 import { ContentDmService } from './services/content-dm.service';
+import { ArmandService } from './services/armand.service';
 import { AvalonService } from './services/avalon.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { MetadataExportService } from './services/metadata-export.service';
@@ -35,6 +36,7 @@ export class AppComponent implements OnInit {
     private validationService: ValidationService,
     private vocabularyService: VocabularyService,
     private cdm: ContentDmService,
+    private armand: ArmandService,
     private avalon: AvalonService,
     private metaexport: MetadataExportService,
     private storage: LocalStorageService,
@@ -70,6 +72,9 @@ export class AppComponent implements OnInit {
       });
       this.electronService.ipcRenderer.on('export-cdm', (event, arg) => {
         this.cdm.export();
+      });
+      this.electronService.ipcRenderer.on('export-armand', (event, arg) => {
+        this.armand.export();
       });
       this.electronService.ipcRenderer.on('export-avalon', (event, arg) => {
         this.avalon.export();

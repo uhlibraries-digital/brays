@@ -25,6 +25,13 @@ let menu: any[] = [
             }
           },
           {
+            label: 'Armand Package...',
+            click(item, focusedWindow) {
+              if (!focusedWindow) return;
+              focusedWindow.webContents.send('export-armand');
+            }
+          },
+          {
             label: 'Avalon Package...',
             click(item, focusedWindow) {
               if (!focusedWindow) return;

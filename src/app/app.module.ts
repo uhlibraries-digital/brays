@@ -22,6 +22,7 @@ import { VocabularyAutocompleteComponent } from './components/vocabulary-autocom
 // import { AppRoutingModule } from './app-routing.module';
 
 /* Services */
+import { ArmandService } from './services/armand.service';
 import { AvalonService } from './services/avalon.service';
 import { ContentDmService } from './services/content-dm.service';
 import { ElectronService } from './services/electron.service';
@@ -71,6 +72,7 @@ import { VocabularyAutocomplete } from './directives/vocabulary-autocomplete.dir
     NgbModule.forRoot()
   ],
   providers: [
+    ArmandService,
     AvalonService,
     ContentDmService,
     ElectronService,
