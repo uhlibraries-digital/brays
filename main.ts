@@ -22,7 +22,7 @@ export function createWindow() {
     width: 1200,
     height: 900,
     title: pkg.productName,
-    icon: 'src/favicon.png'
+    icon: path.join(__dirname, '../resources/icon.png')
   });
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
