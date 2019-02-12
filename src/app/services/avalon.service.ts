@@ -155,13 +155,6 @@ export class AvalonService {
       let values = [];
       if (field.values) {
         values = field.values.map((values) => {
-          if (field.name === 'dcterms.identifier'
-            && object.do_ark !== '' && values.value === object.do_ark) {
-              avalonField.type = 'digital object';
-            }
-          else if (field.name === 'dcterms.identifier') {
-            avalonField.type = 'other';
-          }
           if (avalonField.type) {
             return [values.value, values.value !== '' ? avalonField.type : ''];
           }
