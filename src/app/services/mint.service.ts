@@ -60,9 +60,7 @@ export class MintService {
     return this.minter.mint(erc)
       .then((id) => {
         object.do_ark = id;
-        let value = object.getFieldValue('dcterms.identifier');
-        let newValue = id + (value ? '; ' : '') + value;
-        object.setField('dcterms.identifier', newValue);
+        object.setField('edm.isShownAt', id);
         return id;
       })
       .catch((err) => {
