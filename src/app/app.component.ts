@@ -12,6 +12,7 @@ import { ArmandService } from './services/armand.service';
 import { AvalonService } from './services/avalon.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { MetadataExportService } from './services/metadata-export.service';
+import { MintService } from './services/mint.service';
 import { LoggerService } from './services/logger.service';
 import { PreferencesService } from './services/preferences.service';
 
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
   private preferences: any;
   private preferenceIndex: number = 0;
   private saving = false;
+  private objects: any;
 
   @ViewChild('preferencesDisplay') preferencesDisplay: any;
 
@@ -42,6 +44,7 @@ export class AppComponent implements OnInit {
     private storage: LocalStorageService,
     private log: LoggerService,
     private preferenceService: PreferencesService,
+    private mint: MintService,
     public electronService: ElectronService) { }
 
     @HostListener('window:beforeunload') checkActivity(event) {
@@ -54,6 +57,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
       this.objectService.saving.subscribe(saving => this.saving = saving);
+      this.objectService.objectsLoaded.subscribe(objects => this.objects = objects);
 
       this.preferenceService.preferencesChange.subscribe((data) => {
         this.preferences = data;
@@ -81,6 +85,17 @@ export class AppComponent implements OnInit {
       });
       this.electronService.ipcRenderer.on('export-metadata', (event, arg) => {
         this.metaexport.export();
+      });
+      this.electronService.ipcRenderer.on('mint-arks', (event, arg) => {
+        this.mint.arks(this.objects.slice(1))
+          .then(() => {
+            this.objectService.saveObjects();
+            this.log.success("Done minting Digital Object ARKs")
+          })
+          .catch((err) => {
+            this.log.error('Sorry something happend during minting. Export failed!');
+            console.error(err);
+          });
       });
     }
 

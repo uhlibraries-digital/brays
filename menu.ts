@@ -15,6 +15,16 @@ let menu: any[] = [
         type: 'separator'
       },
       {
+        label: 'Mint Digital Object ARKs',
+        click(item, focusedWindow) {
+          if (!focusedWindow) return;
+          focusedWindow.webContents.send('mint-arks');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         label: 'Export To',
         submenu: [
           {
