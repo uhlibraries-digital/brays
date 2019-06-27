@@ -33,6 +33,10 @@ export class VocabularyService {
         return this.store;
       })
       .catch((err) => {
+        if (err.status === 0) {
+          console.error('status', err.status);
+          return this.loadVocabulary(url);
+        }
         return this.handleError(err);
       });
   }
