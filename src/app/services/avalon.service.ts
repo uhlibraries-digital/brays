@@ -74,8 +74,9 @@ export class AvalonService {
         this.process();
         this.endActivity();
       })
-      .catch(() => {
+      .catch((err) => {
         this.log.error('Sorry something happend during minting. Export failed!');
+        console.error(err);
         this.endActivity();
       });
   }
@@ -123,7 +124,7 @@ export class AvalonService {
     }).count;
 
     for(let object of objects) {
-      let row = this.processRow(object);
+      let row = this.processRow(object).concat([object.uuid, 'douuid']);
       let files = [];
       for (let file of object.files) {
         files.push('content/' + file.name);
@@ -211,6 +212,14 @@ export class AvalonService {
             'count': count
           };
         });
+      Metaheader.push(
+        {
+          'label': 'other identifier',
+          'type': 'douuid',
+          'name': 'uhlib.doUuid',
+          'count': 1
+        }
+      );
       let hasFile = header.find((avfield) => {
         return avfield.label === 'File'
       });
