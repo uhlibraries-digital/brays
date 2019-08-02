@@ -83,12 +83,13 @@ export class ArmandService {
           return field.map.label;
         })
       )
+      .concat(['uhlib.doUuid'])
     ]
 
     for (let object of objects) {
       const metadata = this.getMetadata(object);
       const type = this.getObjectType(object);
-      items.push([type, ''].concat(metadata))
+      items.push([type, ''].concat(metadata).concat(object.uuid))
 
       for (let file of object.files) {
         items.push(['File', `${file.name}`]);
