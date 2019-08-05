@@ -196,7 +196,9 @@ export class ObjectService {
     if (object.getFieldValue('dc.date') === '' && pObject.dates) {
       object.setField('dc.date', pObject.dates.join('; '));
     }
-    object.setField('dcterms.source', pObject.pm_ark || '');
+    if (object.getFieldValue('dcterms.source') === '') {
+      object.setField('dcterms.source', pObject.pm_ark || '');
+    }
     object.setField('edm.isShownAt', pObject.do_ark || '');
     object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.uri) || ''));
     object.metadataHash = hash(object.metadata);
@@ -330,7 +332,9 @@ export class ObjectService {
     if (object.getFieldValue('dc.date') === '' && pObject.dates) {
       object.setField('dc.date', pObject.dates.join('; '));
     }
-    object.setField('dcterms.source', pObject.pm_ark || '');
+    if (object.getFieldValue('dcterms.souce') === '' && pObject.pm_ark) {
+      object.setField('dcterms.source', pObject.pm_ark || '');
+    }
     object.setField('uhlib.aSpaceUri', ((pObject.artificial ? pObject.parent_uri : pObject.uri) || ''));
     object.productionNotes = pObject.productionNotes || '';
 
