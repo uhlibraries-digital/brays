@@ -83,7 +83,7 @@ export class ArmandService {
           return field.map.label;
         })
       )
-      .concat(['uhlib.doUuid'])
+      .concat(['doUuid'])
     ]
 
     for (let object of objects) {
