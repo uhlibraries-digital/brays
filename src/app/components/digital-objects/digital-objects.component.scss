@@ -94,6 +94,11 @@
 
     .file {
       padding-left: 17px;
+
+      &.ocr::before {
+        font-family: "FontAwesome";
+        content: '\f1ea';
+      }
     }
 
     .item {

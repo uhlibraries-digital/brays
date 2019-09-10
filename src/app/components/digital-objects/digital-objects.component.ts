@@ -9,6 +9,8 @@ import { Component,
          ViewEncapsulation,
          HostListener } from '@angular/core';
 
+import { dirname, basename, extname } from 'path';
+import { statSync } from 'fs';
 import { AutofillComponent } from 'app/components/autofill/autofill.component';
 
 import { Object } from 'app/classes/object';
@@ -143,6 +145,18 @@ export class DigitalObjectsComponent implements OnInit {
       this.autofillComponentRef.destroy();
     });
     this.autofillComponentRef.changeDetectorRef.detectChanges();
+  }
+
+  hasOcr(file: File): boolean {
+    let ocrFilename = `${basename(file.name, extname(file.name))}_alto.xml`;
+    let ocrPath = `${dirname(file.path)}/${ocrFilename}`
+    try {
+      statSync(ocrPath);
+    }
+    catch(e) {
+      return false;
+    }
+    return true;
   }
 
 }

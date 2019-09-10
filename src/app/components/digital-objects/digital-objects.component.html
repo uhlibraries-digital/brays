@@ -15,8 +15,16 @@
           <i class="fa fa-chevron-right" aria-hidden="true"></i><i class="fa fa-folder" aria-hidden="true"></i> {{ object.title }}
         </div>
         <ol *ngIf="object.files" class="tree-view tree-list files">
-          <li *ngFor="let file of object.files" class="tree-item" [class.selected]="file === selectedFile" (click)="onSelectFile(file, $event)">
-            <div class="item file" *ngIf="isImage(file)">
+          <li *ngFor="let file of object.files" 
+            class="tree-item" 
+            [class.selected]="file === selectedFile" 
+            (click)="onSelectFile(file, $event)"
+          >
+            <div 
+              class="item file" 
+              *ngIf="isImage(file)"
+              [class.ocr]="hasOcr(file)"
+            >
               <i class="fa fa-file-image-o" aria-hidden="true"></i> {{ file.name }}
             </div>
             <div class="item file" *ngIf="!isImage(file)">
