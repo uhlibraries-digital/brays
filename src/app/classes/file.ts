@@ -1,4 +1,6 @@
 import { Field } from './field';
+import { statSync } from 'fs';
+import { dirname, basename, extname } from 'path';
 
 export class File{
   id: number;
@@ -17,5 +19,20 @@ export class File{
   getFieldValue(name: string): string {
     let field: Field = this.getField(name);
     return (!field) ? null : field.value;
+  }
+
+  ocrPath(): string {
+    const ocrFilename = `${basename(this.name, extname(this.name))}_alto.xml`;
+    return `${dirname(this.path)}/${ocrFilename}`
+  }
+
+  hasOcr(): boolean {
+    try {
+      statSync(this.ocrPath());
+    }
+    catch(e) {
+      return false;
+    }
+    return true;
   }
 }
