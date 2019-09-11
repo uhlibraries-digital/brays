@@ -93,7 +93,11 @@ export class ArmandService {
 
       for (let file of object.files) {
         items.push(['File', `${file.name}`]);
-        await this.copyFile(file.path, `${this.location}/${file.name}`)
+        await this.copyFile(file.path, `${this.location}/${file.name}`);
+        if (file.hasOcr()) {
+          items.push(['OCR', `${file.ocrFilename()}`]);
+          await this.copyOcrFile(file.ocrPath(), `${this.location}/${file.ocrFilename()}`);
+        }
       }
     }
 
@@ -169,6 +173,23 @@ export class ArmandService {
         this.totalProgress += stat.size;
         this.fileProcess[file.path] = 0;
       })
+    })
+  }
+
+  private async copyOcrFile(src: string, dest: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const writeStream = createWriteStream(`${dest}.part`);
+      writeStream.on('finish', () => {
+        rename(`${dest}.part`, dest, (err) => {
+          return err ? reject(err) : resolve();
+        })
+      });
+      writeStream.on('error', (err) => {
+        return reject(err);
+      });
+
+      const readStream = createReadStream(src);
+      readStream.pipe(writeStream);
     })
   }
 

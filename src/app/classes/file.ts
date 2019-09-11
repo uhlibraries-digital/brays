@@ -22,8 +22,11 @@ export class File{
   }
 
   ocrPath(): string {
-    const ocrFilename = `${basename(this.name, extname(this.name))}_alto.xml`;
-    return `${dirname(this.path)}/${ocrFilename}`
+    return `${dirname(this.path)}/${this.ocrFilename()}`
+  }
+
+  ocrFilename(): string {
+    return `${basename(this.name, extname(this.name))}_alto.xml`;
   }
 
   hasOcr(): boolean {
