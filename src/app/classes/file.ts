@@ -11,6 +11,7 @@ export class File{
   tiffProcessing: boolean;
   tiffImagePreviewPath: string;
   tiffError: boolean;
+  ocr: boolean | null = null;
 
   getField(name: string): Field {
     return this.metadata.find(field => name === field.name);
@@ -30,12 +31,15 @@ export class File{
   }
 
   hasOcr(): boolean {
-    try {
-      statSync(this.ocrPath());
+    if (this.ocr === null) {
+      try {
+        statSync(this.ocrPath());
+        this.ocr = true;
+      }
+      catch(e) {
+        this.ocr = false;
+      }
     }
-    catch(e) {
-      return false;
-    }
-    return true;
+    return this.ocr;
   }
 }
