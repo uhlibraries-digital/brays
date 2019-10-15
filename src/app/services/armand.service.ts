@@ -140,7 +140,7 @@ export class ArmandService {
     return new Promise((resolve, reject) => {
       this.startActivity();
 
-      let ws = createWriteStream(`${dest}.part`);
+      let ws = createWriteStream(`${dest}.part`, { highWaterMark: Math.pow(2,20) });
       ws.on('finish', () => {
         this.endActivity();
         rename(`${dest}.part`, dest, (err) => {
@@ -152,7 +152,7 @@ export class ArmandService {
         return reject(err);
       })
 
-      let rs = createReadStream(src);
+      let rs = createReadStream(src, { highWaterMark: Math.pow(2,20) });
       rs.on('data', (buffer) => {
         this.fileProcess[src] += buffer.length;
         let sum = 0;

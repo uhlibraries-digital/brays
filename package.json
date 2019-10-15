@@ -109,7 +109,7 @@
     "@types/jasmine": "2.5.54",
     "@types/mime": "2.0.0",
     "@types/mkdirp": "0.5.1",
-    "@types/node": "8.0.47",
+    "@types/node": "8.10.54",
     "@types/object-hash": "1.1.0",
     "@types/random-seed": "0.3.2",
     "autoprefixer": "7.1.4",

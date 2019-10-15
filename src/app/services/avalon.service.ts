@@ -270,12 +270,12 @@ export class AvalonService {
       this.totalProgress += stat.size;
       this.fileProcess[src] = 0;
 
-      let ws = createWriteStream(dest);
+      let ws = createWriteStream(dest, { highWaterMark: Math.pow(2,20) });
       ws.on('finish', () => {
         this.endActivity();
       });
 
-      let rs = createReadStream(src);
+      let rs = createReadStream(src, { highWaterMark: Math.pow(2,20) });
       rs.on('data', (buffer) => {
         this.fileProcess[src] += buffer.length;
         let sum = 0;
