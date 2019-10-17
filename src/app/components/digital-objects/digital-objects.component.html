@@ -23,7 +23,6 @@
             <div 
               class="item file" 
               *ngIf="isImage(file)"
-              [class.ocr]="file.hasOcr()"
             >
               <i class="fa fa-file-image-o" aria-hidden="true"></i> {{ file.name }}
             </div>
