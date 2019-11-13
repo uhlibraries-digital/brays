@@ -91,17 +91,34 @@ export class ArmandService {
       const type = this.getObjectType(object);
       items.push([type, ''].concat(metadata).concat(object.uuid))
 
+      const prefix = `${this.projectName(object).replace(' ', '_')}_${this.doArk(object)}`;
+
       for (let file of object.files) {
-        items.push(['File', `${file.name}`]);
-        await this.copyFile(file.path, `${this.location}/${file.name}`);
+        const filename = file.exportFilename(prefix);
+
+        items.push(['File', `${filename}`]);
+        await this.copyFile(file.path, `${this.location}/${filename}`);
         if (file.hasOcr()) {
-          items.push(['OCR', `${file.ocrFilename()}`]);
-          await this.copyOcrFile(file.ocrPath(), `${this.location}/${file.ocrFilename()}`);
+          const ocrfilename = file.exportOcrFilename();
+          items.push(['OCR', `${ocrfilename}`]);
+          await this.copyOcrFile(file.ocrPath(), `${this.location}/${ocrfilename}`);
         }
       }
     }
 
     return Promise.resolve(items);
+  }
+
+  private doArk(obj: any): string {
+    return obj.do_ark ?
+      String(obj.do_ark.split('/').slice(-1)) :
+      '';
+  }
+
+  private projectName(obj: any): string {
+    return obj.input_file ? 
+      basename(obj.input_file, '.carp') : 
+      'untitled';
   }
 
   private getMetadata(object: any): Array<string> {

@@ -42,4 +42,16 @@ export class File{
     }
     return this.ocr;
   }
+
+  exportFilename(prefix?: string): string {
+    const match = this.name.match(/^[0-9]{4,}_(.*)/);
+    return match ? 
+      `${prefix}_${match[1]}`.replace(/_[a-z]{2}\./i, '.') : 
+      this.name.replace(/_[a-z]{2}\./i, '.');
+  }
+
+  exportOcrFilename(prefix?: string): string {
+    const filename = this.exportFilename(prefix);
+    return `${basename(filename, extname(filename))}_alto.xml`;
+  }
 }

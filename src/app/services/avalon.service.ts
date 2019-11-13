@@ -126,16 +126,30 @@ export class AvalonService {
     for(let object of objects) {
       let row = this.processRow(object).concat([object.uuid, 'douuid']);
       let files = [];
+      const prefix = `${this.projectName(object).replace(' ', '_')}_${this.doArk(object)}`;
       for (let file of object.files) {
-        files.push('content/' + file.name);
+        const filename = file.exportFilename(prefix);
+        files.push(`content/${filename}`);
         files.push('00:00:10');
-        this.copyFile(file.path, this.location + '/content/' + file.name);
+        this.copyFile(file.path, `${this.location}/content/${filename}`);
       }
       files = this.fillArray(files, '', fileCount * 2);
       csv.write(row.concat(files));
     }
 
     csv.end();
+  }
+
+  private doArk(obj: any): string {
+    return obj.do_ark ?
+      String(obj.do_ark.split('/').slice(-1)) :
+      '';
+  }
+
+  private projectName(obj: any): string {
+    return obj.input_file ? 
+      basename(obj.input_file, '.carp') : 
+      'untitled';
   }
 
   private saveDialog(): string {
