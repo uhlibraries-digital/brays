@@ -119,7 +119,7 @@
     "css-loader": "0.28.7",
     "cssnano": "3.10.0",
     "electron": "1.8.8",
-    "electron-builder": "^20.38.4",
+    "electron-builder": "^21.2.0",
     "electron-packager": "9.1.0",
     "electron-reload": "1.2.5",
     "exports-loader": "0.6.4",
