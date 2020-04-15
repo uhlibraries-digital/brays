@@ -17,6 +17,12 @@
     <i class="fa fa-flag-o" aria-hidden="true"></i> Flag
   </button>
 </div>
+<div 
+  class="container-location"
+  *ngIf="object"
+>
+  <span>{{ containerAsString() }}</span>
+</div>
 <div class="metadata-content" *ngIf="object && !selectedFile">
   <div class="field" *ngFor="let field of object.metadata">
     <div class="group input-group form-group" *ngIf="field.map.visible">

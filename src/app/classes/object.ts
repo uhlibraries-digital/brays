@@ -15,6 +15,7 @@ export class Object{
   productionNotes: string;
   originalData: any;
   do_ark: string;
+  containers: any[];
 
   getField(name: string): Field {
     return this.metadata.find(field => name === field.name);

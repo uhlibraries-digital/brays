@@ -208,6 +208,7 @@ export class ObjectService {
     object.path = dirname(filename);
     object.productionNotes = pObject.productionNotes || '';
     object.do_ark = pObject.do_ark || '';
+    object.containers = pObject.containers || [];
 
     let acFiles = pObject.files.filter(file => file.purpose === 'access-copy');
     object.files = this.processObjectFiles(acFiles, dirname(filename));

@@ -4,6 +4,17 @@
   overflow: auto;
 }
 
+.container-location {
+  color: #61afef;
+  padding: 2em 4.5em 0 4.5em;
+  font-size: 12px;
+  box-sizing: border-box;
+
+  span {
+    font-size: 1.2em;
+  }
+}
+
 .metadata-content {
   padding: 4.5em;
   padding-top: 1em;

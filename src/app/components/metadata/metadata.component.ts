@@ -182,4 +182,24 @@ export class MetadataComponent implements OnInit {
     return values;
   }
 
+  containerAsString(): string {
+    if (this.object.containers.length === 0) {
+      return '';
+    }
+
+    const container = this.object.containers[0];  
+    let containerString = '';
+    if (container.type_1) {
+      containerString += `${container.type_1}: ${container.indicator_1}`;
+    }
+    if (container.type_2) {
+      containerString += `, ${container.type_2}: ${container.indicator_2}`;
+    }
+    if (container.type_3) {
+      containerString += `, ${container.type_3}: ${container.indicator_3}`;
+    }
+    
+    return containerString.replace('_', ' ');
+  }
+
 }
