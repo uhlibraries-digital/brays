@@ -183,7 +183,7 @@ export class MetadataComponent implements OnInit {
   }
 
   containerAsString(): string {
-    if (this.object.containers.length === 0) {
+    if (!this.object.containers || this.object.containers.length === 0) {
       return '';
     }
 
