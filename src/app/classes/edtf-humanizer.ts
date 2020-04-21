@@ -148,7 +148,7 @@ export class EdtfHumanizer {
   }
 
   private approximate(date: any): string {
-    if (date.approximate && date.approximate.value) {
+    if (date && date.approximate && date.approximate.value) {
       return this.approximate_date_prefix;
     }
     return '';
